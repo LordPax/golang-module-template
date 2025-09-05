@@ -11,10 +11,10 @@ type UserModel struct {
 	databaseService *database.DatabaseService
 }
 
-func NewUserModel(dbService *database.DatabaseService) *UserModel {
+func NewUserModel(module *UserModule) *UserModel {
 	return &UserModel{
 		Model:           core.NewModel[*User]("UserModel"),
-		databaseService: dbService,
+		databaseService: module.Get("DatabaseService").(*database.DatabaseService),
 	}
 }
 

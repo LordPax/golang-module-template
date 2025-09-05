@@ -15,10 +15,10 @@ type DatabaseService struct {
 	dotenvService *dotenv.DotenvService
 }
 
-func NewDatabasePostgres(dt *dotenv.DotenvService) *DatabaseService {
+func NewDatabasePostgres(module *DatabaseModule) *DatabaseService {
 	return &DatabaseService{
 		Provider:      core.NewProvider("DatabaseService"),
-		dotenvService: dt,
+		dotenvService: module.Get("DotenvService").(*dotenv.DotenvService),
 	}
 }
 
@@ -31,7 +31,7 @@ func (ds *DatabaseService) Connect() error {
 	var db *gorm.DB
 	var err error
 
-	fmt.Println("Connecting to the database...")
+	fmt.Println("Connecting to the database")
 
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
@@ -40,11 +40,6 @@ func (ds *DatabaseService) Connect() error {
 		ds.dotenvService.Get("DB_PASSWORD"),
 		ds.dotenvService.Get("DB_NAME"),
 		ds.dotenvService.Get("DB_PORT"),
-		// os.Getenv("DB_HOST"),
-		// os.Getenv("DB_USER"),
-		// os.Getenv("DB_PASSWORD"),
-		// os.Getenv("DB_NAME"),
-		// os.Getenv("DB_PORT"),
 	)
 
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})

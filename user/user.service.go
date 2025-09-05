@@ -2,20 +2,17 @@ package user
 
 import (
 	"golang-api/core"
-
-	"gorm.io/gorm"
 )
 
 type UserService struct {
 	*core.Provider
 	userModel *UserModel
-	model     *gorm.DB
 }
 
-func NewUserService(userModel *UserModel) *UserService {
+func NewUserService(module *UserModule) *UserService {
 	return &UserService{
 		Provider:  core.NewProvider("UserService"),
-		userModel: userModel,
+		userModel: module.Get("UserModel").(*UserModel),
 	}
 }
 

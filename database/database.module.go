@@ -16,11 +16,8 @@ func NewDatabaseModule() *DatabaseModule {
 		Module: core.NewModule("DatabaseModule"),
 	}
 
-	dotenvModule := dotenv.Module()
-	dotenvService := dotenvModule.GetProvider("DotenvService").(*dotenv.DotenvService)
-
-	module.AddModule(dotenvModule)
-	module.AddProvider(NewDatabasePostgres(dotenvService))
+	module.AddModule(dotenv.Module())
+	module.AddProvider(NewDatabasePostgres(module))
 
 	return module
 }

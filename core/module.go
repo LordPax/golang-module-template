@@ -6,6 +6,8 @@ var moduleSeen []string
 
 type IModule interface {
 	GetName() string
+	// Get(module, provider string) IProvider
+	Get(provider string) IProvider
 	GetProvider(name string) IProvider
 	AddProvider(p IProvider)
 	GetModule(name string) IModule
@@ -31,9 +33,22 @@ func (m *Module) GetName() string {
 	return m.name
 }
 
+func (m *Module) Get(provider string) IProvider {
+	if p := m.GetProvider(provider); p != nil {
+		return p
+	}
+
+	for _, d := range m.depend {
+		if p := d.Get(provider); p != nil {
+			return p
+		}
+	}
+
+	return nil
+}
+
 func (m *Module) GetProvider(name string) IProvider {
 	return m.provide[name]
-
 	// if !ok {
 	// 	return nil, fmt.Errorf("provider %s not found in module %s", name, m.name)
 	// }

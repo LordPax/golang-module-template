@@ -16,17 +16,11 @@ func NewUserModule() *UserModule {
 		Module: core.NewModule("UserModule"),
 	}
 
-	dbModule := database.Module()
-	dbService := dbModule.GetProvider("DatabaseService").(*database.DatabaseService)
-	userModel := NewUserModel(dbService)
-	userService := NewUserService(userModel)
-	userMiddleware := NewUserMiddleware(userService)
-
 	module.AddModule(database.Module())
-	module.AddProvider(userModel)
-	module.AddProvider(userService)
-	module.AddProvider(userMiddleware)
-	module.AddProvider(NewUserController(userService, userMiddleware))
+	module.AddProvider(NewUserModel(module))
+	module.AddProvider(NewUserService(module))
+	module.AddProvider(NewUserMiddleware(module))
+	module.AddProvider(NewUserController(module))
 
 	return module
 }

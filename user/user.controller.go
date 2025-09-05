@@ -13,11 +13,11 @@ type UserController struct {
 	userMiddleware *UserMiddleware
 }
 
-func NewUserController(userService *UserService, userMiddleware *UserMiddleware) *UserController {
+func NewUserController(module *UserModule) *UserController {
 	return &UserController{
 		Provider:       core.NewProvider("UserController"),
-		userService:    userService,
-		userMiddleware: userMiddleware,
+		userService:    module.Get("UserService").(*UserService),
+		userMiddleware: module.Get("UserMiddleware").(*UserMiddleware),
 	}
 }
 

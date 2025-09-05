@@ -12,10 +12,10 @@ type UserMiddleware struct {
 	userService *UserService
 }
 
-func NewUserMiddleware(userService *UserService) *UserMiddleware {
+func NewUserMiddleware(module *UserModule) *UserMiddleware {
 	return &UserMiddleware{
 		Provider:    core.NewProvider("UserMiddleware"),
-		userService: userService,
+		userService: module.Get("UserService").(*UserService),
 	}
 }
 

@@ -20,16 +20,12 @@ type MainService struct {
 	userController  *user.UserController
 }
 
-func NewMainService(
-	dbService *database.DatabaseService,
-	dt *dotenv.DotenvService,
-	userController *user.UserController,
-) *MainService {
+func NewMainService(module *MainModule) *MainService {
 	return &MainService{
 		Provider:        core.NewProvider("MainService"),
-		databaseService: dbService,
-		dotenvService:   dt,
-		userController:  userController,
+		databaseService: module.Get("DatabaseService").(*database.DatabaseService),
+		dotenvService:   module.Get("DotenvService").(*dotenv.DotenvService),
+		userController:  module.Get("UserController").(*user.UserController),
 	}
 }
 
