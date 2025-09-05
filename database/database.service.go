@@ -28,9 +28,6 @@ func (ds *DatabaseService) OnInit() error {
 }
 
 func (ds *DatabaseService) Connect() error {
-	var db *gorm.DB
-	var err error
-
 	fmt.Println("Connecting to the database")
 
 	dsn := fmt.Sprintf(
@@ -42,7 +39,7 @@ func (ds *DatabaseService) Connect() error {
 		ds.dotenvService.Get("DB_PORT"),
 	)
 
-	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return err
 	}
