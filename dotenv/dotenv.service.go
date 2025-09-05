@@ -22,6 +22,7 @@ func NewDotenvService(filepath string) *DotenvService {
 }
 
 func (ds *DotenvService) OnInit() error {
+	fmt.Printf("Initializing %s\n", ds.GetName())
 	return ds.Load()
 }
 
