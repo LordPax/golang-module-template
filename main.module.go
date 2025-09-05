@@ -24,10 +24,13 @@ func NewMainModule() *MainModule {
 	dbModule := database.Module()
 	dbService := dbModule.GetProvider("DatabaseService").(*database.DatabaseService)
 
+	userModule := user.Module()
+	userController := userModule.GetProvider("UserController").(*user.UserController)
+
 	module.AddModule(dotenvModule)
 	module.AddModule(dbModule)
-	module.AddModule(user.Module())
-	module.AddProvider(NewMainService(dbService, dotenvService))
+	module.AddModule(userModule)
+	module.AddProvider(NewMainService(dbService, dotenvService, userController))
 
 	return module
 }

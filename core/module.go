@@ -4,15 +4,6 @@ import "fmt"
 
 var moduleSeen []string
 
-func inArray(s string, arr []string) bool {
-	for _, a := range arr {
-		if a == s {
-			return true
-		}
-	}
-	return false
-}
-
 type IModule interface {
 	GetName() string
 	GetProvider(name string) IProvider
@@ -67,13 +58,6 @@ func (m *Module) AddModule(dep IModule) {
 }
 
 func (m *Module) Init() error {
-	fmt.Printf("Initializing %s\n", m.GetName())
-	for _, p := range m.provide {
-		if err := p.OnInit(); err != nil {
-			return err
-		}
-	}
-
 	for _, d := range m.depend {
 		if inArray(d.GetName(), moduleSeen) {
 			continue
@@ -82,6 +66,14 @@ func (m *Module) Init() error {
 		moduleSeen = append(moduleSeen, d.GetName())
 
 		if err := d.Init(); err != nil {
+			return err
+		}
+	}
+
+	fmt.Printf("Initializing %s\n", m.GetName())
+
+	for _, p := range m.provide {
+		if err := p.OnInit(); err != nil {
 			return err
 		}
 	}

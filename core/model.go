@@ -1,61 +1,74 @@
 package core
 
-// import (
-// 	"gorm.io/gorm"
-// )
+import (
+	"fmt"
 
-// type IModel interface {
-// 	// FindAll() ([]IEntity, error)
-// 	// FindByID(id string) (IEntity, error)
-// 	// FindOneBy(field string, value interface{}) (IEntity, error)
-// 	// Create(entity IEntity) error
-// 	GetModel() *gorm.DB
-// 	SetModel(db *gorm.DB)
-// }
+	"gorm.io/gorm"
+)
 
-// type Model struct {
-// 	*Provider
-// 	table string
-// 	model *gorm.DB
-// }
+type IModel[T IEntity] interface {
+	FindAll() ([]T, error)
+	FindByID(id string) (T, error)
+	FindOneBy(field string, value any) (T, error)
+	Create(entity T) error
+	GetModel() *gorm.DB
+	SetModel(db *gorm.DB)
+	Migrate() error
+}
 
-// func NewModel(name string, model *gorm.DB) *Model {
-// 	return &Model{
-// 		Provider: NewProvider(name),
-// 		model:    model,
-// 	}
-// }
+type Model[T IEntity] struct {
+	*Provider
+	model *gorm.DB
+}
 
-// func (m *Model) GetModel() *gorm.DB {
-// 	return m.model
-// }
+func NewModel[T IEntity](name string) *Model[T] {
+	return &Model[T]{
+		Provider: NewProvider(name),
+	}
+}
 
-// func (m *Model) SetModel(db *gorm.DB) {
-// 	m.model = db
-// }
+func (m *Model[T]) Migrate() error {
+	fmt.Printf("Migrating %s\n", m.GetName())
+	return m.model.AutoMigrate(new(T))
+}
 
-// func (m *Model) FindAll() ([]IEntity, error) {
-// 	var items []IEntity
-// 	err := m.model.Find(&items).Error
-// 	for _, item := range items {
-// 		item.SetModel(m.model)
-// 	}
-// 	return items, err
-// }
+func (m *Model[T]) GetModel() *gorm.DB {
+	return m.model
+}
 
-// func (m *Model) FindByID(id string) (IEntity, error) {
-// 	var item IEntity
-// 	err := m.model.First(&item, "id = ?", id).Error
-// 	item.SetModel(m.model)
-// 	return item, err
-// }
+func (m *Model[T]) SetModel(db *gorm.DB) {
+	m.model = db
+}
 
-// func (m *Model) FindOneBy(field string, value any) (IEntity, error) {
-// 	var item IEntity
-// 	err := m.model.Where(field, value).First(&item).Error
-// 	return item, err
-// }
+func (m *Model[T]) FindAll() ([]T, error) {
+	var items []T
+	if err := m.model.Find(&items).Error; err != nil {
+		return nil, err
+	}
+	for _, item := range items {
+		item.SetModel(m.model)
+	}
+	return items, nil
+}
 
-// func (m *Model) Create(entity IEntity) error {
-// 	return m.model.Create(entity).Error
-// }
+func (m *Model[T]) FindByID(id string) (T, error) {
+	var item T
+	if err := m.model.First(&item, "id = ?", id).Error; err != nil {
+		return item, err
+	}
+	item.SetModel(m.model)
+	return item, nil
+}
+
+func (m *Model[T]) FindOneBy(field string, value any) (T, error) {
+	var item T
+	if err := m.model.Where(field, value).First(&item).Error; err != nil {
+		return item, err
+	}
+	item.SetModel(m.model)
+	return item, nil
+}
+
+func (m *Model[T]) Create(entity T) error {
+	return m.model.Create(entity).Error
+}

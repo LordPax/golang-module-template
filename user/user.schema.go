@@ -1,30 +1,26 @@
 package user
 
 import (
+	"golang-api/core"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
 type User struct {
-	ID        string     `json:"id" gorm:"primaryKey"`
-	Firstname string     `json:"firstname" gorm:"type:varchar(100)"`
-	Lastname  string     `json:"lastname" gorm:"type:varchar(100)"`
-	Username  string     `json:"username" gorm:"type:varchar(100)"`
-	Email     string     `json:"email" gorm:"type:varchar(100)"`
-	Password  string     `json:"password"`
-	Profile   string     `json:"profile" gorm:"type:varchar(255)"`
-	Roles     []string   `json:"roles" gorm:"json"`
-	Verified  bool       `json:"verified" gorm:"default:false"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `json:"deleted_at"`
-	model     *gorm.DB   `json:"-" gorm:"-"`
-}
-
-func (u *User) Save() error {
-	return u.model.Save(u).Error
+	*core.Entity `json:"-" gorm:"-"`
+	ID           string     `json:"id" gorm:"primaryKey"`
+	Firstname    string     `json:"firstname" gorm:"type:varchar(100)"`
+	Lastname     string     `json:"lastname" gorm:"type:varchar(100)"`
+	Username     string     `json:"username" gorm:"type:varchar(100)"`
+	Email        string     `json:"email" gorm:"type:varchar(100)"`
+	Password     string     `json:"password"`
+	Profile      string     `json:"profile" gorm:"type:varchar(255)"`
+	Roles        []string   `json:"roles" gorm:"json"`
+	Verified     bool       `json:"verified" gorm:"default:false"`
+	CreatedAt    time.Time  `json:"created_at"`
+	UpdatedAt    time.Time  `json:"updated_at"`
+	DeletedAt    *time.Time `json:"deleted_at"`
 }
 
 func (u *User) HashPassword(password string) error {

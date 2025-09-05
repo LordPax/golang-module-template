@@ -5,6 +5,7 @@ import (
 	"golang-api/core"
 	"golang-api/database"
 	"golang-api/dotenv"
+	"golang-api/user"
 	"os"
 	"strings"
 
@@ -16,13 +17,19 @@ type MainService struct {
 	*core.Provider
 	databaseService *database.DatabaseService
 	dotenvService   *dotenv.DotenvService
+	userController  *user.UserController
 }
 
-func NewMainService(dbService *database.DatabaseService, dt *dotenv.DotenvService) *MainService {
+func NewMainService(
+	dbService *database.DatabaseService,
+	dt *dotenv.DotenvService,
+	userController *user.UserController,
+) *MainService {
 	return &MainService{
 		Provider:        core.NewProvider("MainService"),
 		databaseService: dbService,
 		dotenvService:   dt,
+		userController:  userController,
 	}
 }
 
@@ -51,6 +58,9 @@ func (ms *MainService) Start() {
 	config.MaxAge = 0
 
 	r.Use(cors.New(config))
+
+	api := r.Group("/api")
+	ms.userController.RegisterRoutes(api)
 
 	if err := r.Run(":8080"); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
