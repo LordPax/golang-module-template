@@ -1,7 +1,5 @@
 package user
 
-import "time"
-
 type CreateUserDto struct {
 	Firstname string `json:"firstname" validate:"required"`
 	Lastname  string `json:"lastname" validate:"required"`
@@ -17,20 +15,15 @@ type UpdateUserDto struct {
 	Email     string `json:"email"`
 }
 
-type SanitizedUser struct {
-	ID              int       `json:"id"`
-	Username        string    `json:"username"`
-	Firstname       string    `json:"firstname"`
-	Lastname        string    `json:"lastname"`
-	Email           string    `json:"email"`
-	Roles           []string  `json:"roles"`
-	Verified        bool      `json:"verified"`
-	ProfileImageUrl string    `json:"profile_image_url"`
-	CreatedAt       time.Time `json:"created_at"`
-	UpdatedAt       time.Time `json:"updated_at"`
-}
-
-type LoginUserDto struct {
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required"`
-}
+// type SanitizedUser struct {
+// 	ID        string    `json:"id"`
+// 	Username  string    `json:"username"`
+// 	Firstname string    `json:"firstname"`
+// 	Lastname  string    `json:"lastname"`
+// 	Email     string    `json:"email"`
+// 	Roles     []string  `json:"roles"`
+// 	Verified  bool      `json:"verified"`
+// 	Profile   string    `json:"profile"`
+// 	CreatedAt time.Time `json:"created_at"`
+// 	UpdatedAt time.Time `json:"updated_at"`
+// }

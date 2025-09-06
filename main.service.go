@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"golang-api/auth"
 	"golang-api/core"
 	"golang-api/database"
 	"golang-api/dotenv"
@@ -18,6 +19,7 @@ type MainService struct {
 	databaseService *database.DatabaseService
 	dotenvService   *dotenv.DotenvService
 	userController  *user.UserController
+	authController  *auth.AuthController
 }
 
 func NewMainService(module *MainModule) *MainService {
@@ -26,6 +28,7 @@ func NewMainService(module *MainModule) *MainService {
 		databaseService: module.Get("DatabaseService").(*database.DatabaseService),
 		dotenvService:   module.Get("DotenvService").(*dotenv.DotenvService),
 		userController:  module.Get("UserController").(*user.UserController),
+		authController:  module.Get("AuthController").(*auth.AuthController),
 	}
 }
 
@@ -57,6 +60,7 @@ func (ms *MainService) Start() {
 
 	api := r.Group("/api")
 	ms.userController.RegisterRoutes(api)
+	ms.authController.RegisterRoutes(api)
 
 	if err := r.Run(":8080"); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)

@@ -45,9 +45,9 @@ func (m *Model[T]) FindAll() ([]T, error) {
 	if err := m.model.Find(&items).Error; err != nil {
 		return nil, err
 	}
-	for _, item := range items {
-		item.SetModel(m.model)
-	}
+	// for _, item := range items {
+	// 	item.SetModel(m.model)
+	// }
 	return items, nil
 }
 
@@ -56,7 +56,7 @@ func (m *Model[T]) FindByID(id string) (T, error) {
 	if err := m.model.First(&item, "id = ?", id).Error; err != nil {
 		return item, err
 	}
-	item.SetModel(m.model)
+	// item.SetModel(m.model)
 	return item, nil
 }
 
@@ -65,10 +65,30 @@ func (m *Model[T]) FindOneBy(field string, value any) (T, error) {
 	if err := m.model.Where(field, value).First(&item).Error; err != nil {
 		return item, err
 	}
-	item.SetModel(m.model)
+	// item.SetModel(m.model)
 	return item, nil
 }
 
 func (m *Model[T]) Create(entity T) error {
 	return m.model.Create(entity).Error
+}
+
+func (m *Model[T]) DeleteByID(id string) error {
+	return m.model.Delete(new(T), "id = ?", id).Error
+}
+
+func (m *Model[T]) DeleteBy(field string, value any) error {
+	return m.model.Where(field, value).Delete(new(T)).Error
+}
+
+func (m *Model[T]) UpdateByID(id string, updates map[string]any) error {
+	return m.model.Model(new(T)).Where("id = ?", id).Updates(updates).Error
+}
+
+func (m *Model[T]) CountBy(field string, value any) (int64, error) {
+	var count int64
+	if err := m.model.Model(new(T)).Where(field, value).Count(&count).Error; err != nil {
+		return 0, err
+	}
+	return count, nil
 }

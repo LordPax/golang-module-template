@@ -31,3 +31,9 @@ func (us *UserService) FindOneBy(field string, value any) (*User, error) {
 func (us *UserService) Create(user *User) error {
 	return us.userModel.Create(user)
 }
+
+func (us *UserService) IsUserExists(email, username string) bool {
+	emailExists, _ := us.userModel.CountBy("email", email)
+	usernameExists, _ := us.userModel.CountBy("username", username)
+	return emailExists > 0 || usernameExists > 0
+}

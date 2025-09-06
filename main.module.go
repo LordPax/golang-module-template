@@ -1,6 +1,7 @@
 package main
 
 import (
+	"golang-api/auth"
 	"golang-api/core"
 	"golang-api/database"
 	"golang-api/dotenv"
@@ -21,6 +22,7 @@ func NewMainModule() *MainModule {
 	module.AddModule(dotenv.Module())
 	module.AddModule(database.Module())
 	module.AddModule(user.Module())
+	module.AddModule(auth.Module())
 	module.AddProvider(NewMainService(module))
 
 	return module
