@@ -23,7 +23,7 @@ func NewUserMiddleware(module *UserModule) *UserMiddleware {
 	}
 }
 
-func (um *UserMiddleware) GetUser(name string) gin.HandlerFunc {
+func (um *UserMiddleware) FindOneUser(name string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param(name)
 		user, err := um.userService.FindByID(id)
@@ -32,6 +32,7 @@ func (um *UserMiddleware) GetUser(name string) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+
 		c.Set("user", user)
 		c.Next()
 	}
@@ -40,7 +41,6 @@ func (um *UserMiddleware) GetUser(name string) gin.HandlerFunc {
 func (um *UserMiddleware) IsAdmin() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		user, _ := c.MustGet("connectedUser").(*User)
-
 		if !user.IsRole("admin") {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			c.Abort()
@@ -55,7 +55,6 @@ func (um *UserMiddleware) IsMe() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		user, _ := c.MustGet("user").(*User)
 		connectedUser, _ := c.MustGet("connectedUser").(*User)
-
 		if user.ID != connectedUser.ID && !connectedUser.IsRole(ROLE_ADMIN) {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			c.Abort()
@@ -70,7 +69,7 @@ func (um *UserMiddleware) IsLoggedIn(mandatory bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		accessToken, err := c.Cookie("access_token")
 		if accessToken == "" || err != nil {
-			accessToken = c.GetHeader("Tokenorization")
+			accessToken = c.GetHeader("Authorization")
 		}
 		if accessToken == "" {
 			accessToken = c.Query("token")

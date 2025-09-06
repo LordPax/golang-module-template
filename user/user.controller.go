@@ -29,8 +29,8 @@ func (uc *UserController) RegisterRoutes(rg *gin.RouterGroup) {
 	)
 	users.GET("/:id",
 		uc.userMiddleware.IsLoggedIn(true),
-		uc.userMiddleware.GetUser("id"),
-		uc.FindByID,
+		uc.userMiddleware.FindOneUser("id"),
+		uc.FindOne,
 	)
 }
 
@@ -65,7 +65,7 @@ func (uc *UserController) FindAll(c *gin.Context) {
 //	@Failure		404	{object}	utils.HttpError
 //	@Failure		500	{object}	utils.HttpError
 //	@Router			/users/{id} [get]
-func (uc *UserController) FindByID(c *gin.Context) {
+func (uc *UserController) FindOne(c *gin.Context) {
 	user := c.MustGet("user").(*User)
 	c.JSON(http.StatusOK, user)
 }
