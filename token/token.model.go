@@ -1,4 +1,4 @@
-package auth
+package token
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ type TokenModel struct {
 	dotenvService   *dotenv.DotenvService
 }
 
-func NewTokenModel(module *AuthModule) *TokenModel {
+func NewTokenModel(module *TokenModule) *TokenModel {
 	return &TokenModel{
 		Model:           core.NewModel[*Token]("TokenModel"),
 		databaseService: module.Get("DatabaseService").(*database.DatabaseService),

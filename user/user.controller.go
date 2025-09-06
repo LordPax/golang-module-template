@@ -23,8 +23,12 @@ func NewUserController(module *UserModule) *UserController {
 
 func (uc *UserController) RegisterRoutes(rg *gin.RouterGroup) {
 	users := rg.Group("/users")
-	users.GET("/", uc.FindAll)
+	users.GET("/",
+		uc.userMiddleware.IsLoggedIn(true),
+		uc.FindAll,
+	)
 	users.GET("/:id",
+		uc.userMiddleware.IsLoggedIn(true),
 		uc.userMiddleware.GetUser("id"),
 		uc.FindByID,
 	)

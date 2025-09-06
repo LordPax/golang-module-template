@@ -1,4 +1,4 @@
-package auth
+package token
 
 import (
 	"fmt"
@@ -8,41 +8,41 @@ import (
 	jwt "github.com/golang-jwt/jwt/v5"
 )
 
-type AuthService struct {
+type TokenService struct {
 	*core.Provider
 	tokenModel    *TokenModel
 	dotenvService *dotenv.DotenvService
 }
 
-func NewAuthService(module *AuthModule) *AuthService {
-	return &AuthService{
-		Provider:      core.NewProvider("AuthService"),
+func NewTokenService(module *TokenModule) *TokenService {
+	return &TokenService{
+		Provider:      core.NewProvider("TokenService"),
 		tokenModel:    module.Get("TokenModel").(*TokenModel),
 		dotenvService: module.Get("DotenvService").(*dotenv.DotenvService),
 	}
 }
 
-func (as *AuthService) FindAll() ([]*Token, error) {
+func (as *TokenService) FindAll() ([]*Token, error) {
 	return as.tokenModel.FindAll()
 }
 
-func (as *AuthService) FindByID(id string) (*Token, error) {
+func (as *TokenService) FindByID(id string) (*Token, error) {
 	return as.tokenModel.FindByID(id)
 }
 
-func (as *AuthService) FindOneBy(field string, value any) (*Token, error) {
+func (as *TokenService) FindOneBy(field string, value any) (*Token, error) {
 	return as.tokenModel.FindOneBy(field, value)
 }
 
-func (as *AuthService) CreateToken(token *Token) error {
+func (as *TokenService) Create(token *Token) error {
 	return as.tokenModel.Create(token)
 }
 
-func (as *AuthService) DeleteTokensByUserID(userID string) error {
+func (as *TokenService) DeleteTokensByUserID(userID string) error {
 	return as.tokenModel.DeleteTokensByUserID(userID)
 }
 
-func (as *AuthService) ParseJWTToken(tokenString string) (*UserClaims, error) {
+func (as *TokenService) ParseJWTToken(tokenString string) (*UserClaims, error) {
 	claims := &UserClaims{}
 	jwtKey := []byte(as.dotenvService.Get("JWT_SECRET_KEY"))
 

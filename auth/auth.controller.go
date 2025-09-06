@@ -5,6 +5,7 @@ import (
 	"golang-api/core"
 	"golang-api/dotenv"
 	"golang-api/middleware"
+	"golang-api/token"
 	"golang-api/user"
 	"net/http"
 	"strconv"
@@ -15,26 +16,24 @@ import (
 
 type AuthController struct {
 	*core.Provider
-	authService    *AuthService
-	authMiddleware *AuthMiddleware
-	userService    *user.UserService
-	dotenvService  *dotenv.DotenvService
+	tokenService  *token.TokenService
+	userService   *user.UserService
+	dotenvService *dotenv.DotenvService
 }
 
 func NewAuthController(module *AuthModule) *AuthController {
 	return &AuthController{
-		Provider:       core.NewProvider("AuthController"),
-		authService:    module.Get("AuthService").(*AuthService),
-		authMiddleware: module.Get("AuthMiddleware").(*AuthMiddleware),
-		userService:    module.Get("UserService").(*user.UserService),
-		dotenvService:  module.Get("DotenvService").(*dotenv.DotenvService),
+		Provider:      core.NewProvider("AuthController"),
+		tokenService:  module.Get("TokenService").(*token.TokenService),
+		userService:   module.Get("UserService").(*user.UserService),
+		dotenvService: module.Get("DotenvService").(*dotenv.DotenvService),
 	}
 }
 
 func (ac *AuthController) RegisterRoutes(rg *gin.RouterGroup) {
 	auth := rg.Group("/auth")
 	auth.POST("/login",
-		middleware.Validate[LoginDto](),
+		middleware.Validate[user.LoginDto](),
 		ac.Login,
 	)
 	auth.POST("/register",
@@ -43,7 +42,7 @@ func (ac *AuthController) RegisterRoutes(rg *gin.RouterGroup) {
 	)
 }
 
-func (ac *AuthController) setAuthCookies(c *gin.Context, token *Token) {
+func (ac *AuthController) setAuthCookies(c *gin.Context, token *token.Token) {
 	cookieSecure, _ := strconv.ParseBool(ac.dotenvService.Get("COOKIE_SECURE"))
 	c.SetCookie("access_token", token.AccessToken, 3600, "/", "", cookieSecure, true)
 	c.SetCookie("refresh_token", token.RefreshToken, 3600*24*30, "/", "", cookieSecure, true)
@@ -66,7 +65,7 @@ func (ac *AuthController) clearAuthCookies(c *gin.Context) {
 //	@Failure		400		{object}	utils.HttpError
 //	@Router			/auth/login [post]
 func (ac *AuthController) Login(c *gin.Context) {
-	body, _ := c.MustGet("body").(LoginDto)
+	body, _ := c.MustGet("body").(user.LoginDto)
 
 	user, err := ac.userService.FindOneBy("email", body.Email)
 	if err != nil {
@@ -84,12 +83,12 @@ func (ac *AuthController) Login(c *gin.Context) {
 		return
 	}
 
-	if ac.authService.DeleteTokensByUserID(user.ID) != nil {
+	if ac.tokenService.DeleteTokensByUserID(user.ID) != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete tokens"})
 		return
 	}
 
-	token := &Token{UserID: user.ID}
+	token := &token.Token{UserID: user.ID}
 
 	jwtKey := ac.dotenvService.Get("JWT_SECRET_KEY")
 	if token.GenerateTokens(jwtKey) != nil {
@@ -97,7 +96,7 @@ func (ac *AuthController) Login(c *gin.Context) {
 		return
 	}
 
-	if err := ac.authService.CreateToken(token); err != nil {
+	if err := ac.tokenService.Create(token); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create token"})
 		return
 	}
@@ -125,15 +124,13 @@ func (ac *AuthController) Register(c *gin.Context) {
 		return
 	}
 
-	defaultAvatarUrl := fmt.Sprintf("https://api.dicebear.com/9.x/initials/svg?seed=%s", body.Firstname+body.Lastname)
-
 	user := user.User{
 		ID:        uuid.New().String(),
 		Firstname: body.Firstname,
 		Lastname:  body.Lastname,
 		Username:  body.Username,
 		Email:     body.Email,
-		Profile:   defaultAvatarUrl,
+		Profile:   fmt.Sprintf("https://api.dicebear.com/9.x/initials/svg?seed=%s", body.Firstname+body.Lastname),
 		Roles:     []string{user.ROLE_USER},
 	}
 

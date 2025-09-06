@@ -15,6 +15,11 @@ type UpdateUserDto struct {
 	Email     string `json:"email"`
 }
 
+type LoginDto struct {
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required"`
+}
+
 // type SanitizedUser struct {
 // 	ID        string    `json:"id"`
 // 	Username  string    `json:"username"`
