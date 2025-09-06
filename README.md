@@ -1,4 +1,4 @@
-# Golang api template
+# Golang module template
 
 ## Description
 
@@ -15,12 +15,12 @@ Ce projet est un template d'API REST en Go.
 
 1. Clonez le dépôt :
 ```bash
-git clone https://github.com/LordPax/golang-api-template.git
+git clone https://github.com/LordPax/golang-module-template.git
 ```
 
 2. Accédez au répertoire du projet :
 ```bash
-cd golang-api-template
+cd golang-module-template
 ```
 
 3. Lancer les conteneur docker
@@ -57,21 +57,10 @@ CLOUDINARY_API_SECRET=
 ```bash
 go mod download
 go mod vendor
-swag init
+# swag init (soon)
 ```
 
 3. Build le projet :
 ```bash
 go build
-```
-
-4. Lancer les migrations et les fixtures:
-```bash
-./golang-api migrate
-./golang-api fixtures
-```
-
-5. Lancer le projet
-```bash
-./golang-api
 ```
