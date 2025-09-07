@@ -6,22 +6,26 @@ import (
 	"gorm.io/gorm"
 )
 
-type IModel[T IEntity] interface {
+type IModel[T any] interface {
 	FindAll() ([]T, error)
 	FindByID(id string) (T, error)
 	FindOneBy(field string, value any) (T, error)
 	Create(entity T) error
+	DeleteByID(id string) error
+	DeleteBy(field string, value any) error
+	UpdateByID(id string, updates T) error
+	CountBy(field string, value any) (int64, error)
 	GetModel() *gorm.DB
 	SetModel(db *gorm.DB)
 	Migrate() error
 }
 
-type Model[T IEntity] struct {
+type Model[T any] struct {
 	*Provider
 	model *gorm.DB
 }
 
-func NewModel[T IEntity](name string) *Model[T] {
+func NewModel[T any](name string) *Model[T] {
 	return &Model[T]{
 		Provider: NewProvider(name),
 	}
@@ -81,13 +85,21 @@ func (m *Model[T]) DeleteBy(field string, value any) error {
 	return m.model.Where(field, value).Delete(new(T)).Error
 }
 
-func (m *Model[T]) UpdateByID(id string, updates map[string]any) error {
-	return m.model.Model(new(T)).Where("id = ?", id).Updates(updates).Error
+func (m *Model[T]) UpdateByID(id string, updates any) error {
+	return m.model.Where("id = ?", id).Updates(updates).Error
+}
+
+func (m *Model[T]) Updates(update T) error {
+	return m.model.Updates(update).Error
+}
+
+func (m *Model[T]) Save(entity T) error {
+	return m.model.Save(entity).Error
 }
 
 func (m *Model[T]) CountBy(field string, value any) (int64, error) {
 	var count int64
-	if err := m.model.Model(new(T)).Where(field, value).Count(&count).Error; err != nil {
+	if err := m.model.Where(field, value).Count(&count).Error; err != nil {
 		return 0, err
 	}
 	return count, nil

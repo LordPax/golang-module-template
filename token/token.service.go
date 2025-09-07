@@ -38,6 +38,10 @@ func (as *TokenService) Create(token *Token) error {
 	return as.tokenModel.Create(token)
 }
 
+func (as *TokenService) Delete(id string) error {
+	return as.tokenModel.DeleteByID(id)
+}
+
 func (as *TokenService) DeleteTokensByUserID(userID string) error {
 	return as.tokenModel.DeleteTokensByUserID(userID)
 }

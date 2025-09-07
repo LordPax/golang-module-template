@@ -2,6 +2,7 @@ package user
 
 import (
 	"golang-api/core"
+	"golang-api/middleware"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -27,10 +28,27 @@ func (uc *UserController) RegisterRoutes(rg *gin.RouterGroup) {
 		uc.userMiddleware.IsLoggedIn(true),
 		uc.FindAll,
 	)
-	users.GET("/:id",
+	users.GET("/:user",
 		uc.userMiddleware.IsLoggedIn(true),
-		uc.userMiddleware.FindOneUser("id"),
+		uc.userMiddleware.FindOne("user"),
 		uc.FindOne,
+	)
+	users.PATCH("/:user",
+		uc.userMiddleware.IsLoggedIn(true),
+		uc.userMiddleware.FindOne("user"),
+		uc.userMiddleware.IsMe(),
+		middleware.Validate[UpdateUserDto](),
+		uc.Update,
+	)
+	users.DELETE("/:user",
+		uc.userMiddleware.IsLoggedIn(true),
+		uc.userMiddleware.FindOne("user"),
+		uc.userMiddleware.IsMe(),
+		uc.Delete,
+	)
+	users.GET("/me",
+		uc.userMiddleware.IsLoggedIn(true),
+		uc.FindMe,
 	)
 }
 
@@ -68,4 +86,89 @@ func (uc *UserController) FindAll(c *gin.Context) {
 func (uc *UserController) FindOne(c *gin.Context) {
 	user := c.MustGet("user").(*User)
 	c.JSON(http.StatusOK, user)
+}
+
+// FindMe godoc
+//
+//	@Summary		find connected user
+//	@Description	find connected user
+//	@Tags			user
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	User
+//	@Router			/users/me [get]
+func (uc *UserController) FindMe(c *gin.Context) {
+	connectedUser, _ := c.MustGet("connectedUser").(*User)
+	c.JSON(http.StatusOK, connectedUser)
+}
+
+// Update godoc
+//
+//	@Summary		update user
+//	@Description	update user
+//	@Tags			user
+//	@Accept			json
+//	@Produce		json
+//	@Param			user	body		UpdateUserDto	true	"User"
+//	@Param			id		path		string			true	"User ID"
+//	@Success		200		{object}	User
+//	@Failure		400		{object}	utils.HttpError
+//	@Failure		401		{object}	utils.HttpError
+//	@Failure		404		{object}	utils.HttpError
+//	@Failure		500		{object}	utils.HttpError
+//	@Router			/users/{id} [patch]
+func (uc *UserController) Update(c *gin.Context) {
+	user, _ := c.MustGet("user").(*User)
+	body, _ := c.MustGet("body").(UpdateUserDto)
+
+	if uc.userService.IsUserExists(body.Email, body.Username) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Email or username already in use"})
+		return
+	}
+
+	if body.Firstname != "" {
+		user.Firstname = body.Firstname
+	}
+	if body.Lastname != "" {
+		user.Lastname = body.Lastname
+	}
+	if body.Username != "" {
+		user.Username = body.Username
+	}
+	if body.Email != "" {
+		user.Email = body.Email
+	}
+
+	// if err := user.Save(); err != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	// 	return
+	// }
+	if err := uc.userService.Save(user); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// sanitized := user.Sanitize()
+
+	c.JSON(http.StatusOK, user)
+}
+
+// Delete godoc
+//
+//	@Summary		delete user
+//	@Description	delete user
+//	@Tags			user
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	string	true	"User ID"
+//	@Success		204
+//	@Failure		400	{object}	utils.HttpError
+//	@Failure		401	{object}	utils.HttpError
+//	@Failure		404	{object}	utils.HttpError
+//	@Failure		500	{object}	utils.HttpError
+//	@Router			/users/{id} [delete]
+func (uc *UserController) Delete(c *gin.Context) {
+	user := c.MustGet("user").(*User)
+	uc.userService.Delete(user.ID)
+	c.JSON(http.StatusNoContent, nil)
 }

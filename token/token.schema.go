@@ -2,14 +2,13 @@ package token
 
 import (
 	"fmt"
-	"golang-api/core"
 	"time"
 
 	jwt "github.com/golang-jwt/jwt/v5"
 )
 
 type Token struct {
-	*core.Entity `json:"-" gorm:"-"`
+	// *core.Entity `json:"-" gorm:"-"`
 	ID           string    `json:"id" gorm:"primaryKey"`
 	UserID       string    `json:"user_id" gorm:"index"`
 	AccessToken  string    `json:"access_token" gorm:"type:varchar(255)"`

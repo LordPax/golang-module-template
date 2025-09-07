@@ -16,17 +16,19 @@ import (
 
 type AuthController struct {
 	*core.Provider
-	tokenService  *token.TokenService
-	userService   *user.UserService
-	dotenvService *dotenv.DotenvService
+	tokenService   *token.TokenService
+	userService    *user.UserService
+	dotenvService  *dotenv.DotenvService
+	userMiddleware *user.UserMiddleware
 }
 
 func NewAuthController(module *AuthModule) *AuthController {
 	return &AuthController{
-		Provider:      core.NewProvider("AuthController"),
-		tokenService:  module.Get("TokenService").(*token.TokenService),
-		userService:   module.Get("UserService").(*user.UserService),
-		dotenvService: module.Get("DotenvService").(*dotenv.DotenvService),
+		Provider:       core.NewProvider("AuthController"),
+		tokenService:   module.Get("TokenService").(*token.TokenService),
+		userService:    module.Get("UserService").(*user.UserService),
+		dotenvService:  module.Get("DotenvService").(*dotenv.DotenvService),
+		userMiddleware: module.Get("UserMiddleware").(*user.UserMiddleware),
 	}
 }
 
@@ -39,6 +41,10 @@ func (ac *AuthController) RegisterRoutes(rg *gin.RouterGroup) {
 	auth.POST("/register",
 		middleware.Validate[user.CreateUserDto](),
 		ac.Register,
+	)
+	auth.POST("/logout",
+		ac.userMiddleware.IsLoggedIn(true),
+		ac.Logout,
 	)
 }
 
@@ -88,7 +94,10 @@ func (ac *AuthController) Login(c *gin.Context) {
 		return
 	}
 
-	token := &token.Token{UserID: user.ID}
+	token := &token.Token{
+		ID:     uuid.New().String(),
+		UserID: user.ID,
+	}
 
 	jwtKey := ac.dotenvService.Get("JWT_SECRET_KEY")
 	if token.GenerateTokens(jwtKey) != nil {
@@ -146,4 +155,21 @@ func (ac *AuthController) Register(c *gin.Context) {
 
 	// sendWelcomeAndVerificationEmails(user, c)
 	c.Status(http.StatusCreated)
+}
+
+// Logout godoc
+//
+//	@Summary		Logout user
+//	@Description	Logout user
+//	@Tags			auth
+//	@Accept			json
+//	@Produce		json
+//	@Success		201
+//	@Failure		400	{object}	utils.HttpError
+//	@Router			/auth/logout [post]
+func (ac *AuthController) Logout(c *gin.Context) {
+	token := c.MustGet("token").(*token.Token)
+	ac.tokenService.Delete(token.ID)
+	ac.clearAuthCookies(c)
+	c.JSON(http.StatusOK, gin.H{"message": "Logged out successfully"})
 }

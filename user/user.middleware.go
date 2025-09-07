@@ -23,7 +23,7 @@ func NewUserMiddleware(module *UserModule) *UserMiddleware {
 	}
 }
 
-func (um *UserMiddleware) FindOneUser(name string) gin.HandlerFunc {
+func (um *UserMiddleware) FindOne(name string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param(name)
 		user, err := um.userService.FindByID(id)
