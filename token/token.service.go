@@ -42,8 +42,8 @@ func (as *TokenService) Delete(id string) error {
 	return as.tokenModel.DeleteByID(id)
 }
 
-func (as *TokenService) DeleteTokensByUserID(userID string) error {
-	return as.tokenModel.DeleteTokensByUserID(userID)
+func (as *TokenService) DeleteByUserID(userID string) error {
+	return as.tokenModel.DeleteByUserID(userID)
 }
 
 func (as *TokenService) ParseJWTToken(tokenString string) (*UserClaims, error) {

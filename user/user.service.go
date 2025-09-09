@@ -2,6 +2,7 @@ package user
 
 import (
 	"golang-api/core"
+	"golang-api/query"
 )
 
 type UserService struct {
@@ -16,8 +17,8 @@ func NewUserService(module *UserModule) *UserService {
 	}
 }
 
-func (us *UserService) FindAll() ([]*User, error) {
-	return us.userModel.FindAll()
+func (us *UserService) FindAll(query query.QueryFilter) ([]*User, error) {
+	return us.userModel.FindAll(query)
 }
 
 func (us *UserService) FindByID(id string) (*User, error) {
@@ -33,8 +34,7 @@ func (us *UserService) Create(user *User) error {
 }
 
 func (us *UserService) Update(user *User) error {
-	// return us.userModel.UpdateByID(user.ID, user)
-	return us.userModel.Updates(user)
+	return us.userModel.UpdateByID(user.ID, user)
 }
 
 func (us *UserService) Delete(id string) error {

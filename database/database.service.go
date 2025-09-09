@@ -15,7 +15,7 @@ type DatabaseService struct {
 	dotenvService *dotenv.DotenvService
 }
 
-func NewDatabasePostgres(module *DatabaseModule) *DatabaseService {
+func NewDatabaseService(module *DatabaseModule) *DatabaseService {
 	return &DatabaseService{
 		Provider:      core.NewProvider("DatabaseService"),
 		dotenvService: module.Get("DotenvService").(*dotenv.DotenvService),

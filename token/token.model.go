@@ -23,10 +23,11 @@ func NewTokenModel(module *TokenModule) *TokenModel {
 
 func (um *TokenModel) OnInit() error {
 	fmt.Printf("Initializing %s\n", um.GetName())
-	um.SetModel(um.databaseService.GetDB().Model(&Token{}))
+	um.SetDB(um.databaseService.GetDB())
+	// return nil
 	return um.Migrate()
 }
 
-func (um *TokenModel) DeleteTokensByUserID(userID string) error {
-	return um.GetModel().Where("user_id = ?", userID).Delete(&Token{}).Error
+func (um *TokenModel) DeleteByUserID(userID string) error {
+	return um.GetDB().Model(&Token{}).Where("user_id = ?", userID).Delete(&Token{}).Error
 }

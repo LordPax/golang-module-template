@@ -3,6 +3,7 @@ package user
 import (
 	"golang-api/core"
 	"golang-api/middleware"
+	"golang-api/query"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -12,6 +13,7 @@ type UserController struct {
 	*core.Provider
 	userService    *UserService
 	userMiddleware *UserMiddleware
+	queryService   *query.QueryService
 }
 
 func NewUserController(module *UserModule) *UserController {
@@ -19,6 +21,7 @@ func NewUserController(module *UserModule) *UserController {
 		Provider:       core.NewProvider("UserController"),
 		userService:    module.Get("UserService").(*UserService),
 		userMiddleware: module.Get("UserMiddleware").(*UserMiddleware),
+		queryService:   module.Get("QueryService").(*query.QueryService),
 	}
 }
 
@@ -26,6 +29,7 @@ func (uc *UserController) RegisterRoutes(rg *gin.RouterGroup) {
 	users := rg.Group("/users")
 	users.GET("/",
 		uc.userMiddleware.IsLoggedIn(true),
+		uc.queryService.QueryFilter(),
 		uc.FindAll,
 	)
 	users.GET("/:user",
@@ -33,6 +37,7 @@ func (uc *UserController) RegisterRoutes(rg *gin.RouterGroup) {
 		uc.userMiddleware.FindOne("user"),
 		uc.FindOne,
 	)
+	// TODO : add post /:user/image route to upload user image
 	users.PATCH("/:user",
 		uc.userMiddleware.IsLoggedIn(true),
 		uc.userMiddleware.FindOne("user"),
@@ -63,7 +68,8 @@ func (uc *UserController) RegisterRoutes(rg *gin.RouterGroup) {
 //	@Failure		500	{object}	utils.HttpError
 //	@Router			/users/ [get]
 func (uc *UserController) FindAll(c *gin.Context) {
-	users, err := uc.userService.FindAll()
+	query, _ := c.MustGet("query").(query.QueryFilter)
+	users, err := uc.userService.FindAll(query)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -139,11 +145,7 @@ func (uc *UserController) Update(c *gin.Context) {
 		user.Email = body.Email
 	}
 
-	// if err := user.Save(); err != nil {
-	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	// 	return
-	// }
-	if err := uc.userService.Save(user); err != nil {
+	if err := uc.userService.Update(user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

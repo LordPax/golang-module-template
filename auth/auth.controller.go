@@ -89,7 +89,7 @@ func (ac *AuthController) Login(c *gin.Context) {
 		return
 	}
 
-	if ac.tokenService.DeleteTokensByUserID(user.ID) != nil {
+	if ac.tokenService.DeleteByUserID(user.ID) != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete tokens"})
 		return
 	}

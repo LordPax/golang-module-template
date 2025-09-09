@@ -15,14 +15,14 @@ type IModel[T any] interface {
 	DeleteBy(field string, value any) error
 	UpdateByID(id string, updates T) error
 	CountBy(field string, value any) (int64, error)
-	GetModel() *gorm.DB
-	SetModel(db *gorm.DB)
+	GetDB() *gorm.DB
+	SetDB(db *gorm.DB)
 	Migrate() error
 }
 
 type Model[T any] struct {
 	*Provider
-	model *gorm.DB
+	db *gorm.DB
 }
 
 func NewModel[T any](name string) *Model[T] {
@@ -33,73 +33,64 @@ func NewModel[T any](name string) *Model[T] {
 
 func (m *Model[T]) Migrate() error {
 	fmt.Printf("Migrating %s\n", m.GetName())
-	return m.model.AutoMigrate(new(T))
+	return m.db.AutoMigrate(new(T))
 }
 
-func (m *Model[T]) GetModel() *gorm.DB {
-	return m.model
+func (m *Model[T]) GetDB() *gorm.DB {
+	return m.db
 }
 
-func (m *Model[T]) SetModel(db *gorm.DB) {
-	m.model = db
+func (m *Model[T]) SetDB(db *gorm.DB) {
+	m.db = db
 }
 
 func (m *Model[T]) FindAll() ([]T, error) {
 	var items []T
-	if err := m.model.Find(&items).Error; err != nil {
+	if err := m.db.Model(new(T)).Find(&items).Error; err != nil {
 		return nil, err
 	}
-	// for _, item := range items {
-	// 	item.SetModel(m.model)
-	// }
 	return items, nil
 }
 
 func (m *Model[T]) FindByID(id string) (T, error) {
 	var item T
-	if err := m.model.First(&item, "id = ?", id).Error; err != nil {
+	if err := m.db.Model(new(T)).First(&item, "id = ?", id).Error; err != nil {
 		return item, err
 	}
-	// item.SetModel(m.model)
 	return item, nil
 }
 
 func (m *Model[T]) FindOneBy(field string, value any) (T, error) {
 	var item T
-	if err := m.model.Where(field, value).First(&item).Error; err != nil {
+	if err := m.db.Model(new(T)).Where(field, value).First(&item).Error; err != nil {
 		return item, err
 	}
-	// item.SetModel(m.model)
 	return item, nil
 }
 
 func (m *Model[T]) Create(entity T) error {
-	return m.model.Create(entity).Error
+	return m.db.Model(new(T)).Create(entity).Error
 }
 
 func (m *Model[T]) DeleteByID(id string) error {
-	return m.model.Delete(new(T), "id = ?", id).Error
+	return m.db.Model(new(T)).Delete(new(T), "id = ?", id).Error
 }
 
 func (m *Model[T]) DeleteBy(field string, value any) error {
-	return m.model.Where(field, value).Delete(new(T)).Error
+	return m.db.Model(new(T)).Where(field, value).Delete(new(T)).Error
 }
 
 func (m *Model[T]) UpdateByID(id string, updates any) error {
-	return m.model.Where("id = ?", id).Updates(updates).Error
-}
-
-func (m *Model[T]) Updates(update T) error {
-	return m.model.Updates(update).Error
+	return m.db.Model(new(T)).Where("id = ?", id).Updates(updates).Error
 }
 
 func (m *Model[T]) Save(entity T) error {
-	return m.model.Save(entity).Error
+	return m.db.Model(new(T)).Save(entity).Error
 }
 
 func (m *Model[T]) CountBy(field string, value any) (int64, error) {
 	var count int64
-	if err := m.model.Where(field, value).Count(&count).Error; err != nil {
+	if err := m.db.Model(new(T)).Where(field, value).Count(&count).Error; err != nil {
 		return 0, err
 	}
 	return count, nil

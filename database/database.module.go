@@ -17,7 +17,7 @@ func NewDatabaseModule() *DatabaseModule {
 	}
 
 	module.AddModule(dotenv.Module())
-	module.AddProvider(NewDatabasePostgres(module))
+	module.AddProvider(NewDatabaseService(module))
 
 	return module
 }
