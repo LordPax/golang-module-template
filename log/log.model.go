@@ -1,4 +1,4 @@
-package media
+package log
 
 import (
 	"fmt"
@@ -7,28 +7,28 @@ import (
 	"golang-api/query"
 )
 
-type MediaModel struct {
-	*core.Model[*Media]
+type LogModel struct {
+	*core.Model[*Log]
 	databaseService *database.DatabaseService
 }
 
-func NewMediaModel(module *MediaModule) *MediaModel {
-	return &MediaModel{
-		Model:           core.NewModel[*Media]("MediaModel"),
+func NewLogModel(module *LogModule) *LogModel {
+	return &LogModel{
+		Model:           core.NewModel[*Log]("LogModel"),
 		databaseService: module.Get("DatabaseService").(*database.DatabaseService),
 	}
 }
 
-func (um *MediaModel) OnInit() error {
+func (um *LogModel) OnInit() error {
 	fmt.Printf("Initializing %s\n", um.GetName())
 	um.SetDB(um.databaseService.GetDB())
 	return um.Migrate()
 }
 
-func (um *MediaModel) QueryFindAll(q query.QueryFilter) ([]*Media, error) {
-	var items []*Media
+func (um *LogModel) QueryFindAll(q query.QueryFilter) ([]*Log, error) {
+	var items []*Log
 
-	tx := um.databaseService.GetDB().Model(&Media{}).
+	tx := um.databaseService.GetDB().Model(&Log{}).
 		Offset(q.GetSkip()).
 		Where(q.GetWhere()).
 		Order(q.GetSort())

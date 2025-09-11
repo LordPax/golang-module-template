@@ -17,8 +17,8 @@ func NewUserService(module *UserModule) *UserService {
 	}
 }
 
-func (us *UserService) FindAll(query query.QueryFilter) ([]*User, error) {
-	return us.userModel.FindAll(query)
+func (us *UserService) FindAll(q query.QueryFilter) ([]*User, error) {
+	return us.userModel.QueryFindAll(q)
 }
 
 func (us *UserService) FindByID(id string) (*User, error) {

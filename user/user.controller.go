@@ -2,6 +2,7 @@ package user
 
 import (
 	"golang-api/core"
+	"golang-api/log"
 	"golang-api/media"
 	"golang-api/middleware"
 	"golang-api/query"
@@ -16,6 +17,7 @@ type UserController struct {
 	userMiddleware  *UserMiddleware
 	queryService    *query.QueryService
 	mediaMiddleware *media.MediaMiddleware
+	logService      *log.LogService
 }
 
 func NewUserController(module *UserModule) *UserController {
@@ -25,6 +27,7 @@ func NewUserController(module *UserModule) *UserController {
 		userMiddleware:  module.Get("UserMiddleware").(*UserMiddleware),
 		queryService:    module.Get("QueryService").(*query.QueryService),
 		mediaMiddleware: module.Get("MediaMiddleware").(*media.MediaMiddleware),
+		logService:      module.Get("LogService").(*log.LogService),
 	}
 }
 
@@ -40,13 +43,13 @@ func (uc *UserController) RegisterRoutes(rg *gin.RouterGroup) {
 		uc.userMiddleware.FindOne("user"),
 		uc.FindOne,
 	)
-	// users.POST("/:user/image",
-	// 	uc.userMiddleware.IsLoggedIn(true),
-	// 	uc.userMiddleware.FindOne("user"),
-	// 	uc.userMiddleware.IsMe(),
-	// 	uc.mediaMiddleware.FileUploader(media.IMAGE, media.SIZE_10MB, "profile"),
-	// 	uc.UploadImage,
-	// )
+	users.POST("/:user/image",
+		uc.userMiddleware.IsLoggedIn(true),
+		uc.userMiddleware.FindOne("user"),
+		uc.userMiddleware.IsMe(),
+		uc.mediaMiddleware.FileUploader(media.IMAGE, media.SIZE_10MB, "profile"),
+		uc.UploadImage,
+	)
 	users.PATCH("/:user",
 		uc.userMiddleware.IsLoggedIn(true),
 		uc.userMiddleware.FindOne("user"),
@@ -79,7 +82,9 @@ func (uc *UserController) RegisterRoutes(rg *gin.RouterGroup) {
 func (uc *UserController) FindAll(c *gin.Context) {
 	query, _ := c.MustGet("query").(query.QueryFilter)
 	users, err := uc.userService.FindAll(query)
+	tags := []string{"UserController", "FindAll"}
 	if err != nil {
+		uc.logService.Errorf(tags, "%s", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -135,8 +140,10 @@ func (uc *UserController) FindMe(c *gin.Context) {
 func (uc *UserController) Update(c *gin.Context) {
 	user, _ := c.MustGet("user").(*User)
 	body, _ := c.MustGet("body").(UpdateUserDto)
+	tags := []string{"UserController", "Update"}
 
 	if uc.userService.IsUserExists(body.Email, body.Username) {
+		uc.logService.Errorf(tags, "Email or username already in use")
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Email or username already in use"})
 		return
 	}
@@ -155,6 +162,7 @@ func (uc *UserController) Update(c *gin.Context) {
 	}
 
 	if err := uc.userService.Update(user); err != nil {
+		uc.logService.Errorf(tags, "%s", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -180,10 +188,12 @@ func (uc *UserController) Update(c *gin.Context) {
 func (uc *UserController) UploadImage(c *gin.Context) {
 	user, _ := c.MustGet("user").(*User)
 	medias, _ := c.MustGet("medias").([]*media.Media)
+	tags := []string{"UserController", "UpdateImage"}
 
 	user.Profile = medias[0].Url
 
 	if err := uc.userService.Update(user); err != nil {
+		uc.logService.Errorf(tags, "%s", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

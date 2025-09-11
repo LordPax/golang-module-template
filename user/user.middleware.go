@@ -2,6 +2,7 @@ package user
 
 import (
 	"golang-api/core"
+	"golang-api/log"
 	"golang-api/token"
 	"net/http"
 	"strings"
@@ -13,6 +14,7 @@ type UserMiddleware struct {
 	*core.Provider
 	userService  *UserService
 	tokenService *token.TokenService
+	logService   *log.LogService
 }
 
 func NewUserMiddleware(module *UserModule) *UserMiddleware {
@@ -20,6 +22,7 @@ func NewUserMiddleware(module *UserModule) *UserMiddleware {
 		Provider:     core.NewProvider("UserMiddleware"),
 		userService:  module.Get("UserService").(*UserService),
 		tokenService: module.Get("TokenService").(*token.TokenService),
+		logService:   module.Get("LogService").(*log.LogService),
 	}
 }
 
@@ -27,7 +30,9 @@ func (um *UserMiddleware) FindOne(name string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param(name)
 		user, err := um.userService.FindByID(id)
+		tags := []string{"UserMiddleware", "FindOne"}
 		if err != nil {
+			um.logService.Errorf(tags, "User %s not found: %v", id, err)
 			c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 			c.Abort()
 			return
@@ -41,7 +46,9 @@ func (um *UserMiddleware) FindOne(name string) gin.HandlerFunc {
 func (um *UserMiddleware) IsAdmin() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		user, _ := c.MustGet("connectedUser").(*User)
+		tags := []string{"UserMiddleware", "IsAdmin"}
 		if !user.IsRole("admin") {
+			um.logService.Errorf(tags, "User %s is not admin", user.ID)
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			c.Abort()
 			return
@@ -55,7 +62,9 @@ func (um *UserMiddleware) IsMe() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		user, _ := c.MustGet("user").(*User)
 		connectedUser, _ := c.MustGet("connectedUser").(*User)
+		tags := []string{"UserMiddleware", "IsMe"}
 		if user.ID != connectedUser.ID && !connectedUser.IsRole(ROLE_ADMIN) {
+			um.logService.Errorf(tags, "User %s is not allowed to access user %s", connectedUser.ID, user.ID)
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			c.Abort()
 			return

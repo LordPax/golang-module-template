@@ -3,6 +3,7 @@ package media
 import (
 	"fmt"
 	"golang-api/core"
+	"golang-api/log"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -14,6 +15,7 @@ type MediaMiddleware struct {
 	*core.Provider
 	mediaService     *MediaService
 	openstackService *OpenstackService
+	logService       *log.LogService
 }
 
 func NewMediaMiddleware(module *MediaModule) *MediaMiddleware {
@@ -21,14 +23,17 @@ func NewMediaMiddleware(module *MediaModule) *MediaMiddleware {
 		Provider:         core.NewProvider("MediaMiddleware"),
 		mediaService:     module.Get("MediaService").(*MediaService),
 		openstackService: module.Get("OpenstackService").(*OpenstackService),
+		logService:       module.Get("LogService").(*log.LogService),
 	}
 }
 
 func (cm *MediaMiddleware) FileUploader(availableType []string, availabeSize int, containerName string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var medias []*Media
+		tags := []string{"MediaMiddleware", "FileUploader"}
 
 		if err := cm.openstackService.CreateContainerIfNotExist(containerName); err != nil {
+			cm.logService.Errorf(tags, "%v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			c.Abort()
 			return
@@ -36,6 +41,7 @@ func (cm *MediaMiddleware) FileUploader(availableType []string, availabeSize int
 
 		form, err := c.MultipartForm()
 		if err != nil {
+			cm.logService.Errorf(tags, "%v", err)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			c.Abort()
 			return
@@ -46,6 +52,7 @@ func (cm *MediaMiddleware) FileUploader(availableType []string, availabeSize int
 		for _, file := range files {
 			media, err := cm.uploadFile(file, availableType, availabeSize, containerName)
 			if err != nil {
+				cm.logService.Errorf(tags, "%v", err)
 				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 				c.Abort()
 				return
@@ -55,6 +62,7 @@ func (cm *MediaMiddleware) FileUploader(availableType []string, availabeSize int
 		}
 
 		if len(medias) == 0 {
+			cm.logService.Errorf(tags, "Failed to upload file")
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to upload file"})
 			c.Abort()
 			return

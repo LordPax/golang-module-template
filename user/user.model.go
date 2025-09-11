@@ -27,17 +27,17 @@ func (um *UserModel) OnInit() error {
 	return um.Migrate()
 }
 
-func (um *UserModel) FindAll(query query.QueryFilter) ([]*User, error) {
+func (um *UserModel) QueryFindAll(q query.QueryFilter) ([]*User, error) {
 	var items []*User
 
 	tx := um.databaseService.GetDB().Model(&User{}).
 		Where("deleted_at IS NULL").
-		Offset(query.GetSkip()).
-		Where(query.GetWhere()).
-		Order(query.GetSort())
+		Offset(q.GetSkip()).
+		Where(q.GetWhere()).
+		Order(q.GetSort())
 
-	if query.GetLimit() != 0 {
-		tx.Limit(query.GetLimit())
+	if q.GetLimit() != 0 {
+		tx.Limit(q.GetLimit())
 	}
 
 	err := tx.Find(&items).Error

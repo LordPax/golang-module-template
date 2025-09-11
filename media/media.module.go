@@ -4,6 +4,7 @@ import (
 	"golang-api/core"
 	"golang-api/database"
 	"golang-api/dotenv"
+	"golang-api/log"
 )
 
 var module *MediaModule
@@ -19,6 +20,7 @@ func NewMediaModule() *MediaModule {
 
 	module.AddModule(dotenv.Module())
 	module.AddModule(database.Module())
+	module.AddModule(log.Module())
 	module.AddProvider(NewMediaModel(module))
 	module.AddProvider(NewOpenstackService(module))
 	module.AddProvider(NewMediaService(module))

@@ -31,8 +31,8 @@ func NewMediaService(module *MediaModule) *MediaService {
 	}
 }
 
-func (us *MediaService) FindAll(query query.QueryFilter) ([]*Media, error) {
-	return us.mediaModel.FindAll(query)
+func (us *MediaService) FindAll(q query.QueryFilter) ([]*Media, error) {
+	return us.mediaModel.QueryFindAll(q)
 }
 
 func (us *MediaService) FindByID(id string) (*Media, error) {
