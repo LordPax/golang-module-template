@@ -9,14 +9,14 @@ import (
 type User struct {
 	// *core.Entity `json:"-" gorm:"-"`
 	ID        string     `json:"id" gorm:"primaryKey"`
-	Firstname string     `json:"firstname" gorm:"type:varchar(100)"`
-	Lastname  string     `json:"lastname" gorm:"type:varchar(100)"`
-	Username  string     `json:"username" gorm:"type:varchar(100)"`
-	Email     string     `json:"email" gorm:"type:varchar(100)"`
-	Password  string     `json:"password"`
-	Profile   string     `json:"profile" gorm:"type:varchar(255)"`
-	Roles     []string   `json:"roles" gorm:"json"`
-	Verified  bool       `json:"verified" gorm:"default:false"`
+	Firstname string     `json:"firstname,omitempty" gorm:"type:varchar(100)"`
+	Lastname  string     `json:"lastname,omitempty" gorm:"type:varchar(100)"`
+	Username  string     `json:"username,omitempty" gorm:"type:varchar(100)"`
+	Email     string     `json:"email,omitempty" gorm:"type:varchar(100)"`
+	Password  string     `json:"password,omitempty"`
+	Profile   string     `json:"profile,omitempty" gorm:"type:varchar(255)"`
+	Roles     []string   `json:"roles,omitempty" gorm:"json"`
+	Verified  bool       `json:"verified,omitempty" gorm:"default:false"`
 	CreatedAt time.Time  `json:"created_at"`
 	UpdatedAt time.Time  `json:"updated_at"`
 	DeletedAt *time.Time `json:"deleted_at"`

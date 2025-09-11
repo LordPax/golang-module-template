@@ -22,16 +22,16 @@ func NewTokenService(module *TokenModule) *TokenService {
 	}
 }
 
-func (as *TokenService) FindAll() ([]*Token, error) {
-	return as.tokenModel.FindAll()
-}
+// func (as *TokenService) FindAll() ([]*Token, error) {
+// 	return as.tokenModel.FindAll()
+// }
 
 func (as *TokenService) FindByID(id string) (*Token, error) {
-	return as.tokenModel.FindByID(id)
+	return as.tokenModel.FindByID(id, []string{})
 }
 
 func (as *TokenService) FindOneBy(field string, value any) (*Token, error) {
-	return as.tokenModel.FindOneBy(field, value)
+	return as.tokenModel.FindOneBy(field, value, []string{})
 }
 
 func (as *TokenService) Create(token *Token) error {

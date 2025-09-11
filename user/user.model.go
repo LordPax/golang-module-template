@@ -32,6 +32,7 @@ func (um *UserModel) QueryFindAll(q query.QueryFilter) ([]*User, error) {
 
 	tx := um.databaseService.GetDB().Model(&User{}).
 		Where("deleted_at IS NULL").
+		Select(secureFields).
 		Offset(q.GetSkip()).
 		Where(q.GetWhere()).
 		Order(q.GetSort())
