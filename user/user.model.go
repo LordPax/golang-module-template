@@ -5,6 +5,8 @@ import (
 	"golang-api/core"
 	"golang-api/database"
 	"golang-api/query"
+	"golang-api/utils"
+	"time"
 )
 
 type UserModel struct {
@@ -40,4 +42,18 @@ func (um *UserModel) FindAll(query query.QueryFilter) ([]*User, error) {
 
 	err := tx.Find(&items).Error
 	return items, err
+}
+
+func (um *UserModel) DeleteByID(id string) error {
+	deletedAt := time.Now()
+	user := User{
+		DeletedAt: &deletedAt,
+		Username:  "[deleted]",
+		Firstname: "[deleted]",
+		Lastname:  "[deleted]",
+		Email:     "[deleted]",
+		Profile:   "https://api.dicebear.com/9.x/initials/svg?seed=deleted",
+	}
+	user.HashPassword(utils.GenerateString(12))
+	return um.UpdateByID(id, &user)
 }

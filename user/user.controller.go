@@ -2,6 +2,7 @@ package user
 
 import (
 	"golang-api/core"
+	"golang-api/media"
 	"golang-api/middleware"
 	"golang-api/query"
 	"net/http"
@@ -11,17 +12,19 @@ import (
 
 type UserController struct {
 	*core.Provider
-	userService    *UserService
-	userMiddleware *UserMiddleware
-	queryService   *query.QueryService
+	userService     *UserService
+	userMiddleware  *UserMiddleware
+	queryService    *query.QueryService
+	mediaMiddleware *media.MediaMiddleware
 }
 
 func NewUserController(module *UserModule) *UserController {
 	return &UserController{
-		Provider:       core.NewProvider("UserController"),
-		userService:    module.Get("UserService").(*UserService),
-		userMiddleware: module.Get("UserMiddleware").(*UserMiddleware),
-		queryService:   module.Get("QueryService").(*query.QueryService),
+		Provider:        core.NewProvider("UserController"),
+		userService:     module.Get("UserService").(*UserService),
+		userMiddleware:  module.Get("UserMiddleware").(*UserMiddleware),
+		queryService:    module.Get("QueryService").(*query.QueryService),
+		mediaMiddleware: module.Get("MediaMiddleware").(*media.MediaMiddleware),
 	}
 }
 
@@ -37,7 +40,13 @@ func (uc *UserController) RegisterRoutes(rg *gin.RouterGroup) {
 		uc.userMiddleware.FindOne("user"),
 		uc.FindOne,
 	)
-	// TODO : add post /:user/image route to upload user image
+	// users.POST("/:user/image",
+	// 	uc.userMiddleware.IsLoggedIn(true),
+	// 	uc.userMiddleware.FindOne("user"),
+	// 	uc.userMiddleware.IsMe(),
+	// 	uc.mediaMiddleware.FileUploader(media.IMAGE, media.SIZE_10MB, "profile"),
+	// 	uc.UploadImage,
+	// )
 	users.PATCH("/:user",
 		uc.userMiddleware.IsLoggedIn(true),
 		uc.userMiddleware.FindOne("user"),
@@ -150,7 +159,34 @@ func (uc *UserController) Update(c *gin.Context) {
 		return
 	}
 
-	// sanitized := user.Sanitize()
+	c.JSON(http.StatusOK, user)
+}
+
+// UpdateUserImage godoc
+//
+//	@Summary		update user image
+//	@Description	update user image
+//	@Tags			user
+//	@Accept			multipart/form-data
+//	@Produce		json
+//	@Param			user		path	string		true	"User ID"
+//	@Param			upload[]		formData	file	true	"Image"
+//	@Success		200			{object}	User
+//	@Failure		400			{object}	utils.HttpError
+//	@Failure		401			{object}	utils.HttpError
+//	@Failure		404			{object}	utils.HttpError
+//	@Failure		500			{object}	utils.HttpError
+//	@Router			/users/{user}/image [post]
+func (uc *UserController) UploadImage(c *gin.Context) {
+	user, _ := c.MustGet("user").(*User)
+	medias, _ := c.MustGet("medias").([]*media.Media)
+
+	user.Profile = medias[0].Url
+
+	if err := uc.userService.Update(user); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	c.JSON(http.StatusOK, user)
 }
