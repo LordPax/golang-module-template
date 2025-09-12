@@ -36,11 +36,11 @@ func (us *MediaService) FindAll(q query.QueryFilter) ([]*Media, error) {
 }
 
 func (us *MediaService) FindByID(id string) (*Media, error) {
-	return us.mediaModel.FindByID(id, []string{})
+	return us.mediaModel.FindByID(id)
 }
 
 func (us *MediaService) FindOneBy(field string, value any) (*Media, error) {
-	return us.mediaModel.FindOneBy(field, value, []string{})
+	return us.mediaModel.FindOneBy(field, value)
 }
 
 func (us *MediaService) Create(media *Media) error {

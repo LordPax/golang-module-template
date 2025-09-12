@@ -27,11 +27,11 @@ func NewTokenService(module *TokenModule) *TokenService {
 // }
 
 func (as *TokenService) FindByID(id string) (*Token, error) {
-	return as.tokenModel.FindByID(id, []string{})
+	return as.tokenModel.FindByID(id)
 }
 
 func (as *TokenService) FindOneBy(field string, value any) (*Token, error) {
-	return as.tokenModel.FindOneBy(field, value, []string{})
+	return as.tokenModel.FindOneBy(field, value)
 }
 
 func (as *TokenService) Create(token *Token) error {

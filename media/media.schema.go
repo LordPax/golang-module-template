@@ -5,7 +5,6 @@ import (
 )
 
 type Media struct {
-	// *core.Entity `json:"-" gorm:"-"`
 	ID        string     `json:"id" gorm:"primaryKey"`
 	Name      string     `json:"name" gorm:"type:varchar(255)"`
 	Url       string     `json:"url" gorm:"type:text;not null"`

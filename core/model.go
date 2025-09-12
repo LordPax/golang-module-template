@@ -43,17 +43,17 @@ func (m *Model[T]) SetDB(db *gorm.DB) {
 	m.db = db
 }
 
-func (m *Model[T]) FindByID(id string, fields []string) (T, error) {
+func (m *Model[T]) FindByID(id string) (T, error) {
 	var item T
-	if err := m.db.Model(new(T)).Select(fields).First(&item, "id = ?", id).Error; err != nil {
+	if err := m.db.Model(new(T)).First(&item, "id = ?", id).Error; err != nil {
 		return item, err
 	}
 	return item, nil
 }
 
-func (m *Model[T]) FindOneBy(field string, value any, fields []string) (T, error) {
+func (m *Model[T]) FindOneBy(field string, value any) (T, error) {
 	var item T
-	if err := m.db.Model(new(T)).Where(field, value).Select(fields).First(&item).Error; err != nil {
+	if err := m.db.Model(new(T)).Where(field, value).First(&item).Error; err != nil {
 		return item, err
 	}
 	return item, nil

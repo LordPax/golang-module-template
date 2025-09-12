@@ -23,11 +23,11 @@ func (ls *LogService) FindAll(q query.QueryFilter) ([]*Log, error) {
 }
 
 func (ls *LogService) FindByID(id string) (*Log, error) {
-	return ls.logModel.FindByID(id, []string{})
+	return ls.logModel.FindByID(id)
 }
 
 func (ls *LogService) FindOneBy(field string, value any) (*Log, error) {
-	return ls.logModel.FindOneBy(field, value, []string{})
+	return ls.logModel.FindOneBy(field, value)
 }
 
 func (ls *LogService) Create(log *Log) error {

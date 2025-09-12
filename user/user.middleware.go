@@ -47,7 +47,7 @@ func (um *UserMiddleware) IsAdmin() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		user, _ := c.MustGet("connectedUser").(*User)
 		tags := []string{"UserMiddleware", "IsAdmin"}
-		if !user.IsRole("admin") {
+		if !user.IsRole(ROLE_ADMIN) {
 			um.logService.Errorf(tags, "User %s is not admin", user.ID)
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 			c.Abort()

@@ -7,7 +7,6 @@ import (
 )
 
 type User struct {
-	// *core.Entity `json:"-" gorm:"-"`
 	ID        string     `json:"id" gorm:"primaryKey"`
 	Firstname string     `json:"firstname,omitempty" gorm:"type:varchar(100)"`
 	Lastname  string     `json:"lastname,omitempty" gorm:"type:varchar(100)"`
@@ -45,4 +44,9 @@ func (u *User) IsRole(role string) bool {
 		}
 	}
 	return false
+}
+
+func (u *User) Secure() {
+	u.Password = ""
+	u.Verified = false
 }

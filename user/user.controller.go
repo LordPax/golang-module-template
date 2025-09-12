@@ -105,6 +105,7 @@ func (uc *UserController) FindAll(c *gin.Context) {
 //	@Router			/users/{id} [get]
 func (uc *UserController) FindOne(c *gin.Context) {
 	user := c.MustGet("user").(*User)
+	user.Secure()
 	c.JSON(http.StatusOK, user)
 }
 
@@ -119,6 +120,7 @@ func (uc *UserController) FindOne(c *gin.Context) {
 //	@Router			/users/me [get]
 func (uc *UserController) FindMe(c *gin.Context) {
 	connectedUser, _ := c.MustGet("connectedUser").(*User)
+	connectedUser.Secure()
 	c.JSON(http.StatusOK, connectedUser)
 }
 

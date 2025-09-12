@@ -22,11 +22,11 @@ func (us *UserService) FindAll(q query.QueryFilter) ([]*User, error) {
 }
 
 func (us *UserService) FindByID(id string) (*User, error) {
-	return us.userModel.FindByID(id, []string{})
+	return us.userModel.FindByID(id)
 }
 
 func (us *UserService) FindOneBy(field string, value any) (*User, error) {
-	return us.userModel.FindOneBy(field, value, []string{})
+	return us.userModel.FindOneBy(field, value)
 }
 
 func (us *UserService) Create(user *User) error {
