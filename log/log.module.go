@@ -19,7 +19,7 @@ func NewLogModule() *LogModule {
 	module.AddModule(database.Module())
 	module.AddProvider(NewLogModel(module))
 	module.AddProvider(NewLogService(module))
-	module.AddProvider(NewLogController(module))
+	module.AddProvider(NewLogMiddleware(module))
 
 	return module
 }

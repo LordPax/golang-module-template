@@ -5,6 +5,7 @@ import (
 	"golang-api/core"
 	"golang-api/database"
 	"golang-api/dotenv"
+	logUser "golang-api/log-user"
 	"golang-api/user"
 )
 
@@ -23,6 +24,7 @@ func NewMainModule() *MainModule {
 	module.AddModule(database.Module())
 	module.AddModule(user.Module())
 	module.AddModule(auth.Module())
+	module.AddModule(logUser.Module())
 	module.AddProvider(NewMainService(module))
 
 	return module
