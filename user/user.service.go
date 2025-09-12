@@ -3,6 +3,8 @@ package user
 import (
 	"golang-api/core"
 	"golang-api/query"
+
+	"github.com/LordPax/sockevent"
 )
 
 type UserService struct {
@@ -49,4 +51,22 @@ func (us *UserService) IsUserExists(email, username string) bool {
 	emailExists, _ := us.userModel.CountBy("email", email)
 	usernameExists, _ := us.userModel.CountBy("username", username)
 	return emailExists > 0 || usernameExists > 0
+}
+
+func (us *UserService) CountStats(ws *sockevent.Websocket) map[string]int {
+	totalUsers, _ := us.userModel.CountAll()
+
+	loggedClients := ws.FilterClient(func(c *sockevent.Client) bool {
+		return c.Get("logged").(bool)
+	})
+
+	annonClients := ws.FilterClient(func(c *sockevent.Client) bool {
+		return !c.Get("logged").(bool)
+	})
+
+	return map[string]int{
+		"loggedUsers": len(loggedClients),
+		"annonUsers":  len(annonClients),
+		"totalUsers":  int(totalUsers),
+	}
 }

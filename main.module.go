@@ -7,6 +7,8 @@ import (
 	"golang-api/dotenv"
 	logUser "golang-api/log-user"
 	"golang-api/user"
+	userWebsocket "golang-api/user-websocket"
+	"golang-api/websocket"
 )
 
 var module *MainModule
@@ -25,6 +27,8 @@ func NewMainModule() *MainModule {
 	module.AddModule(user.Module())
 	module.AddModule(auth.Module())
 	module.AddModule(logUser.Module())
+	module.AddModule(websocket.Module())
+	module.AddModule(userWebsocket.Module())
 	module.AddProvider(NewMainService(module))
 
 	return module

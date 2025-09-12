@@ -8,6 +8,7 @@ import (
 	"golang-api/dotenv"
 	logUser "golang-api/log-user"
 	"golang-api/user"
+	"golang-api/websocket"
 	"os"
 	"strings"
 
@@ -17,21 +18,23 @@ import (
 
 type MainService struct {
 	*core.Provider
-	databaseService   *database.DatabaseService
-	dotenvService     *dotenv.DotenvService
-	userController    *user.UserController
-	authController    *auth.AuthController
-	logUserController *logUser.LogUserController
+	databaseService     *database.DatabaseService
+	dotenvService       *dotenv.DotenvService
+	userController      *user.UserController
+	authController      *auth.AuthController
+	logUserController   *logUser.LogUserController
+	websocketController *websocket.WebsocketController
 }
 
 func NewMainService(module *MainModule) *MainService {
 	return &MainService{
-		Provider:          core.NewProvider("MainService"),
-		databaseService:   module.Get("DatabaseService").(*database.DatabaseService),
-		dotenvService:     module.Get("DotenvService").(*dotenv.DotenvService),
-		userController:    module.Get("UserController").(*user.UserController),
-		authController:    module.Get("AuthController").(*auth.AuthController),
-		logUserController: module.Get("LogUserController").(*logUser.LogUserController),
+		Provider:            core.NewProvider("MainService"),
+		databaseService:     module.Get("DatabaseService").(*database.DatabaseService),
+		dotenvService:       module.Get("DotenvService").(*dotenv.DotenvService),
+		userController:      module.Get("UserController").(*user.UserController),
+		authController:      module.Get("AuthController").(*auth.AuthController),
+		logUserController:   module.Get("LogUserController").(*logUser.LogUserController),
+		websocketController: module.Get("WebsocketController").(*websocket.WebsocketController),
 	}
 }
 
@@ -65,6 +68,7 @@ func (ms *MainService) Start() {
 	ms.userController.RegisterRoutes(api)
 	ms.authController.RegisterRoutes(api)
 	ms.logUserController.RegisterRoutes(api)
+	ms.websocketController.RegisterRoutes(api)
 
 	if err := r.Run(":8080"); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)

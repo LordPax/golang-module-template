@@ -58,3 +58,13 @@ func (um *UserModel) DeleteByID(id string) error {
 	user.HashPassword(utils.GenerateString(12))
 	return um.UpdateByID(id, &user)
 }
+
+func (um *UserModel) CountAll() (int64, error) {
+	var count int64
+
+	err := um.databaseService.GetDB().Model(&User{}).
+		Where("deleted_at IS NULL").
+		Count(&count).Error
+
+	return count, err
+}
