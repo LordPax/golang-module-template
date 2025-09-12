@@ -7,8 +7,8 @@ import (
 )
 
 type IModel[T any] interface {
-	FindByID(id string, fields []string) (T, error)
-	FindOneBy(field string, value any, fields []string) (T, error)
+	FindByID(id string) (T, error)
+	FindOneBy(field string, value any) (T, error)
 	Create(entity T) error
 	DeleteByID(id string) error
 	DeleteBy(field string, value any) error
