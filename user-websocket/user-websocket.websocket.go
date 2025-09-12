@@ -23,13 +23,13 @@ func NewUserWebsocket(module *UserWebsocketModule) *UserWebsocket {
 	}
 }
 
-func (uws *UserWebsocket) OnInit() error {
-	fmt.Printf("Initializing %s\n", uws.GetName())
-	uws.websocketService.Ws.On("user:stats", uws.UserStats)
+func (uw *UserWebsocket) OnInit() error {
+	fmt.Printf("Initializing %s\n", uw.GetName())
+	uw.websocketService.Ws.On("user:stats", uw.UserStats)
 	return nil
 }
 
-func (uws *UserWebsocket) UserStats(client *sockevent.Client, message any) error {
+func (uw *UserWebsocket) UserStats(client *sockevent.Client, message any) error {
 	logged := client.Get("logged").(bool)
 	if !logged {
 		return nil
@@ -40,6 +40,6 @@ func (uws *UserWebsocket) UserStats(client *sockevent.Client, message any) error
 		return nil
 	}
 
-	wsData := uws.userService.CountStats(uws.websocketService.Ws)
+	wsData := uw.userService.CountStats(uw.websocketService.Ws)
 	return client.Emit("user:connected", wsData)
 }
