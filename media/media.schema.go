@@ -2,6 +2,9 @@ package media
 
 import (
 	"time"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type Media struct {
@@ -15,4 +18,9 @@ type Media struct {
 	CreatedAt time.Time  `json:"created_at"`
 	UpdatedAt time.Time  `json:"updated_at"`
 	DeletedAt *time.Time `json:"deleted_at"`
+}
+
+func (m *Media) BeforeCreate(tx *gorm.DB) error {
+	m.ID = uuid.New().String()
+	return nil
 }

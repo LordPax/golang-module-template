@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type Log struct {
@@ -18,11 +19,15 @@ type Log struct {
 
 func NewLog(logType string, tags []string, message string) *Log {
 	return &Log{
-		ID:      uuid.New().String(),
 		Type:    logType,
 		Tags:    tags,
 		Message: message,
 	}
+}
+
+func (l *Log) BeforeCreate(tx *gorm.DB) error {
+	l.ID = uuid.New().String()
+	return nil
 }
 
 func (l *Log) AddTag(tag string) {
