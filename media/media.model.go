@@ -1,7 +1,6 @@
 package media
 
 import (
-	"fmt"
 	"golang-api/core"
 	"golang-api/database"
 	"golang-api/query"
@@ -20,7 +19,6 @@ func NewMediaModel(module *MediaModule) *MediaModel {
 }
 
 func (um *MediaModel) OnInit() error {
-	fmt.Printf("Initializing %s\n", um.GetName())
 	um.SetDB(um.databaseService.GetDB())
 	return um.Migrate()
 }

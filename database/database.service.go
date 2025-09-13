@@ -23,7 +23,6 @@ func NewDatabaseService(module *DatabaseModule) *DatabaseService {
 }
 
 func (ds *DatabaseService) OnInit() error {
-	fmt.Printf("Initializing %s\n", ds.GetName())
 	return ds.Connect()
 }
 

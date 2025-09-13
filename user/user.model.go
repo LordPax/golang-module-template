@@ -1,7 +1,6 @@
 package user
 
 import (
-	"fmt"
 	"golang-api/core"
 	"golang-api/database"
 	"golang-api/query"
@@ -22,7 +21,6 @@ func NewUserModel(module *UserModule) *UserModel {
 }
 
 func (um *UserModel) OnInit() error {
-	fmt.Printf("Initializing %s\n", um.GetName())
 	um.SetDB(um.databaseService.GetDB())
 	return um.Migrate()
 }

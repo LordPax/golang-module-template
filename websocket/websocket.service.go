@@ -24,11 +24,8 @@ func NewWebsocketService(module *WebsocketModule) *WebsocketService {
 }
 
 func (ws *WebsocketService) OnInit() error {
-	fmt.Printf("Initializing %s\n", ws.GetName())
-
 	ws.Ws.OnConnect(ws.Connect)
 	ws.Ws.OnDisconnect(ws.Disconnect)
-
 	return nil
 }
 

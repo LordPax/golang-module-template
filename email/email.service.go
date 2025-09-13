@@ -25,7 +25,6 @@ func NewEmailService(module *EmailModule) *EmailService {
 }
 
 func (es *EmailService) OnInit() error {
-	fmt.Printf("Initializing %s\n", es.GetName())
 	return es.Authenticate()
 }
 

@@ -33,7 +33,6 @@ func NewOpenstackService(module *MediaModule) *OpenstackService {
 }
 
 func (o *OpenstackService) OnInit() error {
-	fmt.Printf("Initializing %s\n", o.GetName())
 	return o.Authenticate()
 }
 

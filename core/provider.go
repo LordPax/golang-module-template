@@ -1,7 +1,5 @@
 package core
 
-import "fmt"
-
 // IProvider defines the interface for a provider with initialization and module assignment capabilities.
 type IProvider interface {
 	GetName() string
@@ -40,6 +38,5 @@ func (p *Provider) AssignModule(m IModule) {
 
 // OnInit is a lifecycle hook that is called during module initialization.
 func (p *Provider) OnInit() error {
-	fmt.Printf("Initializing %s\n", p.GetName())
 	return nil
 }

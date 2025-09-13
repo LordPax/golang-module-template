@@ -1,7 +1,6 @@
 package token
 
 import (
-	"fmt"
 	"golang-api/core"
 	"golang-api/database"
 	"golang-api/dotenv"
@@ -22,9 +21,7 @@ func NewTokenModel(module *TokenModule) *TokenModel {
 }
 
 func (um *TokenModel) OnInit() error {
-	fmt.Printf("Initializing %s\n", um.GetName())
 	um.SetDB(um.databaseService.GetDB())
-	// return nil
 	return um.Migrate()
 }
 
