@@ -78,10 +78,10 @@ func (ac *AuthController) clearAuthCookies(c *gin.Context) {
 //	@Tags			auth
 //	@Accept			json
 //	@Produce		json
-//	@Param			login	body		LoginDto	true	"Login user"
-//	@Success		200		{object}	LoginSuccessResponse
+//	@Param			login	body		user.LoginDto	true	"Login user"
+//	@Success		200		{object}	token.LoginSuccessResponse
 //	@Failure		400		{object}	utils.HttpError
-//	@Router			/auth/login [post]
+//	@Router			/api/auth/login [post]
 func (ac *AuthController) Login(c *gin.Context) {
 	body, _ := c.MustGet("body").(user.LoginDto)
 	tags := []string{"AuthController", "Login"}
@@ -141,7 +141,7 @@ func (ac *AuthController) Login(c *gin.Context) {
 //	@Param			register	body	user.CreateUserDto	true	"Register user"
 //	@Success		201
 //	@Failure		400	{object}	utils.HttpError
-//	@Router			/auth/register [post]
+//	@Router			/api/auth/register [post]
 func (ac *AuthController) Register(c *gin.Context) {
 	body, _ := c.MustGet("body").(user.CreateUserDto)
 	tags := []string{"AuthController", "Register"}
@@ -188,7 +188,7 @@ func (ac *AuthController) Register(c *gin.Context) {
 //	@Produce		json
 //	@Success		201
 //	@Failure		400	{object}	utils.HttpError
-//	@Router			/auth/logout [post]
+//	@Router			/api/auth/logout [post]
 func (ac *AuthController) Logout(c *gin.Context) {
 	token := c.MustGet("token").(*token.Token)
 	ac.tokenService.Delete(token.ID)

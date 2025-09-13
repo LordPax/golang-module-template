@@ -88,7 +88,7 @@ func (uc *UserController) RegisterRoutes() {
 //	@Produce		json
 //	@Success		200	{object}	[]User
 //	@Failure		500	{object}	utils.HttpError
-//	@Router			/users/ [get]
+//	@Router			/api/users/ [get]
 func (uc *UserController) FindAll(c *gin.Context) {
 	query, _ := c.MustGet("query").(query.QueryFilter)
 	users, err := uc.userService.FindAll(query)
@@ -112,7 +112,7 @@ func (uc *UserController) FindAll(c *gin.Context) {
 //	@Success		200	{object}	User
 //	@Failure		404	{object}	utils.HttpError
 //	@Failure		500	{object}	utils.HttpError
-//	@Router			/users/{id} [get]
+//	@Router			/api/users/{id} [get]
 func (uc *UserController) FindOne(c *gin.Context) {
 	user := c.MustGet("user").(*User)
 	user.Secure()
@@ -127,7 +127,7 @@ func (uc *UserController) FindOne(c *gin.Context) {
 //	@Accept			json
 //	@Produce		json
 //	@Success		200	{object}	User
-//	@Router			/users/me [get]
+//	@Router			/api/users/me [get]
 func (uc *UserController) FindMe(c *gin.Context) {
 	connectedUser, _ := c.MustGet("connectedUser").(*User)
 	connectedUser.Secure()
@@ -148,7 +148,7 @@ func (uc *UserController) FindMe(c *gin.Context) {
 //	@Failure		401		{object}	utils.HttpError
 //	@Failure		404		{object}	utils.HttpError
 //	@Failure		500		{object}	utils.HttpError
-//	@Router			/users/{id} [patch]
+//	@Router			/api/users/{id} [patch]
 func (uc *UserController) Update(c *gin.Context) {
 	user, _ := c.MustGet("user").(*User)
 	body, _ := c.MustGet("body").(UpdateUserDto)
@@ -196,7 +196,7 @@ func (uc *UserController) Update(c *gin.Context) {
 //	@Failure		401			{object}	utils.HttpError
 //	@Failure		404			{object}	utils.HttpError
 //	@Failure		500			{object}	utils.HttpError
-//	@Router			/users/{user}/image [post]
+//	@Router			/api/users/{user}/image [post]
 func (uc *UserController) UploadImage(c *gin.Context) {
 	user, _ := c.MustGet("user").(*User)
 	medias, _ := c.MustGet("medias").([]*media.Media)
@@ -226,7 +226,7 @@ func (uc *UserController) UploadImage(c *gin.Context) {
 //	@Failure		401	{object}	utils.HttpError
 //	@Failure		404	{object}	utils.HttpError
 //	@Failure		500	{object}	utils.HttpError
-//	@Router			/users/{id} [delete]
+//	@Router			/api/users/{id} [delete]
 func (uc *UserController) Delete(c *gin.Context) {
 	user := c.MustGet("user").(*User)
 	uc.userService.Delete(user.ID)

@@ -3,12 +3,15 @@ package gin
 import (
 	"fmt"
 	"golang-api/core"
+	"golang-api/docs"
 	"golang-api/dotenv"
 	"os"
 	"strings"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type GinService struct {
@@ -45,6 +48,17 @@ func (gs *GinService) Cors() gin.HandlerFunc {
 	return cors.New(config)
 }
 
+func (gs *GinService) Swagger() {
+	name := gs.dotenvService.Get("NAME")
+	doamin := gs.dotenvService.Get("DOMAIN")
+	docs.SwaggerInfo.Title = name
+	docs.SwaggerInfo.Description = "This is a sample server for " + name
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Host = doamin
+	docs.SwaggerInfo.BasePath = "/v2"
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
+}
+
 func (gs *GinService) InitEngine() {
 	fmt.Println("Create gin engine")
 	gs.r = gin.Default()
@@ -60,6 +74,7 @@ func (gs *GinService) InitEngine() {
 	gs.r.Use(gs.Cors())
 
 	gs.Group = gs.r.Group("/api")
+	gs.Group.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }
 
 func (gs *GinService) Run() {

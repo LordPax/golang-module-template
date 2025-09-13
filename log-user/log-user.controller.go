@@ -54,6 +54,16 @@ func (lc *LogUserController) RegisterRoutes() {
 	)
 }
 
+// FindAll godoc
+//
+// @Summary      Get all logs
+// @Description  get all logs
+// @Tags         logs
+// @Produce      json
+// @Param        query  query     string  false  "Query filter"
+// @Success      200  {array}   log.Log
+// @Failure      500  {object}  utils.HttpError
+// @Router       /api/logs [get]
 func (lc *LogUserController) FindAll(c *gin.Context) {
 	q, _ := c.MustGet("query").(query.QueryFilter)
 
@@ -67,6 +77,16 @@ func (lc *LogUserController) FindAll(c *gin.Context) {
 	c.JSON(http.StatusOK, logs)
 }
 
+// FindOne godoc
+//
+// @Summary      Get a log by ID
+// @Description  get log by ID
+// @Tags         logs
+// @Produce      json
+// @Param        log   path      string  true  "Log ID"
+// @Success      200  {object}  log.Log
+// @Failure      404  {object}  utils.HttpError
+// @Router       /api/logs/{log} [get]
 func (lc *LogUserController) FindOne(c *gin.Context) {
 	log, _ := c.MustGet("log").(*log.Log)
 	c.JSON(http.StatusOK, log)
