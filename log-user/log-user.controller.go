@@ -1,7 +1,9 @@
 package logUser
 
 import (
+	"fmt"
 	"golang-api/core"
+	ginM "golang-api/gin"
 	"golang-api/log"
 	"golang-api/query"
 	"golang-api/user"
@@ -16,6 +18,7 @@ type LogUserController struct {
 	logMiddleware  *log.LogMiddleware
 	userMiddleware *user.UserMiddleware
 	queryService   *query.QueryService
+	ginService     *ginM.GinService
 }
 
 func NewLogUserController(module *LogUserModule) *LogUserController {
@@ -25,11 +28,18 @@ func NewLogUserController(module *LogUserModule) *LogUserController {
 		logMiddleware:  module.Get("LogMiddleware").(*log.LogMiddleware),
 		userMiddleware: module.Get("UserMiddleware").(*user.UserMiddleware),
 		queryService:   module.Get("QueryService").(*query.QueryService),
+		ginService:     module.Get("GinService").(*ginM.GinService),
 	}
 }
 
-func (lc *LogUserController) RegisterRoutes(rg *gin.RouterGroup) {
-	logs := rg.Group("/logs")
+func (lc *LogUserController) OnInit() error {
+	lc.RegisterRoutes()
+	return nil
+}
+
+func (lc *LogUserController) RegisterRoutes() {
+	fmt.Println("Registering User routes")
+	logs := lc.ginService.Group.Group("/logs")
 	logs.GET("/",
 		lc.userMiddleware.IsLoggedIn(true),
 		lc.userMiddleware.IsAdmin(),

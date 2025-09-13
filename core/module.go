@@ -80,10 +80,9 @@ func (m *Module) Init() error {
 		}
 	}
 
-	fmt.Printf("Initializing %s\n", m.GetName())
+	fmt.Printf("==> Initializing %s\n", m.GetName())
 
 	for _, p := range m.provider {
-		fmt.Printf("Initializing %s\n", p.GetName())
 		if err := p.OnInit(); err != nil {
 			return err
 		}

@@ -5,6 +5,7 @@ import (
 	"golang-api/database"
 	"golang-api/dotenv"
 	"golang-api/email"
+	"golang-api/gin"
 	"golang-api/log"
 	"golang-api/token"
 	"golang-api/user"
@@ -21,6 +22,7 @@ func NewAuthModule() *AuthModule {
 		Module: core.NewModule("AuthModule"),
 	}
 
+	module.AddModule(gin.Module())
 	module.AddModule(dotenv.Module())
 	module.AddModule(email.Module())
 	module.AddModule(database.Module())

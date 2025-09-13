@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"golang-api/core"
 	"golang-api/dotenv"
+	ginM "golang-api/gin"
 	"golang-api/log"
 	"golang-api/middleware"
 	"golang-api/token"
@@ -22,6 +23,7 @@ type AuthController struct {
 	dotenvService  *dotenv.DotenvService
 	userMiddleware *user.UserMiddleware
 	logService     *log.LogService
+	ginService     *ginM.GinService
 }
 
 func NewAuthController(module *AuthModule) *AuthController {
@@ -32,11 +34,18 @@ func NewAuthController(module *AuthModule) *AuthController {
 		dotenvService:  module.Get("DotenvService").(*dotenv.DotenvService),
 		userMiddleware: module.Get("UserMiddleware").(*user.UserMiddleware),
 		logService:     module.Get("LogService").(*log.LogService),
+		ginService:     module.Get("GinService").(*ginM.GinService),
 	}
 }
 
-func (ac *AuthController) RegisterRoutes(rg *gin.RouterGroup) {
-	auth := rg.Group("/auth")
+func (ac *AuthController) OnInit() error {
+	ac.RegisterRoutes()
+	return nil
+}
+
+func (ac *AuthController) RegisterRoutes() {
+	fmt.Println("Registering Auth routes")
+	auth := ac.ginService.Group.Group("/auth")
 	auth.POST("/login",
 		middleware.Validate[user.LoginDto](),
 		ac.Login,

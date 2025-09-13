@@ -3,6 +3,7 @@ package websocket
 import (
 	"context"
 	"golang-api/core"
+	ginM "golang-api/gin"
 	"golang-api/log"
 	"golang-api/user"
 
@@ -15,6 +16,7 @@ type WebsocketController struct {
 	websocketService *WebsocketService
 	logService       *log.LogService
 	userMiddleware   *user.UserMiddleware
+	ginService       *ginM.GinService
 }
 
 func NewWebsocketController(module *WebsocketModule) *WebsocketController {
@@ -23,11 +25,17 @@ func NewWebsocketController(module *WebsocketModule) *WebsocketController {
 		websocketService: module.Get("WebsocketService").(*WebsocketService),
 		logService:       module.Get("LogService").(*log.LogService),
 		userMiddleware:   module.Get("UserMiddleware").(*user.UserMiddleware),
+		ginService:       module.Get("GinService").(*ginM.GinService),
 	}
 }
 
-func (wc *WebsocketController) RegisterRoutes(rg *gin.RouterGroup) {
-	rg.GET("/ws",
+func (wc *WebsocketController) OnInit() error {
+	wc.RegisterRoutes()
+	return nil
+}
+
+func (wc *WebsocketController) RegisterRoutes() {
+	wc.ginService.Group.GET("/ws",
 		wc.userMiddleware.IsLoggedIn(false),
 		wc.WsHandler(wc.websocketService.Ws),
 	)

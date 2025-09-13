@@ -1,7 +1,9 @@
 package user
 
 import (
+	"fmt"
 	"golang-api/core"
+	ginM "golang-api/gin"
 	"golang-api/log"
 	"golang-api/media"
 	"golang-api/middleware"
@@ -18,6 +20,7 @@ type UserController struct {
 	queryService    *query.QueryService
 	mediaMiddleware *media.MediaMiddleware
 	logService      *log.LogService
+	ginService      *ginM.GinService
 }
 
 func NewUserController(module *UserModule) *UserController {
@@ -28,11 +31,18 @@ func NewUserController(module *UserModule) *UserController {
 		queryService:    module.Get("QueryService").(*query.QueryService),
 		mediaMiddleware: module.Get("MediaMiddleware").(*media.MediaMiddleware),
 		logService:      module.Get("LogService").(*log.LogService),
+		ginService:      module.Get("GinService").(*ginM.GinService),
 	}
 }
 
-func (uc *UserController) RegisterRoutes(rg *gin.RouterGroup) {
-	users := rg.Group("/users")
+func (uc *UserController) OnInit() error {
+	uc.RegisterRoutes()
+	return nil
+}
+
+func (uc *UserController) RegisterRoutes() {
+	fmt.Println("Registering User routes")
+	users := uc.ginService.Group.Group("/users")
 	users.GET("/",
 		uc.userMiddleware.IsLoggedIn(true),
 		uc.queryService.QueryFilter(),

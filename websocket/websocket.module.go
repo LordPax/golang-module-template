@@ -2,6 +2,7 @@ package websocket
 
 import (
 	"golang-api/core"
+	"golang-api/gin"
 	"golang-api/log"
 	"golang-api/user"
 )
@@ -17,10 +18,11 @@ func NewWebsocketModule() *WebsocketModule {
 		Module: core.NewModule("WebsocketModule"),
 	}
 
+	module.AddModule(gin.Module())
 	module.AddModule(log.Module())
 	module.AddModule(user.Module())
 	module.AddProvider(NewWebsocketService(module))
-	module.AddProvider(NewPingService(module))
+	module.AddProvider(NewPingWebsocket(module))
 	module.AddProvider(NewWebsocketController(module))
 
 	return module

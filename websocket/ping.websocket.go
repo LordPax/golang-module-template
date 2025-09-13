@@ -8,24 +8,24 @@ import (
 	"github.com/LordPax/sockevent"
 )
 
-type PingService struct {
+type PingWebsocket struct {
 	*core.Provider
 	websocketService *WebsocketService
 }
 
-func NewPingService(module *WebsocketModule) *PingService {
-	return &PingService{
-		Provider:         core.NewProvider("PingService"),
+func NewPingWebsocket(module *WebsocketModule) *PingWebsocket {
+	return &PingWebsocket{
+		Provider:         core.NewProvider("PingWebsocket"),
 		websocketService: module.Get("WebsocketService").(*WebsocketService),
 	}
 }
 
-func (ws *PingService) OnInit() error {
+func (ws *PingWebsocket) OnInit() error {
 	ws.websocketService.Ws.On("ping", ws.Ping)
 	return nil
 }
 
-func (ws *PingService) Ping(client *sockevent.Client, message any) error {
+func (ws *PingWebsocket) Ping(client *sockevent.Client, message any) error {
 	logged := client.Get("logged").(bool)
 	if !logged {
 		fmt.Printf("Client %s sent message: %v\n", client.ID, message)

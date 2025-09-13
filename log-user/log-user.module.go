@@ -2,6 +2,7 @@ package logUser
 
 import (
 	"golang-api/core"
+	"golang-api/gin"
 	"golang-api/log"
 	"golang-api/query"
 	"golang-api/user"
@@ -18,6 +19,7 @@ func NewLogUserModule() *LogUserModule {
 		Module: core.NewModule("LogUserModule"),
 	}
 
+	module.AddModule(gin.Module())
 	module.AddModule(user.Module())
 	module.AddModule(log.Module())
 	module.AddModule(query.Module())

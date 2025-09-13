@@ -4,7 +4,7 @@ import (
 	"golang-api/auth"
 	"golang-api/core"
 	"golang-api/database"
-	"golang-api/dotenv"
+	"golang-api/gin"
 	logUser "golang-api/log-user"
 	"golang-api/user"
 	userWebsocket "golang-api/user-websocket"
@@ -22,7 +22,7 @@ func NewMainModule() *MainModule {
 		Module: core.NewModule("MainModule"),
 	}
 
-	module.AddModule(dotenv.Module())
+	module.AddModule(gin.Module())
 	module.AddModule(database.Module())
 	module.AddModule(user.Module())
 	module.AddModule(auth.Module())

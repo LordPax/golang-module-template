@@ -3,6 +3,7 @@ package user
 import (
 	"golang-api/core"
 	"golang-api/database"
+	"golang-api/gin"
 	"golang-api/log"
 	"golang-api/media"
 	"golang-api/query"
@@ -20,6 +21,7 @@ func NewUserModule() *UserModule {
 		Module: core.NewModule("UserModule"),
 	}
 
+	module.AddModule(gin.Module())
 	module.AddModule(database.Module())
 	module.AddModule(log.Module())
 	module.AddModule(token.Module())
