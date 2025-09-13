@@ -29,6 +29,7 @@ func NewAuthModule() *AuthModule {
 	module.AddModule(log.Module())
 	module.AddModule(token.Module())
 	module.AddModule(user.Module())
+	module.AddProvider(NewAuthService(module))
 	module.AddProvider(NewAuthController(module))
 
 	return module

@@ -10,7 +10,6 @@ import (
 	"golang-api/token"
 	"golang-api/user"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -18,6 +17,7 @@ import (
 
 type AuthController struct {
 	*core.Provider
+	authService    *AuthService
 	tokenService   *token.TokenService
 	userService    *user.UserService
 	dotenvService  *dotenv.DotenvService
@@ -29,6 +29,7 @@ type AuthController struct {
 func NewAuthController(module *AuthModule) *AuthController {
 	return &AuthController{
 		Provider:       core.NewProvider("AuthController"),
+		authService:    module.Get("AuthService").(*AuthService),
 		tokenService:   module.Get("TokenService").(*token.TokenService),
 		userService:    module.Get("UserService").(*user.UserService),
 		dotenvService:  module.Get("DotenvService").(*dotenv.DotenvService),
@@ -58,17 +59,7 @@ func (ac *AuthController) RegisterRoutes() {
 		ac.userMiddleware.IsLoggedIn(true),
 		ac.Logout,
 	)
-}
-
-func (ac *AuthController) setAuthCookies(c *gin.Context, token *token.Token) {
-	cookieSecure, _ := strconv.ParseBool(ac.dotenvService.Get("COOKIE_SECURE"))
-	c.SetCookie("access_token", token.AccessToken, 3600, "/", "", cookieSecure, true)
-	c.SetCookie("refresh_token", token.RefreshToken, 3600*24*30, "/", "", cookieSecure, true)
-}
-
-func (ac *AuthController) clearAuthCookies(c *gin.Context) {
-	c.SetCookie("access_token", "", -1, "/", "", false, true)
-	c.SetCookie("refresh_token", "", -1, "/", "", false, true)
+	auth.POST("/refresh", ac.Refresh)
 }
 
 // Login godoc
@@ -126,7 +117,7 @@ func (ac *AuthController) Login(c *gin.Context) {
 		return
 	}
 
-	ac.setAuthCookies(c, token)
+	ac.authService.SetAuthCookies(c, token)
 	ac.logService.Printf(tags, "User ID %s logged in successfully", user.ID)
 	c.JSON(http.StatusOK, gin.H{"access_token": token.AccessToken, "refresh_token": token.RefreshToken})
 }
@@ -192,6 +183,50 @@ func (ac *AuthController) Register(c *gin.Context) {
 func (ac *AuthController) Logout(c *gin.Context) {
 	token := c.MustGet("token").(*token.Token)
 	ac.tokenService.Delete(token.ID)
-	ac.clearAuthCookies(c)
+	ac.authService.ClearAuthCookies(c)
 	c.JSON(http.StatusOK, gin.H{"message": "Logged out successfully"})
+}
+
+// Refresh godoc
+//
+//	@Summary		Refresh token
+//	@Description	Refresh token
+//	@Tags			auth
+//	@Accept			json
+//	@Produce		json
+//	@Success		200		{object}	token.RefreshSuccessResponse
+//	@Failure		400		{object}	utils.HttpError
+//	@Router			/api/auth/refresh [post]
+func (ac *AuthController) Refresh(c *gin.Context) {
+	tags := []string{"AuthController", "Refresh"}
+
+	refreshTokenString, err := c.Cookie("refresh_token")
+	if err != nil {
+		ac.logService.Errorf(tags, "Refresh token not found in cookie: %v", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Refresh token not found"})
+		return
+	}
+
+	token, err := ac.tokenService.FindOneBy("refresh_token", refreshTokenString)
+	if err != nil || token == nil {
+		ac.logService.Errorf(tags, "Refresh token not found: %v", err)
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid refresh token"})
+		return
+	}
+
+	jwtKey := ac.dotenvService.Get("JWT_SECRET_KEY")
+	if err := token.GenerateAccessToken(jwtKey); err != nil {
+		ac.logService.Errorf(tags, "Failed to generate access token for user ID %s: %v", token.UserID, err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate access token"})
+		return
+	}
+
+	if err := ac.tokenService.Update(token); err != nil {
+		ac.logService.Errorf(tags, "Failed to update token for user ID %s: %v", token.UserID, err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update token"})
+		return
+	}
+
+	ac.authService.SetAuthCookies(c, token)
+	c.JSON(http.StatusOK, gin.H{"access_token": token.AccessToken})
 }

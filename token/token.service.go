@@ -22,10 +22,6 @@ func NewTokenService(module *TokenModule) *TokenService {
 	}
 }
 
-// func (as *TokenService) FindAll() ([]*Token, error) {
-// 	return as.tokenModel.FindAll()
-// }
-
 func (as *TokenService) FindByID(id string) (*Token, error) {
 	return as.tokenModel.FindByID(id)
 }
@@ -44,6 +40,10 @@ func (as *TokenService) Delete(id string) error {
 
 func (as *TokenService) DeleteByUserID(userID string) error {
 	return as.tokenModel.DeleteByUserID(userID)
+}
+
+func (as *TokenService) Update(token *Token) error {
+	return as.tokenModel.UpdateByID(token.ID, token)
 }
 
 func (as *TokenService) ParseJWTToken(tokenString string) (*UserClaims, error) {
