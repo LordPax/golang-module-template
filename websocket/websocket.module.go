@@ -20,6 +20,7 @@ func NewWebsocketModule() *WebsocketModule {
 	module.AddModule(log.Module())
 	module.AddModule(user.Module())
 	module.AddProvider(NewWebsocketService(module))
+	module.AddProvider(NewPingService(module))
 	module.AddProvider(NewWebsocketController(module))
 
 	return module

@@ -43,10 +43,6 @@ func (us *UserService) Delete(id string) error {
 	return us.userModel.DeleteByID(id)
 }
 
-func (us *UserService) Save(user *User) error {
-	return us.userModel.Save(user)
-}
-
 func (us *UserService) IsUserExists(email, username string) bool {
 	emailExists, _ := us.userModel.CountBy("email", email)
 	usernameExists, _ := us.userModel.CountBy("username", username)

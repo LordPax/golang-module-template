@@ -28,21 +28,8 @@ func (ws *WebsocketService) OnInit() error {
 
 	ws.Ws.OnConnect(ws.Connect)
 	ws.Ws.OnDisconnect(ws.Disconnect)
-	ws.Ws.On("ping", ws.Ping)
 
 	return nil
-}
-
-func (ws *WebsocketService) Ping(client *sockevent.Client, message any) error {
-	logged := client.Get("logged").(bool)
-	if !logged {
-		fmt.Printf("Client %s sent message: %v\n", client.ID, message)
-		return client.Emit("pong", "pong")
-	}
-
-	user := client.Get("user").(*user.User)
-	fmt.Printf("Client %s (%s) sent message: %v\n", client.ID, user.Username, message)
-	return client.Emit("pong", "pong")
 }
 
 func (ws *WebsocketService) SendNbUserToAdmin() error {

@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// IModel defines the interface for a generic model with common database operations.
 type IModel[T any] interface {
 	FindByID(id string) (T, error)
 	FindOneBy(field string, value any) (T, error)
@@ -19,30 +20,36 @@ type IModel[T any] interface {
 	Migrate() error
 }
 
+// Model is a generic struct that implements the IModel interface for any type T.
 type Model[T any] struct {
 	*Provider
 	db *gorm.DB
 }
 
+// NewModel creates a new instance of Model for the specified type T.
 func NewModel[T any](name string) *Model[T] {
 	return &Model[T]{
 		Provider: NewProvider(name),
 	}
 }
 
+// Migrate performs automatic migration for the model's schema.
 func (m *Model[T]) Migrate() error {
 	fmt.Printf("Migrating %s\n", m.GetName())
 	return m.db.AutoMigrate(new(T))
 }
 
+// GetDB returns the current gorm.DB instance.
 func (m *Model[T]) GetDB() *gorm.DB {
 	return m.db
 }
 
+// SetDB sets the gorm.DB instance for the model.
 func (m *Model[T]) SetDB(db *gorm.DB) {
 	m.db = db
 }
 
+// FindByID retrieves a record by its ID.
 func (m *Model[T]) FindByID(id string) (T, error) {
 	var item T
 	if err := m.db.Model(new(T)).First(&item, "id = ?", id).Error; err != nil {
@@ -51,6 +58,7 @@ func (m *Model[T]) FindByID(id string) (T, error) {
 	return item, nil
 }
 
+// FindOneBy retrieves a record by a specified field and value.
 func (m *Model[T]) FindOneBy(field string, value any) (T, error) {
 	var item T
 	if err := m.db.Model(new(T)).Where(field, value).First(&item).Error; err != nil {
@@ -59,26 +67,27 @@ func (m *Model[T]) FindOneBy(field string, value any) (T, error) {
 	return item, nil
 }
 
+// Create inserts a new record into the database.
 func (m *Model[T]) Create(entity T) error {
 	return m.db.Model(new(T)).Create(entity).Error
 }
 
+// DeleteByID deletes a record by its ID.
 func (m *Model[T]) DeleteByID(id string) error {
 	return m.db.Model(new(T)).Delete(new(T), "id = ?", id).Error
 }
 
+// DeleteBy deletes records matching a specified field and value.
 func (m *Model[T]) DeleteBy(field string, value any) error {
 	return m.db.Model(new(T)).Where(field, value).Delete(new(T)).Error
 }
 
+// UpdateByID updates a record by its ID with the provided updates.
 func (m *Model[T]) UpdateByID(id string, updates any) error {
 	return m.db.Model(new(T)).Where("id = ?", id).Updates(updates).Error
 }
 
-func (m *Model[T]) Save(entity T) error {
-	return m.db.Model(new(T)).Save(entity).Error
-}
-
+// CountBy counts the number of records matching a specified field and value.
 func (m *Model[T]) CountBy(field string, value any) (int64, error) {
 	var count int64
 	if err := m.db.Model(new(T)).Where(field, value).Count(&count).Error; err != nil {
