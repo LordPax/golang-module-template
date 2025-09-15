@@ -143,7 +143,7 @@ func (ac *AuthController) Register(c *gin.Context) {
 		return
 	}
 
-	user := user.User{
+	user := &user.User{
 		ID:        uuid.New().String(),
 		Firstname: body.Firstname,
 		Lastname:  body.Lastname,
@@ -159,15 +159,15 @@ func (ac *AuthController) Register(c *gin.Context) {
 		return
 	}
 
-	if err := ac.userService.Create(&user); err != nil {
+	if err := ac.userService.Create(user); err != nil {
 		ac.logService.Errorf(tags, "Failed to create user %s: %v", user.ID, err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
 		return
 	}
 
-	// sendWelcomeAndVerificationEmails(user, c)
+	ac.authService.SendWelcomeAndVerif(user)
 	ac.logService.Printf(tags, "User %s registered successfully", user.ID)
-	c.Status(http.StatusCreated)
+	c.JSON(http.StatusCreated, gin.H{"message": "User created successfully"})
 }
 
 // Logout godoc

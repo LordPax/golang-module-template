@@ -8,13 +8,12 @@ import (
 )
 
 type Log struct {
-	ID        string     `json:"id" gorm:"primaryKey"`
-	Type      string     `json:"type" gorm:"type:varchar(100)"`
-	Tags      []string   `json:"tags" gorm:"json"`
-	Message   string     `json:"message"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `json:"deleted_at"`
+	ID        string    `json:"id" gorm:"primaryKey"`
+	Type      string    `json:"type" gorm:"type:varchar(100)"`
+	Tags      []string  `json:"tags" gorm:"json"`
+	Message   string    `json:"message"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 func NewLog(logType string, tags []string, message string) *Log {

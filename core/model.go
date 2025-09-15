@@ -52,19 +52,15 @@ func (m *Model[T]) SetDB(db *gorm.DB) {
 // FindByID retrieves a record by its ID.
 func (m *Model[T]) FindByID(id string) (T, error) {
 	var item T
-	if err := m.db.Model(new(T)).First(&item, "id = ?", id).Error; err != nil {
-		return item, err
-	}
-	return item, nil
+	err := m.db.Model(new(T)).First(&item, "id = ?", id).Error
+	return item, err
 }
 
 // FindOneBy retrieves a record by a specified field and value.
 func (m *Model[T]) FindOneBy(field string, value any) (T, error) {
 	var item T
-	if err := m.db.Model(new(T)).Where(field, value).First(&item).Error; err != nil {
-		return item, err
-	}
-	return item, nil
+	err := m.db.Model(new(T)).Where(field, value).First(&item).Error
+	return item, err
 }
 
 // Create inserts a new record into the database.
@@ -89,9 +85,7 @@ func (m *Model[T]) UpdateByID(id string, updates any) error {
 
 // CountBy counts the number of records matching a specified field and value.
 func (m *Model[T]) CountBy(field string, value any) (int64, error) {
-	var count int64
-	if err := m.db.Model(new(T)).Where(field, value).Count(&count).Error; err != nil {
-		return 0, err
-	}
-	return count, nil
+	var count int64 = 0
+	err := m.db.Model(new(T)).Where(field, value).Count(&count).Error
+	return count, err
 }

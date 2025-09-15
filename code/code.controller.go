@@ -1,0 +1,154 @@
+package code
+
+import (
+	"fmt"
+	"golang-api/core"
+	ginM "golang-api/gin"
+	"golang-api/log"
+	"golang-api/middleware"
+	"golang-api/user"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
+type CodeController struct {
+	*core.Provider
+	codeService *CodeService
+	userService *user.UserService
+	ginService  *ginM.GinService
+	logService  *log.LogService
+}
+
+func NewCodeController(module *CodeModule) *CodeController {
+	return &CodeController{
+		Provider:    core.NewProvider("CodeController"),
+		codeService: module.Get("CodeService").(*CodeService),
+		userService: module.Get("UserService").(*user.UserService),
+		ginService:  module.Get("GinService").(*ginM.GinService),
+		logService:  module.Get("LogService").(*log.LogService),
+	}
+}
+
+func (cc *CodeController) OnInit() error {
+	cc.RegisterRoutes()
+	return nil
+}
+
+func (cc *CodeController) RegisterRoutes() {
+	fmt.Println("Registering Code routes")
+	verify := cc.ginService.Group.Group("/code")
+	verify.POST("/verify",
+		middleware.Validate[VerifyUserDto](),
+		cc.Verify,
+	)
+	verify.POST("/request",
+		middleware.Validate[RequestCodeDto](),
+		cc.RequestCode,
+	)
+}
+
+// Verify godoc
+//
+//	@Summary		Verify account
+//	@Description	Verify user account with code
+//	@Tags			code
+//	@Accept			json
+//	@Produce		json
+//	@Param			code	body		code.VerifyUserDto	true	"Verify user"
+//	@Success		200
+//	@Failure		400	{object}	utils.HttpError
+//	@Router			/api/code/verify [post]
+func (cc *CodeController) Verify(c *gin.Context) {
+	tags := []string{"CodeController", "Verify"}
+	body, _ := c.MustGet("body").(VerifyUserDto)
+
+	code, err := cc.codeService.FindOneByCodeAndEmail(body.Code, body.Email)
+	if err != nil {
+		cc.logService.Errorf(tags, "Code not found: %v", err)
+		c.JSON(http.StatusNotFound, gin.H{"error": "Code not found"})
+		return
+	}
+
+	if code.IsExpired() {
+		cc.logService.Errorf(tags, "Code expired for email: %s", body.Email)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid or expired code"})
+		return
+	}
+
+	user, err := cc.userService.FindOneBy("email", body.Email)
+	if err != nil {
+		cc.logService.Errorf(tags, "User %s not found: %v", body.Email, err)
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+
+	user.Verified = true
+
+	if err := cc.userService.Update(user); err != nil {
+		cc.logService.Errorf(tags, "Failed to verify account for user %s: %v", user.Email, err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to verify account"})
+		return
+	}
+
+	if err := cc.codeService.Delete(code.ID); err != nil {
+		cc.logService.Errorf(tags, "Failed to delete code for user %s: %v", user.Email, err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete code"})
+		return
+	}
+
+	cc.logService.Printf(tags, "User %s verified successfully", user.Email)
+	c.JSON(http.StatusOK, gin.H{"message": "Account verified successfully"})
+}
+
+// RequestCode godoc
+//
+//	@Summary		Request code
+//	@Description	Request code
+//	@Tags			code
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body	code.RequestCodeDto	true	"Request code"
+//	@Success		200
+//	@Failure		400	{object}	utils.HttpError
+//	@Router			/api/code/request [post]
+func (cc *CodeController) RequestCode(c *gin.Context) {
+	body, _ := c.MustGet("body").(RequestCodeDto)
+	tags := []string{"CodeController", "RequestCode"}
+
+	user, err := cc.userService.FindOneBy("email", body.Email)
+	if err != nil {
+		cc.logService.Errorf(tags, "Email %s not found: %v", body.Email, err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Email not found"})
+		return
+	}
+
+	if user.Verified {
+		cc.logService.Errorf(tags, "Account already verified for user %s", user.Email)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Account already verified"})
+		return
+	}
+
+	code := NewCode(user.ID, user.Email)
+	code.GenerateCode()
+
+	if err := cc.codeService.DeleteBy("user_id", user.ID); err != nil {
+		cc.logService.Errorf(tags, "Failed to delete existing codes for user %s: %v", user.Email, err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete existing codes"})
+		return
+	}
+
+	if err := cc.codeService.Create(code); err != nil {
+		cc.logService.Errorf(tags, "Failed to create code for user %s: %v", user.Email, err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create code"})
+		return
+	}
+
+	if err := cc.codeService.SendCodeEmail(user.Email, code.Code); err != nil {
+		cc.logService.Errorf(tags, "Failed to send code email to user %s: %v", user.Email, err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send code email"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Code sent successfully"})
+}

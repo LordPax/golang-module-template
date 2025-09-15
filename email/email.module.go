@@ -3,6 +3,7 @@ package email
 import (
 	"golang-api/core"
 	"golang-api/dotenv"
+	"golang-api/log"
 )
 
 var module *EmailModule
@@ -17,6 +18,7 @@ func NewEmailModule() *EmailModule {
 	}
 
 	module.AddModule(dotenv.Module())
+	module.AddModule(log.Module())
 	module.AddProvider(NewEmailService(module))
 
 	return module

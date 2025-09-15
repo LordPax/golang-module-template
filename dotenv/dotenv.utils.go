@@ -1,11 +1,13 @@
 package dotenv
 
+import "strings"
+
 func parseLine(line string) (string, string) {
 	var key, value string
 	for i, char := range line {
 		if char == '=' {
 			key = line[:i]
-			value = line[i+1:]
+			value = strings.Trim(line[i+1:], `"'`)
 			break
 		}
 	}

@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"golang-api/code"
 	"golang-api/core"
 	"golang-api/database"
 	"golang-api/dotenv"
@@ -29,6 +30,7 @@ func NewAuthModule() *AuthModule {
 	module.AddModule(log.Module())
 	module.AddModule(token.Module())
 	module.AddModule(user.Module())
+	module.AddModule(code.Module())
 	module.AddProvider(NewAuthService(module))
 	module.AddProvider(NewAuthController(module))
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"golang-api/auth"
+	"golang-api/code"
 	"golang-api/core"
 	"golang-api/database"
 	"golang-api/gin"
@@ -29,6 +30,7 @@ func NewMainModule() *MainModule {
 	module.AddModule(logUser.Module())
 	module.AddModule(websocket.Module())
 	module.AddModule(userWebsocket.Module())
+	module.AddModule(code.Module())
 	module.AddProvider(NewMainService(module))
 
 	return module
