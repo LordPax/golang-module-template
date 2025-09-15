@@ -1,6 +1,7 @@
 package userWebsocket
 
 import (
+	"fmt"
 	"golang-api/core"
 	"golang-api/user"
 	"golang-api/websocket"
@@ -23,6 +24,7 @@ func NewUserWebsocket(module *UserWebsocketModule) *UserWebsocket {
 }
 
 func (uw *UserWebsocket) OnInit() error {
+	fmt.Println("Registering User websocket")
 	uw.websocketService.Ws.On("user:stats", uw.UserStats)
 	return nil
 }

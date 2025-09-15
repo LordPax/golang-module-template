@@ -2,6 +2,7 @@ package websocket
 
 import (
 	"context"
+	"fmt"
 	"golang-api/core"
 	ginM "golang-api/gin"
 	"golang-api/log"
@@ -30,6 +31,7 @@ func NewWebsocketController(module *WebsocketModule) *WebsocketController {
 }
 
 func (wc *WebsocketController) OnInit() error {
+	fmt.Println("Registering Websocket routes")
 	wc.RegisterRoutes()
 	return nil
 }

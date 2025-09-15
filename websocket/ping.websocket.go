@@ -21,6 +21,7 @@ func NewPingWebsocket(module *WebsocketModule) *PingWebsocket {
 }
 
 func (ws *PingWebsocket) OnInit() error {
+	fmt.Println("Registering Ping websocket")
 	ws.websocketService.Ws.On("ping", ws.Ping)
 	return nil
 }
