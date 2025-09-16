@@ -45,15 +45,13 @@ func (as *AuthService) ClearAuthCookies(c *gin.Context) {
 
 func (as *AuthService) SendWelcomeEmail(receiver, name string) error {
 	company := as.dotenvService.Get("NAME")
-	template := email.EmailTemplate{
-		Subject: "Bienvenue sur " + company + " !",
-		Path:    "auth/template/welcome.html",
-	}
+	path := "auth/template/welcome.html"
+	subject := "Bienvenue sur " + company + " !"
 	params := map[string]any{
 		"name":    name,
 		"company": company,
 	}
-	return as.emailService.SendHtmlTemplate(receiver, template, params)
+	return as.emailService.SendHtmlTemplate(receiver, path, subject, params)
 }
 
 // SendWelcomeAndVerif sends welcome and verification emails to the user.

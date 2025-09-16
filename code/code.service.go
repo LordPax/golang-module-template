@@ -57,10 +57,8 @@ func (cs *CodeService) DeleteExpiredCodes() error {
 }
 
 func (cs *CodeService) SendCodeEmail(receiver, code string) error {
-	template := email.EmailTemplate{
-		Subject: "Vérifier votre adresse e-mail",
-		Path:    "code/template/verification.html",
-	}
+	path := "code/template/verification.html"
+	subject := "Vérifier votre adresse e-mail"
 	params := map[string]any{"code": code}
-	return cs.emailService.SendHtmlTemplate(receiver, template, params)
+	return cs.emailService.SendHtmlTemplate(receiver, path, subject, params)
 }

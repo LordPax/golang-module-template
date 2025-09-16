@@ -94,9 +94,9 @@ func (es *EmailService) SendHtml(email, subject, htmlContent string) error {
 	return nil
 }
 
-func (es *EmailService) SendHtmlTemplate(email string, template EmailTemplate, params map[string]any) error {
-	body := es.LoadHtmlTemplate(template.Path, params)
-	return es.SendHtml(email, template.Subject, body)
+func (es *EmailService) SendHtmlTemplate(email, path, subject string, params map[string]any) error {
+	body := es.LoadHtmlTemplate(path, params)
+	return es.SendHtml(email, subject, body)
 }
 
 func (es *EmailService) LoadHtmlTemplate(filePath string, params map[string]interface{}) string {
@@ -121,27 +121,3 @@ func (es *EmailService) LoadHtmlTemplate(filePath string, params map[string]inte
 
 	return buffer.String()
 }
-
-// // Send sends an email using the Brevo API
-// func (es *EmailService) SendTemplate(email string, template int64, params map[string]any) error {
-// 	sender := es.dotenvService.Get("BREVO_SENDER")
-// 	company := es.dotenvService.Get("NAME")
-// 	to := []brevo.SendSmtpEmailTo{{Email: email}}
-
-// 	body := brevo.SendSmtpEmail{
-// 		TemplateId: template,
-// 		Sender: &brevo.SendSmtpEmailSender{
-// 			Name:  company,
-// 			Email: sender,
-// 		},
-// 		To:     to,
-// 		Params: params,
-// 	}
-
-// 	response, httpResp, err := es.client.TransactionalEmailsApi.SendTransacEmail(es.ctx, body)
-// 	if err != nil {
-// 		return fmt.Errorf("error sending email: %w, response: %v, http response: %v", err, response, httpResp)
-// 	}
-
-// 	return nil
-// }
