@@ -81,7 +81,7 @@ func (uc *UserController) RegisterRoutes() {
 
 // FindAll godoc
 //
-//	@Summary		find all users
+//	@Summary		Find all users
 //	@Description	find all users
 //	@Tags			user
 //	@Accept			json
@@ -103,16 +103,16 @@ func (uc *UserController) FindAll(c *gin.Context) {
 
 // FindByID godoc
 //
-//	@Summary		find users by id
+//	@Summary		Find users by id
 //	@Description	find users by id
 //	@Tags			user
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path		string	true	"User ID"
+//	@Param			user	path		string	true	"User ID"
 //	@Success		200	{object}	User
 //	@Failure		404	{object}	utils.HttpError
 //	@Failure		500	{object}	utils.HttpError
-//	@Router			/api/users/{id} [get]
+//	@Router			/api/users/{user} [get]
 func (uc *UserController) FindOne(c *gin.Context) {
 	user := c.MustGet("user").(*User)
 	user.Secure()
@@ -121,7 +121,7 @@ func (uc *UserController) FindOne(c *gin.Context) {
 
 // FindMe godoc
 //
-//	@Summary		find connected user
+//	@Summary		Find connected user
 //	@Description	find connected user
 //	@Tags			user
 //	@Accept			json
@@ -136,19 +136,19 @@ func (uc *UserController) FindMe(c *gin.Context) {
 
 // Update godoc
 //
-//	@Summary		update user
+//	@Summary		Update user
 //	@Description	update user
 //	@Tags			user
 //	@Accept			json
 //	@Produce		json
-//	@Param			user	body		UpdateUserDto	true	"User"
-//	@Param			id		path		string			true	"User ID"
+//	@Param			body	body		UpdateUserDto	true	"User"
+//	@Param			user		path		string			true	"User ID"
 //	@Success		200		{object}	User
 //	@Failure		400		{object}	utils.HttpError
 //	@Failure		401		{object}	utils.HttpError
 //	@Failure		404		{object}	utils.HttpError
 //	@Failure		500		{object}	utils.HttpError
-//	@Router			/api/users/{id} [patch]
+//	@Router			/api/users/{user} [patch]
 func (uc *UserController) Update(c *gin.Context) {
 	user, _ := c.MustGet("user").(*User)
 	body, _ := c.MustGet("body").(UpdateUserDto)
@@ -184,7 +184,7 @@ func (uc *UserController) Update(c *gin.Context) {
 
 // UpdateUserImage godoc
 //
-//	@Summary		update user image
+//	@Summary		Update user image
 //	@Description	update user image
 //	@Tags			user
 //	@Accept			multipart/form-data
@@ -215,18 +215,18 @@ func (uc *UserController) UploadImage(c *gin.Context) {
 
 // Delete godoc
 //
-//	@Summary		delete user
+//	@Summary		Delete user
 //	@Description	delete user
 //	@Tags			user
 //	@Accept			json
 //	@Produce		json
-//	@Param			id	path	string	true	"User ID"
+//	@Param			user	path	string	true	"User ID"
 //	@Success		204
 //	@Failure		400	{object}	utils.HttpError
 //	@Failure		401	{object}	utils.HttpError
 //	@Failure		404	{object}	utils.HttpError
 //	@Failure		500	{object}	utils.HttpError
-//	@Router			/api/users/{id} [delete]
+//	@Router			/api/users/{user} [delete]
 func (uc *UserController) Delete(c *gin.Context) {
 	user := c.MustGet("user").(*User)
 	uc.userService.Delete(user.ID)

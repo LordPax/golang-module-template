@@ -165,13 +165,13 @@ func (cc *CodeController) RequestCode(c *gin.Context) {
 //
 //	@Summary		Reset password
 //	@Description	Reset user password
-//	@Tags			auth
+//	@Tags			code
 //	@Accept			json
 //	@Produce		json
 //	@Param			reset	body		code.ResetPasswordDto	true	"Reset password"
 //	@Success		200
 //	@Failure		400	{object}	utils.HttpError
-//	@Router			/auth/reset [post]
+//	@Router			/api/code/reset [post]
 func (cc *CodeController) ResetPassword(c *gin.Context) {
 	body, _ := c.MustGet("body").(ResetPasswordDto)
 	tags := []string{"CodeController", "ResetPassword"}
@@ -221,7 +221,7 @@ func (cc *CodeController) ResetPassword(c *gin.Context) {
 //
 //	@Summary		Request password reset
 //	@Description	Request password reset
-//	@Tags			auth
+//	@Tags			code
 //	@Accept			json
 //	@Produce		json
 //	@Param			request	body	code.RequestCodeDto	true	"Request password reset"
