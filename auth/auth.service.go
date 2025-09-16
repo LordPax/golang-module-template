@@ -66,7 +66,7 @@ func (as *AuthService) SendWelcomeAndVerif(user *user.User) error {
 		return fmt.Errorf("Failed to create code")
 	}
 
-	if err := as.codeService.SendCodeEmail(user.Email, code.Code); err != nil {
+	if err := as.codeService.SendVerifCodeEmail(user.Email, code.Code); err != nil {
 		as.logService.Errorf(tags, "Failed to send code email to user %s: %v", user.Email, err)
 		return fmt.Errorf("Failed to send code email")
 	}

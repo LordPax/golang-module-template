@@ -37,14 +37,22 @@ func (cc *CodeController) OnInit() error {
 
 func (cc *CodeController) RegisterRoutes() {
 	fmt.Println("Registering Code routes")
-	verify := cc.ginService.Group.Group("/code")
-	verify.POST("/verify",
+	code := cc.ginService.Group.Group("/code")
+	code.POST("/verify",
 		middleware.Validate[VerifyUserDto](),
 		cc.Verify,
 	)
-	verify.POST("/request",
+	code.POST("/request-verify",
 		middleware.Validate[RequestCodeDto](),
 		cc.RequestCode,
+	)
+	code.POST("/reset",
+		middleware.Validate[ResetPasswordDto](),
+		cc.ResetPassword,
+	)
+	code.POST("/request-reset",
+		middleware.Validate[RequestCodeDto](),
+		cc.RequestPasswordReset,
 	)
 }
 
@@ -111,7 +119,7 @@ func (cc *CodeController) Verify(c *gin.Context) {
 //	@Param			request	body	code.RequestCodeDto	true	"Request code"
 //	@Success		200
 //	@Failure		400	{object}	utils.HttpError
-//	@Router			/api/code/request [post]
+//	@Router			/api/code/request-verify [post]
 func (cc *CodeController) RequestCode(c *gin.Context) {
 	body, _ := c.MustGet("body").(RequestCodeDto)
 	tags := []string{"CodeController", "RequestCode"}
@@ -144,11 +152,113 @@ func (cc *CodeController) RequestCode(c *gin.Context) {
 		return
 	}
 
-	if err := cc.codeService.SendCodeEmail(user.Email, code.Code); err != nil {
+	if err := cc.codeService.SendVerifCodeEmail(user.Email, code.Code); err != nil {
 		cc.logService.Errorf(tags, "Failed to send code email to user %s: %v", user.Email, err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send code email"})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Code sent successfully"})
+}
+
+// ResetPassword godoc
+//
+//	@Summary		Reset password
+//	@Description	Reset user password
+//	@Tags			auth
+//	@Accept			json
+//	@Produce		json
+//	@Param			reset	body		code.ResetPasswordDto	true	"Reset password"
+//	@Success		200
+//	@Failure		400	{object}	utils.HttpError
+//	@Router			/auth/reset [post]
+func (cc *CodeController) ResetPassword(c *gin.Context) {
+	body, _ := c.MustGet("body").(ResetPasswordDto)
+	tags := []string{"CodeController", "ResetPassword"}
+
+	code, err := cc.codeService.FindOneByCodeAndEmail(body.Code, body.Email)
+	if err != nil {
+		cc.logService.Errorf(tags, "Verification code not found: %v", err)
+		c.JSON(http.StatusNotFound, gin.H{"error": "Verification code not found"})
+		return
+	}
+
+	if code.IsExpired() {
+		cc.logService.Errorf(tags, "Verification code expired for email: %s", body.Email)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid or expired verification code"})
+		return
+	}
+
+	user, err := cc.userService.FindOneBy("email", body.Email)
+	if err != nil {
+		cc.logService.Errorf(tags, "User %s not found: %v", body.Email, err)
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+
+	if user.HashPassword(body.Password) != nil {
+		cc.logService.Errorf(tags, "Failed to hash password for user %s", user.Email)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
+		return
+	}
+
+	if err := cc.userService.Update(user); err != nil {
+		cc.logService.Errorf(tags, "Failed to reset password for user %s: %v", user.Email, err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to reset password"})
+		return
+	}
+
+	if err := cc.codeService.Delete(code.ID); err != nil {
+		cc.logService.Errorf(tags, "Failed to delete verification code for user %s: %v", user.Email, err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete verification code"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Password reset successfully"})
+}
+
+// RequestPasswordReset godoc
+//
+//	@Summary		Request password reset
+//	@Description	Request password reset
+//	@Tags			auth
+//	@Accept			json
+//	@Produce		json
+//	@Param			request	body	code.RequestCodeDto	true	"Request password reset"
+//	@Success		200
+//	@Failure		400	{object}	utils.HttpError
+//	@Router			/api/code/request-reset [post]
+func (cc *CodeController) RequestPasswordReset(c *gin.Context) {
+	body, _ := c.MustGet("body").(RequestCodeDto)
+	tags := []string{"CodeController", "RequestPasswordReset"}
+
+	user, err := cc.userService.FindOneBy("email", body.Email)
+	if err != nil {
+		cc.logService.Errorf(tags, "Email %s not found: %v", body.Email, err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Email not found"})
+		return
+	}
+
+	code := NewCode(user.ID, user.Email)
+	code.GenerateCode()
+
+	if err := cc.codeService.DeleteBy("user_id", user.ID); err != nil {
+		cc.logService.Errorf(tags, "Failed to delete existing reset codes for user %s: %v", user.Email, err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete existing reset codes"})
+		return
+	}
+
+	if err := cc.codeService.Create(code); err != nil {
+		cc.logService.Errorf(tags, "Failed to create password reset code for user %s: %v", user.Email, err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create password reset code"})
+		return
+	}
+
+	if err := cc.codeService.SendResetCodeEmail(user.Email, code.Code); err != nil {
+		cc.logService.Errorf(tags, "Failed to send code email to user %s: %v", user.Email, err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send code email"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Password reset code sent successfully"})
 }

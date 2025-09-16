@@ -56,9 +56,16 @@ func (cs *CodeService) DeleteExpiredCodes() error {
 	return cs.codeModel.DeleteExpiredCodes()
 }
 
-func (cs *CodeService) SendCodeEmail(receiver, code string) error {
+func (cs *CodeService) SendVerifCodeEmail(receiver, code string) error {
 	path := "code/template/verification.html"
 	subject := "Vérifier votre adresse e-mail"
+	params := map[string]any{"code": code}
+	return cs.emailService.SendHtmlTemplate(receiver, path, subject, params)
+}
+
+func (cs *CodeService) SendResetCodeEmail(receiver, code string) error {
+	path := "code/template/reset.html"
+	subject := "Réinitialiser votre mot de passe"
 	params := map[string]any{"code": code}
 	return cs.emailService.SendHtmlTemplate(receiver, path, subject, params)
 }

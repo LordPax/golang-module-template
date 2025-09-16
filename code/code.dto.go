@@ -10,7 +10,7 @@ type RequestCodeDto struct {
 }
 
 type ResetPasswordDto struct {
-	Email       string `json:"email" validate:"required,email"`
-	Code        string `json:"code" validate:"required"`
-	NewPassword string `json:"new_password" validate:"required"`
+	Email    string `json:"email" validate:"required,email"`
+	Code     string `json:"code" validate:"required"`
+	Password string `json:"password" validate:"required"`
 }
