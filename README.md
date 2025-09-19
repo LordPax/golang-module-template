@@ -6,10 +6,10 @@ Ce projet est un template d'API REST en Go.
 
 ## Technologies utilisées
 
-* [Go](https://golang.org/)
-* [Swag](https://github.com/swaggo/swag)
-* [docker](https://www.docker.com/)
-* [docker-compose](https://docs.docker.com/compose/)
+- [Go](https://golang.org/)
+- [Swag](https://github.com/swaggo/swag)
+- [docker](https://www.docker.com/)
+- [docker-compose](https://docs.docker.com/compose/)
 
 ## Initialisation du projet
 
@@ -57,10 +57,21 @@ OS_CLOUD=openstack
 ```bash
 go mod download
 go mod vendor
-swag init
 ```
 
 3. Build le projet :
 ```bash
+swag init
 go build
+```
+
+4. Migrer la base de données :
+```bash
+./golang-api call db:migrate
+./golang-api call db:fixtures # optionnel
+```
+
+5. Lancer le serveur :
+```bash
+./golang-api
 ```
