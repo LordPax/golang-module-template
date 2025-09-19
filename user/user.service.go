@@ -7,15 +7,27 @@ import (
 	"github.com/LordPax/sockevent"
 )
 
+type IUserService interface {
+	core.IProvider
+	FindAll(q query.QueryFilter) ([]*User, error)
+	FindByID(id string) (*User, error)
+	FindOneBy(field string, value any) (*User, error)
+	Create(user *User) error
+	Update(user *User) error
+	Delete(id string) error
+	IsUserExists(email, username string) bool
+	CountStats(ws *sockevent.Websocket) map[string]int
+}
+
 type UserService struct {
 	*core.Provider
-	userModel *UserModel
+	userModel IUserModel
 }
 
 func NewUserService(module *UserModule) *UserService {
 	return &UserService{
 		Provider:  core.NewProvider("UserService"),
-		userModel: module.Get("UserModel").(*UserModel),
+		userModel: module.Get("UserModel").(IUserModel),
 	}
 }
 

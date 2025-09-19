@@ -8,6 +8,13 @@ import (
 	"time"
 )
 
+type IUserModel interface {
+	core.IModel[*User]
+	QueryFindAll(q query.QueryFilter) ([]*User, error)
+	DeleteByID(id string) error
+	CountAll() (int64, error)
+}
+
 type UserModel struct {
 	*core.Model[*User]
 	databaseService *database.DatabaseService

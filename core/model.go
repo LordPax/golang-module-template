@@ -79,7 +79,7 @@ func (m *Model[T]) DeleteBy(field string, value any) error {
 }
 
 // UpdateByID updates a record by its ID with the provided updates.
-func (m *Model[T]) UpdateByID(id string, updates any) error {
+func (m *Model[T]) UpdateByID(id string, updates T) error {
 	return m.db.Model(new(T)).Where("id = ?", id).Updates(updates).Error
 }
 
