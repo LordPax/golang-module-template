@@ -12,15 +12,19 @@ type LogModel struct {
 }
 
 func NewLogModel(module *LogModule) *LogModel {
-	return &LogModel{
+	service := &LogModel{
 		Model:           core.NewModel[*Log]("LogModel"),
 		databaseService: module.Get("DatabaseService").(*database.DatabaseService),
 	}
+
+	module.On("db:migrate", service.Migrate)
+
+	return service
 }
 
 func (um *LogModel) OnInit() error {
 	um.SetDB(um.databaseService.GetDB())
-	return um.Migrate()
+	return nil
 }
 
 func (um *LogModel) QueryFindAll(q query.QueryFilter) ([]*Log, error) {

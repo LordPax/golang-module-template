@@ -13,16 +13,20 @@ type TokenModel struct {
 }
 
 func NewTokenModel(module *TokenModule) *TokenModel {
-	return &TokenModel{
+	service := &TokenModel{
 		Model:           core.NewModel[*Token]("TokenModel"),
 		databaseService: module.Get("DatabaseService").(*database.DatabaseService),
 		dotenvService:   module.Get("DotenvService").(*dotenv.DotenvService),
 	}
+
+	module.On("db:migrate", service.Migrate)
+
+	return service
 }
 
 func (um *TokenModel) OnInit() error {
 	um.SetDB(um.databaseService.GetDB())
-	return um.Migrate()
+	return nil
 }
 
 func (um *TokenModel) DeleteByUserID(userID string) error {

@@ -14,15 +14,19 @@ type UserModel struct {
 }
 
 func NewUserModel(module *UserModule) *UserModel {
-	return &UserModel{
+	service := &UserModel{
 		Model:           core.NewModel[*User]("UserModel"),
 		databaseService: module.Get("DatabaseService").(*database.DatabaseService),
 	}
+
+	module.On("db:migrate", service.Migrate)
+
+	return service
 }
 
 func (um *UserModel) OnInit() error {
 	um.SetDB(um.databaseService.GetDB())
-	return um.Migrate()
+	return nil
 }
 
 func (um *UserModel) QueryFindAll(q query.QueryFilter) ([]*User, error) {

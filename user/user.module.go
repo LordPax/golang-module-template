@@ -31,6 +31,7 @@ func NewUserModule() *UserModule {
 	module.AddProvider(NewUserService(module))
 	module.AddProvider(NewUserMiddleware(module))
 	module.AddProvider(NewUserController(module))
+	module.AddProvider(NewUserFixture(module))
 
 	return module
 }

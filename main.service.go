@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"golang-api/core"
 	"golang-api/database"
 	"golang-api/gin"
+	"os"
 )
 
 type MainService struct {
@@ -22,5 +24,48 @@ func NewMainService(module *MainModule) *MainService {
 
 func (ms *MainService) Start() {
 	defer ms.databaseService.Close()
+	if len(os.Args) > 1 {
+		switch os.Args[1] {
+		case "h", "help":
+			ms.help()
+			return
+		case "l", "list":
+			ms.list()
+			return
+		case "c", "call":
+			ms.call()
+			return
+		default:
+			fmt.Printf("Unknown command: %s\n", os.Args[1])
+			return
+		}
+	}
+
 	ms.ginService.Run()
+
+	return
+}
+
+func (ms *MainService) help() {
+	fmt.Printf("Usage: %s <command> [args...] \n", os.Args[0])
+	fmt.Println("Commands:")
+	fmt.Println("  h, help      Show this help message")
+	fmt.Println("  l, list      List all events")
+	fmt.Println("  c, call      Call an event")
+}
+
+func (ms *MainService) list() {
+	listEvent := ms.GetModule().List()
+	for _, event := range listEvent {
+		fmt.Println(event)
+	}
+}
+
+func (ms *MainService) call() {
+	if err := ms.GetModule().Call(os.Args[2]); err != nil {
+		panic(err)
+	}
+	if !core.CalledEvent {
+		fmt.Printf("Event %s not found\n", os.Args[2])
+	}
 }

@@ -13,15 +13,19 @@ type CodeModel struct {
 }
 
 func NewCodeModel(module *CodeModule) *CodeModel {
-	return &CodeModel{
+	service := &CodeModel{
 		Model:           core.NewModel[*Code]("CodeModel"),
 		databaseService: module.Get("DatabaseService").(*database.DatabaseService),
 	}
+
+	module.On("db:migrate", service.Migrate)
+
+	return service
 }
 
 func (cm *CodeModel) OnInit() error {
 	cm.SetDB(cm.databaseService.GetDB())
-	return cm.Migrate()
+	return nil
 }
 
 func (cm *CodeModel) QueryFindAll(q query.QueryFilter) ([]*Code, error) {

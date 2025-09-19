@@ -12,7 +12,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 type AuthController struct {
@@ -144,7 +143,6 @@ func (ac *AuthController) Register(c *gin.Context) {
 	}
 
 	user := &user.User{
-		ID:        uuid.New().String(),
 		Firstname: body.Firstname,
 		Lastname:  body.Lastname,
 		Username:  body.Username,

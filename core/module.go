@@ -2,7 +2,13 @@ package core
 
 import "fmt"
 
-var moduleSeen []string
+var (
+	moduleSeen     []string
+	moduleSeenCall []string
+	CalledEvent    bool
+)
+
+type FuncCb func() error
 
 // IModule defines the interface for a module that can manage providers and dependencies.
 type IModule interface {
@@ -12,6 +18,10 @@ type IModule interface {
 	AddModule(dep IModule)
 	Init() error
 	getProvider(provider string) IProvider
+	On(event string, cb FuncCb)
+	callEvent(event string) error
+	Call(event string) error
+	List() []string
 }
 
 // Module is a struct that implements the IModule interface, managing providers and dependencies.
@@ -19,6 +29,7 @@ type Module struct {
 	name     string
 	module   map[string]IModule
 	provider map[string]IProvider
+	events   map[string]FuncCb
 }
 
 // NewModule creates a new instance of Module with the given name.
@@ -27,6 +38,7 @@ func NewModule(name string) *Module {
 		name:     name,
 		module:   make(map[string]IModule),
 		provider: make(map[string]IProvider),
+		events:   make(map[string]FuncCb),
 	}
 }
 
@@ -89,4 +101,60 @@ func (m *Module) Init() error {
 	}
 
 	return nil
+}
+
+// On registers a callback function for a specific event.
+func (m *Module) On(event string, cb FuncCb) {
+	m.events[event] = cb
+}
+
+func (m *Module) callEvent(event string) error {
+	cb, ok := m.events[event]
+	if !ok {
+		return nil
+	}
+	CalledEvent = true
+	return cb()
+}
+
+// Call triggers the callback function associated with a specific event.
+func (m *Module) Call(event string) error {
+	for _, d := range m.module {
+		if inArray(d.GetName(), moduleSeenCall) {
+			continue
+		}
+
+		moduleSeenCall = append(moduleSeenCall, d.GetName())
+
+		if err := d.Call(event); err != nil {
+			return err
+		}
+	}
+
+	if err := m.callEvent(event); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// List returns a list of event names registered in the module and its dependencies.
+func (m *Module) List() []string {
+	var list []string
+
+	for _, d := range m.module {
+		if inArray(d.GetName(), moduleSeenCall) {
+			continue
+		}
+
+		moduleSeenCall = append(moduleSeenCall, d.GetName())
+		list = append(list, d.List()...)
+	}
+
+	for event := range m.events {
+		line := "- " + event + " (" + m.GetName() + ")"
+		list = append(list, line)
+	}
+
+	return list
 }

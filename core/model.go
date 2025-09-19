@@ -89,3 +89,9 @@ func (m *Model[T]) CountBy(field string, value any) (int64, error) {
 	err := m.db.Model(new(T)).Where(field, value).Count(&count).Error
 	return count, err
 }
+
+func (m *Model[T]) ClearTable() error {
+	return m.db.
+		Session(&gorm.Session{AllowGlobalUpdate: true}).
+		Delete(new(T)).Error
+}

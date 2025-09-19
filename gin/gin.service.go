@@ -79,6 +79,7 @@ func (gs *GinService) InitEngine() {
 
 func (gs *GinService) Run() {
 	port := gs.dotenvService.Get("PORT")
+	fmt.Printf("Starting server on port %s\n", port)
 	if err := gs.r.Run(port); err != nil {
 		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 		os.Exit(1)

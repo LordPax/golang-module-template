@@ -12,15 +12,19 @@ type MediaModel struct {
 }
 
 func NewMediaModel(module *MediaModule) *MediaModel {
-	return &MediaModel{
+	service := &MediaModel{
 		Model:           core.NewModel[*Media]("MediaModel"),
 		databaseService: module.Get("DatabaseService").(*database.DatabaseService),
 	}
+
+	module.On("db:migrate", service.Migrate)
+
+	return service
 }
 
 func (um *MediaModel) OnInit() error {
 	um.SetDB(um.databaseService.GetDB())
-	return um.Migrate()
+	return nil
 }
 
 func (um *MediaModel) QueryFindAll(q query.QueryFilter) ([]*Media, error) {
