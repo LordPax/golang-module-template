@@ -14,6 +14,14 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+type IGinService interface {
+	core.IProvider
+	InitEngine()
+	Run()
+	Swagger()
+	Cors() gin.HandlerFunc
+}
+
 type GinService struct {
 	*core.Provider
 	dotenvService *dotenv.DotenvService

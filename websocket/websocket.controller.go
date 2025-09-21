@@ -12,6 +12,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type IWebsocketController interface {
+	core.IProvider
+	RegisterRoutes()
+	WsHandler(ws *sockevent.Websocket) gin.HandlerFunc
+}
+
 type WebsocketController struct {
 	*core.Provider
 	websocketService *WebsocketService

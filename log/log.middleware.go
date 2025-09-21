@@ -7,6 +7,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type ILogMiddleware interface {
+	core.IProvider
+	FindOne(name string) gin.HandlerFunc
+}
+
 type LogMiddleware struct {
 	*core.Provider
 	logService *LogService

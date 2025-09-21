@@ -11,6 +11,11 @@ type MediaModel struct {
 	databaseService *database.DatabaseService
 }
 
+type IMediaModel interface {
+	core.IModel[*Media]
+	QueryFindAll(q query.QueryFilter) ([]*Media, error)
+}
+
 func NewMediaModel(module *MediaModule) *MediaModel {
 	service := &MediaModel{
 		Model:           core.NewModel[*Media]("MediaModel"),

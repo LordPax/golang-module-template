@@ -8,6 +8,17 @@ import (
 	jwt "github.com/golang-jwt/jwt/v5"
 )
 
+type ITokenService interface {
+	core.IProvider
+	FindByID(id string) (*Token, error)
+	FindOneBy(field string, value any) (*Token, error)
+	Create(token *Token) error
+	Delete(id string) error
+	DeleteByUserID(userID string) error
+	Update(token *Token) error
+	ParseJWTToken(tokenString string) (*UserClaims, error)
+}
+
 type TokenService struct {
 	*core.Provider
 	tokenModel    *TokenModel

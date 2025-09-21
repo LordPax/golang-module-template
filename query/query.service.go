@@ -7,6 +7,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type IQueryService interface {
+	core.IProvider
+	QueryFilter() gin.HandlerFunc
+}
+
 type QueryService struct {
 	*core.Provider
 }

@@ -6,6 +6,11 @@ import (
 	"golang-api/query"
 )
 
+type ILogModel interface {
+	core.IProvider
+	QueryFindAll(q query.QueryFilter) ([]*Log, error)
+}
+
 type LogModel struct {
 	*core.Model[*Log]
 	databaseService *database.DatabaseService

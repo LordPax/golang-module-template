@@ -14,6 +14,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type IAuthController interface {
+	core.IProvider
+	RegisterRoutes()
+	Login(c *gin.Context)
+	Register(c *gin.Context)
+	Logout(c *gin.Context)
+	Refresh(c *gin.Context)
+}
+
 type AuthController struct {
 	*core.Provider
 	authService    *AuthService

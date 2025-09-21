@@ -6,6 +6,16 @@ import (
 	"golang-api/query"
 )
 
+type ILogService interface {
+	core.IProvider
+	FindAll(q query.QueryFilter) ([]*Log, error)
+	FindByID(id string) (*Log, error)
+	FindOneBy(field string, value any) (*Log, error)
+	Create(log *Log) error
+	Printf(tags []string, format string, v ...any)
+	Errorf(tags []string, format string, v ...any)
+}
+
 type LogService struct {
 	*core.Provider
 	logModel *LogModel

@@ -9,6 +9,15 @@ import (
 	"gorm.io/gorm"
 )
 
+type IDatabaseService interface {
+	core.IProvider
+	Connect() error
+	GetDB() *gorm.DB
+	Close() error
+	Migrate(models ...interface{}) error
+	Table(name string) *gorm.DB
+}
+
 type DatabaseService struct {
 	*core.Provider
 	DB            *gorm.DB

@@ -7,6 +7,13 @@ import (
 	"os"
 )
 
+type IDotenvService interface {
+	core.IProvider
+	Load() error
+	Get(key string) string
+	Set(key, value string)
+}
+
 type DotenvService struct {
 	*core.Provider
 	values   map[string]string

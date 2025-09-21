@@ -6,6 +6,21 @@ import (
 	"golang-api/query"
 )
 
+type ICodeService interface {
+	core.IProvider
+	FindAll(q query.QueryFilter) ([]*Code, error)
+	FindByID(id string) (*Code, error)
+	FindOneBy(field string, value any) (*Code, error)
+	FindOneByCodeAndEmail(code, email string) (*Code, error)
+	Create(code *Code) error
+	Update(code *Code) error
+	Delete(id string) error
+	DeleteBy(field string, value any) error
+	DeleteExpiredCodes() error
+	SendVerifCodeEmail(receiver, code string) error
+	SendResetCodeEmail(receiver, code string) error
+}
+
 type CodeService struct {
 	*core.Provider
 	codeModel    *CodeModel

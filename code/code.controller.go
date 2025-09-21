@@ -12,6 +12,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type ICodeController interface {
+	core.IProvider
+	RegisterRoutes()
+	Verify(c *gin.Context)
+	RequestCode(c *gin.Context)
+	ResetPassword(c *gin.Context)
+	RequestPasswordReset(c *gin.Context)
+}
+
 type CodeController struct {
 	*core.Provider
 	codeService *CodeService

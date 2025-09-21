@@ -9,6 +9,11 @@ import (
 	"gorm.io/gorm"
 )
 
+type ICode interface {
+	GenerateCode()
+	IsExpired() bool
+}
+
 type Code struct {
 	ID        string    `json:"id" gorm:"primaryKey"`
 	UserID    string    `json:"user_id" gorm:"type:varchar(100)"`

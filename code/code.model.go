@@ -7,6 +7,13 @@ import (
 	"time"
 )
 
+type ICodeModel interface {
+	core.IModel[*Code]
+	QueryFindAll(q query.QueryFilter) ([]*Code, error)
+	FindOneByCodeAndEmail(code, email string) (*Code, error)
+	DeleteExpiredCodes() error
+}
+
 type CodeModel struct {
 	*core.Model[*Code]
 	databaseService *database.DatabaseService

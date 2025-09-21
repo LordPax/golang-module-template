@@ -14,6 +14,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type IAuthService interface {
+	core.IProvider
+	SetAuthCookies(c *gin.Context, token *token.Token)
+	ClearAuthCookies(c *gin.Context)
+	SendWelcomeEmail(receiver, name string) error
+	SendWelcomeAndVerif(user *user.User) error
+}
+
 type AuthService struct {
 	*core.Provider
 	dotenvService *dotenv.DotenvService

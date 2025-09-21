@@ -10,6 +10,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type IUserMiddleware interface {
+	core.IProvider
+	FindOne(name string) gin.HandlerFunc
+	IsAdmin() gin.HandlerFunc
+	IsMe() gin.HandlerFunc
+	IsLoggedIn(mandatory bool) gin.HandlerFunc
+}
+
 type UserMiddleware struct {
 	*core.Provider
 	userService  *UserService

@@ -13,6 +13,15 @@ import (
 	brevo "github.com/getbrevo/brevo-go/lib"
 )
 
+type IEmailService interface {
+	core.IProvider
+	Authenticate() error
+	Send(email, subject, content string) error
+	SendHtml(email, subject, htmlContent string) error
+	SendHtmlTemplate(email, path, subject string, params map[string]any) error
+	LoadHtmlTemplate(filePath string, params map[string]interface{}) string
+}
+
 type EmailService struct {
 	*core.Provider
 	dotenvService *dotenv.DotenvService

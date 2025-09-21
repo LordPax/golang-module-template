@@ -8,6 +8,11 @@ import (
 	"github.com/LordPax/sockevent"
 )
 
+type IPingWebsocket interface {
+	core.IProvider
+	Ping(client *sockevent.Client, message any) error
+}
+
 type PingWebsocket struct {
 	*core.Provider
 	websocketService *WebsocketService

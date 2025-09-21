@@ -13,6 +13,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type IUserController interface {
+	core.IProvider
+	RegisterRoutes()
+	FindAll(c *gin.Context)
+	FindOne(c *gin.Context)
+	FindMe(c *gin.Context)
+	Update(c *gin.Context)
+	UploadImage(c *gin.Context)
+	Delete(c *gin.Context)
+}
+
 type UserController struct {
 	*core.Provider
 	userService     *UserService

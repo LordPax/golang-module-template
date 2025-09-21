@@ -9,6 +9,12 @@ import (
 	"github.com/LordPax/sockevent"
 )
 
+type IUserWebsocket interface {
+	core.IProvider
+	OnInit() error
+	UserStats(client *sockevent.Client, message any) error
+}
+
 type UserWebsocket struct {
 	*core.Provider
 	userService      *user.UserService

@@ -17,6 +17,13 @@ import (
 	"github.com/gophercloud/gophercloud/v2/openstack/objectstorage/v1/objects"
 )
 
+type IOpenstackService interface {
+	core.IProvider
+	Authenticate() error
+	CreateContainerIfNotExist(containerName string) error
+	UploadFile(file io.Reader, objectName string, containerName string) (string, error)
+}
+
 type OpenstackService struct {
 	*core.Provider
 	dotenvService *dotenv.DotenvService

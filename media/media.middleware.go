@@ -11,6 +11,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type IMediaMiddleware interface {
+	core.IProvider
+	FileUploader(availableType []string, availabeSize int, containerName string) gin.HandlerFunc
+}
+
 type MediaMiddleware struct {
 	*core.Provider
 	mediaService     *MediaService

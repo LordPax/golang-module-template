@@ -9,13 +9,14 @@ import (
 	"github.com/google/uuid"
 )
 
-// type IMediaService interface {
-// 	core.IProvider
-// 	FindAll(query.QueryFilter) ([]*Media, error)
-// 	FindByID(string) (*Media, error)
-// 	FindOneBy(string, any) (*Media, error)
-// 	Create(*Media) error
-// }
+type IMediaService interface {
+	core.IProvider
+	FindAll(query.QueryFilter) ([]*Media, error)
+	FindByID(string) (*Media, error)
+	FindOneBy(string, any) (*Media, error)
+	Create(*Media) error
+	UploadMedia(io.Reader, string, string, int64, string) (*Media, error)
+}
 
 type MediaService struct {
 	*core.Provider

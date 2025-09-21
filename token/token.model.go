@@ -6,6 +6,11 @@ import (
 	"golang-api/dotenv"
 )
 
+type ITokenModel interface {
+	core.IModel[*Token]
+	DeleteByUserID(userID string) error
+}
+
 type TokenModel struct {
 	*core.Model[*Token]
 	databaseService *database.DatabaseService

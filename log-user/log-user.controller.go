@@ -12,6 +12,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type ILogUserController interface {
+	core.IProvider
+	RegisterRoutes()
+	FindAll(c *gin.Context)
+	FindOne(c *gin.Context)
+}
+
 type LogUserController struct {
 	*core.Provider
 	logService     *log.LogService
