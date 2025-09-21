@@ -26,7 +26,7 @@ type IOpenstackService interface {
 
 type OpenstackService struct {
 	*core.Provider
-	dotenvService *dotenv.DotenvService
+	dotenvService dotenv.IDotenvService
 	client        *gophercloud.ServiceClient
 	ctx           context.Context
 }
@@ -34,7 +34,7 @@ type OpenstackService struct {
 func NewOpenstackService(module *MediaModule) *OpenstackService {
 	return &OpenstackService{
 		Provider:      core.NewProvider("OpenstackService"),
-		dotenvService: module.Get("DotenvService").(*dotenv.DotenvService),
+		dotenvService: module.Get("DotenvService").(dotenv.IDotenvService),
 		ctx:           context.Background(),
 	}
 }

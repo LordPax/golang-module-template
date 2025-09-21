@@ -25,25 +25,25 @@ type IAuthController interface {
 
 type AuthController struct {
 	*core.Provider
-	authService    *AuthService
-	tokenService   *token.TokenService
-	userService    *user.UserService
-	dotenvService  *dotenv.DotenvService
-	userMiddleware *user.UserMiddleware
-	logService     *log.LogService
-	ginService     *ginM.GinService
+	authService    IAuthService
+	tokenService   token.ITokenService
+	userService    user.IUserService
+	dotenvService  dotenv.IDotenvService
+	userMiddleware user.IUserMiddleware
+	logService     log.ILogService
+	ginService     ginM.IGinService
 }
 
 func NewAuthController(module *AuthModule) *AuthController {
 	return &AuthController{
 		Provider:       core.NewProvider("AuthController"),
-		authService:    module.Get("AuthService").(*AuthService),
-		tokenService:   module.Get("TokenService").(*token.TokenService),
-		userService:    module.Get("UserService").(*user.UserService),
-		dotenvService:  module.Get("DotenvService").(*dotenv.DotenvService),
-		userMiddleware: module.Get("UserMiddleware").(*user.UserMiddleware),
-		logService:     module.Get("LogService").(*log.LogService),
-		ginService:     module.Get("GinService").(*ginM.GinService),
+		authService:    module.Get("AuthService").(IAuthService),
+		tokenService:   module.Get("TokenService").(token.ITokenService),
+		userService:    module.Get("UserService").(user.IUserService),
+		dotenvService:  module.Get("DotenvService").(dotenv.IDotenvService),
+		userMiddleware: module.Get("UserMiddleware").(user.IUserMiddleware),
+		logService:     module.Get("LogService").(log.ILogService),
+		ginService:     module.Get("GinService").(ginM.IGinService),
 	}
 }
 
@@ -54,7 +54,7 @@ func (ac *AuthController) OnInit() error {
 
 func (ac *AuthController) RegisterRoutes() {
 	fmt.Println("Registering Auth routes")
-	auth := ac.ginService.Group.Group("/auth")
+	auth := ac.ginService.GetGroup().Group("/auth")
 	auth.POST("/login",
 		middleware.Validate[user.LoginDto](),
 		ac.Login,

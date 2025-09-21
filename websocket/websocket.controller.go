@@ -20,19 +20,19 @@ type IWebsocketController interface {
 
 type WebsocketController struct {
 	*core.Provider
-	websocketService *WebsocketService
-	logService       *log.LogService
-	userMiddleware   *user.UserMiddleware
-	ginService       *ginM.GinService
+	websocketService IWebsocketService
+	logService       log.ILogService
+	userMiddleware   user.IUserMiddleware
+	ginService       ginM.IGinService
 }
 
 func NewWebsocketController(module *WebsocketModule) *WebsocketController {
 	return &WebsocketController{
 		Provider:         core.NewProvider("WebsocketController"),
-		websocketService: module.Get("WebsocketService").(*WebsocketService),
-		logService:       module.Get("LogService").(*log.LogService),
-		userMiddleware:   module.Get("UserMiddleware").(*user.UserMiddleware),
-		ginService:       module.Get("GinService").(*ginM.GinService),
+		websocketService: module.Get("WebsocketService").(IWebsocketService),
+		logService:       module.Get("LogService").(log.ILogService),
+		userMiddleware:   module.Get("UserMiddleware").(user.IUserMiddleware),
+		ginService:       module.Get("GinService").(ginM.IGinService),
 	}
 }
 
@@ -43,9 +43,9 @@ func (wc *WebsocketController) OnInit() error {
 }
 
 func (wc *WebsocketController) RegisterRoutes() {
-	wc.ginService.Group.GET("/ws",
+	wc.ginService.GetGroup().GET("/ws",
 		wc.userMiddleware.IsLoggedIn(false),
-		wc.WsHandler(wc.websocketService.Ws),
+		wc.WsHandler(wc.websocketService.GetWs()),
 	)
 }
 

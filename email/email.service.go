@@ -24,8 +24,8 @@ type IEmailService interface {
 
 type EmailService struct {
 	*core.Provider
-	dotenvService *dotenv.DotenvService
-	logService    *log.LogService
+	dotenvService dotenv.IDotenvService
+	logService    log.ILogService
 	client        *brevo.APIClient
 	ctx           context.Context
 	tags          []string
@@ -34,8 +34,8 @@ type EmailService struct {
 func NewEmailService(module *EmailModule) *EmailService {
 	return &EmailService{
 		Provider:      core.NewProvider("EmailService"),
-		dotenvService: module.Get("DotenvService").(*dotenv.DotenvService),
-		logService:    module.Get("LogService").(*log.LogService),
+		dotenvService: module.Get("DotenvService").(dotenv.IDotenvService),
+		logService:    module.Get("LogService").(log.ILogService),
 		ctx:           context.Background(),
 		tags:          []string{"Email"},
 	}

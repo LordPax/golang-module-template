@@ -17,13 +17,13 @@ type IUserModel interface {
 
 type UserModel struct {
 	*core.Model[*User]
-	databaseService *database.DatabaseService
+	databaseService database.IDatabaseService
 }
 
 func NewUserModel(module *UserModule) *UserModel {
 	service := &UserModel{
 		Model:           core.NewModel[*User]("UserModel"),
-		databaseService: module.Get("DatabaseService").(*database.DatabaseService),
+		databaseService: module.Get("DatabaseService").(database.IDatabaseService),
 	}
 
 	module.On("db:migrate", service.Migrate)

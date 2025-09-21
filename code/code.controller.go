@@ -23,19 +23,19 @@ type ICodeController interface {
 
 type CodeController struct {
 	*core.Provider
-	codeService *CodeService
-	userService *user.UserService
-	ginService  *ginM.GinService
-	logService  *log.LogService
+	codeService ICodeService
+	userService user.IUserService
+	ginService  ginM.IGinService
+	logService  log.ILogService
 }
 
 func NewCodeController(module *CodeModule) *CodeController {
 	return &CodeController{
 		Provider:    core.NewProvider("CodeController"),
-		codeService: module.Get("CodeService").(*CodeService),
-		userService: module.Get("UserService").(*user.UserService),
-		ginService:  module.Get("GinService").(*ginM.GinService),
-		logService:  module.Get("LogService").(*log.LogService),
+		codeService: module.Get("CodeService").(ICodeService),
+		userService: module.Get("UserService").(user.IUserService),
+		ginService:  module.Get("GinService").(ginM.IGinService),
+		logService:  module.Get("LogService").(log.ILogService),
 	}
 }
 
@@ -46,7 +46,7 @@ func (cc *CodeController) OnInit() error {
 
 func (cc *CodeController) RegisterRoutes() {
 	fmt.Println("Registering Code routes")
-	code := cc.ginService.Group.Group("/code")
+	code := cc.ginService.GetGroup().Group("/code")
 	code.POST("/verify",
 		middleware.Validate[VerifyUserDto](),
 		cc.Verify,

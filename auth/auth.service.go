@@ -24,19 +24,19 @@ type IAuthService interface {
 
 type AuthService struct {
 	*core.Provider
-	dotenvService *dotenv.DotenvService
-	emailService  *email.EmailService
-	logService    *log.LogService
-	codeService   *codeM.CodeService
+	dotenvService dotenv.IDotenvService
+	emailService  email.IEmailService
+	logService    log.ILogService
+	codeService   codeM.ICodeService
 }
 
 func NewAuthService(module *AuthModule) *AuthService {
 	return &AuthService{
 		Provider:      core.NewProvider("AuthService"),
-		dotenvService: module.Get("DotenvService").(*dotenv.DotenvService),
-		emailService:  module.Get("EmailService").(*email.EmailService),
-		logService:    module.Get("LogService").(*log.LogService),
-		codeService:   module.Get("CodeService").(*codeM.CodeService),
+		dotenvService: module.Get("DotenvService").(dotenv.IDotenvService),
+		emailService:  module.Get("EmailService").(email.IEmailService),
+		logService:    module.Get("LogService").(log.ILogService),
+		codeService:   module.Get("CodeService").(codeM.ICodeService),
 	}
 }
 

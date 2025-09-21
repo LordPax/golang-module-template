@@ -21,15 +21,15 @@ type ITokenService interface {
 
 type TokenService struct {
 	*core.Provider
-	tokenModel    *TokenModel
-	dotenvService *dotenv.DotenvService
+	tokenModel    ITokenModel
+	dotenvService dotenv.IDotenvService
 }
 
 func NewTokenService(module *TokenModule) *TokenService {
 	return &TokenService{
 		Provider:      core.NewProvider("TokenService"),
-		tokenModel:    module.Get("TokenModel").(*TokenModel),
-		dotenvService: module.Get("DotenvService").(*dotenv.DotenvService),
+		tokenModel:    module.Get("TokenModel").(ITokenModel),
+		dotenvService: module.Get("DotenvService").(dotenv.IDotenvService),
 	}
 }
 

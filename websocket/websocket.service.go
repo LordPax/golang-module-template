@@ -15,19 +15,20 @@ type IWebsocketService interface {
 	SendNbUserToAdmin() error
 	Connect(client *sockevent.Client, wr http.ResponseWriter, r *http.Request) error
 	Disconnect(client *sockevent.Client) error
+	GetWs() *sockevent.Websocket
 }
 
 type WebsocketService struct {
 	*core.Provider
 	Ws          *sockevent.Websocket
-	userService *user.UserService
+	userService user.IUserService
 }
 
 func NewWebsocketService(module *WebsocketModule) *WebsocketService {
 	return &WebsocketService{
 		Provider:    core.NewProvider("WebsocketService"),
 		Ws:          sockevent.GetWebsocket(),
-		userService: module.Get("UserService").(*user.UserService),
+		userService: module.Get("UserService").(user.IUserService),
 	}
 }
 
@@ -35,6 +36,10 @@ func (ws *WebsocketService) OnInit() error {
 	ws.Ws.OnConnect(ws.Connect)
 	ws.Ws.OnDisconnect(ws.Disconnect)
 	return nil
+}
+
+func (ws *WebsocketService) GetWs() *sockevent.Websocket {
+	return ws.Ws
 }
 
 func (ws *WebsocketService) SendNbUserToAdmin() error {

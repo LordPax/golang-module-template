@@ -6,20 +6,20 @@ import (
 	"golang-api/query"
 )
 
-type MediaModel struct {
-	*core.Model[*Media]
-	databaseService *database.DatabaseService
-}
-
 type IMediaModel interface {
 	core.IModel[*Media]
 	QueryFindAll(q query.QueryFilter) ([]*Media, error)
 }
 
+type MediaModel struct {
+	*core.Model[*Media]
+	databaseService database.IDatabaseService
+}
+
 func NewMediaModel(module *MediaModule) *MediaModel {
 	service := &MediaModel{
 		Model:           core.NewModel[*Media]("MediaModel"),
-		databaseService: module.Get("DatabaseService").(*database.DatabaseService),
+		databaseService: module.Get("DatabaseService").(database.IDatabaseService),
 	}
 
 	module.On("db:migrate", service.Migrate)

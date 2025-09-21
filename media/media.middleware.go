@@ -18,17 +18,17 @@ type IMediaMiddleware interface {
 
 type MediaMiddleware struct {
 	*core.Provider
-	mediaService     *MediaService
-	openstackService *OpenstackService
-	logService       *log.LogService
+	mediaService     IMediaService
+	openstackService IOpenstackService
+	logService       log.ILogService
 }
 
 func NewMediaMiddleware(module *MediaModule) *MediaMiddleware {
 	return &MediaMiddleware{
 		Provider:         core.NewProvider("MediaMiddleware"),
-		mediaService:     module.Get("MediaService").(*MediaService),
-		openstackService: module.Get("OpenstackService").(*OpenstackService),
-		logService:       module.Get("LogService").(*log.LogService),
+		mediaService:     module.Get("MediaService").(IMediaService),
+		openstackService: module.Get("OpenstackService").(IOpenstackService),
+		logService:       module.Get("LogService").(log.ILogService),
 	}
 }
 

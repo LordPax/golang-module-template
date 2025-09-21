@@ -18,13 +18,13 @@ type ILogService interface {
 
 type LogService struct {
 	*core.Provider
-	logModel *LogModel
+	logModel ILogModel
 }
 
 func NewLogService(module *LogModule) *LogService {
 	return &LogService{
 		Provider: core.NewProvider("LogService"),
-		logModel: module.Get("LogModel").(*LogModel),
+		logModel: module.Get("LogModel").(ILogModel),
 	}
 }
 

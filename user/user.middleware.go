@@ -20,17 +20,17 @@ type IUserMiddleware interface {
 
 type UserMiddleware struct {
 	*core.Provider
-	userService  *UserService
-	tokenService *token.TokenService
-	logService   *log.LogService
+	userService  IUserService
+	tokenService token.ITokenService
+	logService   log.ILogService
 }
 
 func NewUserMiddleware(module *UserModule) *UserMiddleware {
 	return &UserMiddleware{
 		Provider:     core.NewProvider("UserMiddleware"),
-		userService:  module.Get("UserService").(*UserService),
-		tokenService: module.Get("TokenService").(*token.TokenService),
-		logService:   module.Get("LogService").(*log.LogService),
+		userService:  module.Get("UserService").(IUserService),
+		tokenService: module.Get("TokenService").(token.ITokenService),
+		logService:   module.Get("LogService").(log.ILogService),
 	}
 }
 

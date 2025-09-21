@@ -21,13 +21,13 @@ type IDatabaseService interface {
 type DatabaseService struct {
 	*core.Provider
 	DB            *gorm.DB
-	dotenvService *dotenv.DotenvService
+	dotenvService dotenv.IDotenvService
 }
 
 func NewDatabaseService(module *DatabaseModule) *DatabaseService {
 	return &DatabaseService{
 		Provider:      core.NewProvider("DatabaseService"),
-		dotenvService: module.Get("DotenvService").(*dotenv.DotenvService),
+		dotenvService: module.Get("DotenvService").(dotenv.IDotenvService),
 	}
 }
 

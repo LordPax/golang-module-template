@@ -10,8 +10,8 @@ import (
 
 type UserFixture struct {
 	*core.Provider
-	userService *UserService
-	userModel   *UserModel
+	userService IUserService
+	userModel   IUserModel
 
 	fake         faker.Faker
 	userNb       int
@@ -22,8 +22,8 @@ type UserFixture struct {
 func NewUserFixture(module *UserModule) *UserFixture {
 	service := &UserFixture{
 		Provider:    core.NewProvider("UserFixture"),
-		userService: module.Get("UserService").(*UserService),
-		userModel:   module.Get("UserModel").(*UserModel),
+		userService: module.Get("UserService").(IUserService),
+		userModel:   module.Get("UserModel").(IUserModel),
 
 		fake:         faker.New(),
 		userNb:       10,

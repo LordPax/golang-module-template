@@ -20,11 +20,12 @@ type IGinService interface {
 	Run()
 	Swagger()
 	Cors() gin.HandlerFunc
+	GetGroup() *gin.RouterGroup
 }
 
 type GinService struct {
 	*core.Provider
-	dotenvService *dotenv.DotenvService
+	dotenvService dotenv.IDotenvService
 	r             *gin.Engine
 	Group         *gin.RouterGroup
 }
@@ -32,13 +33,17 @@ type GinService struct {
 func NewGinService(module *GinModule) *GinService {
 	return &GinService{
 		Provider:      core.NewProvider("GinService"),
-		dotenvService: module.Get("DotenvService").(*dotenv.DotenvService),
+		dotenvService: module.Get("DotenvService").(dotenv.IDotenvService),
 	}
 }
 
 func (gs *GinService) OnInit() error {
 	gs.InitEngine()
 	return nil
+}
+
+func (gs *GinService) GetGroup() *gin.RouterGroup {
+	return gs.Group
 }
 
 func (gs *GinService) Cors() gin.HandlerFunc {

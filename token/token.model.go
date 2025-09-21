@@ -13,15 +13,15 @@ type ITokenModel interface {
 
 type TokenModel struct {
 	*core.Model[*Token]
-	databaseService *database.DatabaseService
-	dotenvService   *dotenv.DotenvService
+	databaseService database.IDatabaseService
+	dotenvService   dotenv.IDotenvService
 }
 
 func NewTokenModel(module *TokenModule) *TokenModel {
 	service := &TokenModel{
 		Model:           core.NewModel[*Token]("TokenModel"),
-		databaseService: module.Get("DatabaseService").(*database.DatabaseService),
-		dotenvService:   module.Get("DotenvService").(*dotenv.DotenvService),
+		databaseService: module.Get("DatabaseService").(database.IDatabaseService),
+		dotenvService:   module.Get("DotenvService").(dotenv.IDotenvService),
 	}
 
 	module.On("db:migrate", service.Migrate)

@@ -18,6 +18,7 @@ type IModel[T any] interface {
 	GetDB() *gorm.DB
 	SetDB(db *gorm.DB)
 	Migrate() error
+	ClearTable() error
 }
 
 // Model is a generic struct that implements the IModel interface for any type T.

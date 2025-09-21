@@ -20,15 +20,15 @@ type IMediaService interface {
 
 type MediaService struct {
 	*core.Provider
-	mediaModel       *MediaModel
-	openstackService *OpenstackService
+	mediaModel       IMediaModel
+	openstackService IOpenstackService
 }
 
 func NewMediaService(module *MediaModule) *MediaService {
 	return &MediaService{
 		Provider:         core.NewProvider("MediaService"),
-		mediaModel:       module.Get("MediaModel").(*MediaModel),
-		openstackService: module.Get("OpenstackService").(*OpenstackService),
+		mediaModel:       module.Get("MediaModel").(IMediaModel),
+		openstackService: module.Get("OpenstackService").(IOpenstackService),
 	}
 }
 

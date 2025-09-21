@@ -7,19 +7,19 @@ import (
 )
 
 type ILogModel interface {
-	core.IProvider
+	core.IModel[*Log]
 	QueryFindAll(q query.QueryFilter) ([]*Log, error)
 }
 
 type LogModel struct {
 	*core.Model[*Log]
-	databaseService *database.DatabaseService
+	databaseService database.IDatabaseService
 }
 
 func NewLogModel(module *LogModule) *LogModel {
 	service := &LogModel{
 		Model:           core.NewModel[*Log]("LogModel"),
-		databaseService: module.Get("DatabaseService").(*database.DatabaseService),
+		databaseService: module.Get("DatabaseService").(database.IDatabaseService),
 	}
 
 	module.On("db:migrate", service.Migrate)

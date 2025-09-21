@@ -23,15 +23,15 @@ type ICodeService interface {
 
 type CodeService struct {
 	*core.Provider
-	codeModel    *CodeModel
-	emailService *email.EmailService
+	codeModel    ICodeModel
+	emailService email.IEmailService
 }
 
 func NewCodeService(module *CodeModule) *CodeService {
 	return &CodeService{
 		Provider:     core.NewProvider("CodeService"),
-		codeModel:    module.Get("CodeModel").(*CodeModel),
-		emailService: module.Get("EmailService").(*email.EmailService),
+		codeModel:    module.Get("CodeModel").(ICodeModel),
+		emailService: module.Get("EmailService").(email.IEmailService),
 	}
 }
 

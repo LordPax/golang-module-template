@@ -17,21 +17,21 @@ type IUserWebsocket interface {
 
 type UserWebsocket struct {
 	*core.Provider
-	userService      *user.UserService
-	websocketService *websocket.WebsocketService
+	userService      user.IUserService
+	websocketService websocket.IWebsocketService
 }
 
 func NewUserWebsocket(module *UserWebsocketModule) *UserWebsocket {
 	return &UserWebsocket{
 		Provider:         core.NewProvider("UserWebsocket"),
-		userService:      module.Get("UserService").(*user.UserService),
-		websocketService: module.Get("WebsocketService").(*websocket.WebsocketService),
+		userService:      module.Get("UserService").(user.IUserService),
+		websocketService: module.Get("WebsocketService").(websocket.IWebsocketService),
 	}
 }
 
 func (uw *UserWebsocket) OnInit() error {
 	fmt.Println("Registering User websocket")
-	uw.websocketService.Ws.On("user:stats", uw.UserStats)
+	uw.websocketService.GetWs().On("user:stats", uw.UserStats)
 	return nil
 }
 
@@ -46,6 +46,6 @@ func (uw *UserWebsocket) UserStats(client *sockevent.Client, message any) error 
 		return nil
 	}
 
-	wsData := uw.userService.CountStats(uw.websocketService.Ws)
+	wsData := uw.userService.CountStats(uw.websocketService.GetWs())
 	return client.Emit("user:connected", wsData)
 }

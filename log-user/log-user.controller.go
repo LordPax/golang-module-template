@@ -21,21 +21,21 @@ type ILogUserController interface {
 
 type LogUserController struct {
 	*core.Provider
-	logService     *log.LogService
-	logMiddleware  *log.LogMiddleware
-	userMiddleware *user.UserMiddleware
-	queryService   *query.QueryService
-	ginService     *ginM.GinService
+	logService     log.ILogService
+	logMiddleware  log.ILogMiddleware
+	userMiddleware user.IUserMiddleware
+	queryService   query.IQueryService
+	ginService     ginM.IGinService
 }
 
 func NewLogUserController(module *LogUserModule) *LogUserController {
 	return &LogUserController{
 		Provider:       core.NewProvider("LogUserController"),
-		logService:     module.Get("LogService").(*log.LogService),
-		logMiddleware:  module.Get("LogMiddleware").(*log.LogMiddleware),
-		userMiddleware: module.Get("UserMiddleware").(*user.UserMiddleware),
-		queryService:   module.Get("QueryService").(*query.QueryService),
-		ginService:     module.Get("GinService").(*ginM.GinService),
+		logService:     module.Get("LogService").(log.ILogService),
+		logMiddleware:  module.Get("LogMiddleware").(log.ILogMiddleware),
+		userMiddleware: module.Get("UserMiddleware").(user.IUserMiddleware),
+		queryService:   module.Get("QueryService").(query.IQueryService),
+		ginService:     module.Get("GinService").(ginM.IGinService),
 	}
 }
 
@@ -46,7 +46,7 @@ func (lc *LogUserController) OnInit() error {
 
 func (lc *LogUserController) RegisterRoutes() {
 	fmt.Println("Registering User routes")
-	logs := lc.ginService.Group.Group("/logs")
+	logs := lc.ginService.GetGroup().Group("/logs")
 	logs.GET("/",
 		lc.userMiddleware.IsLoggedIn(true),
 		lc.userMiddleware.IsAdmin(),

@@ -16,13 +16,13 @@ type ICodeModel interface {
 
 type CodeModel struct {
 	*core.Model[*Code]
-	databaseService *database.DatabaseService
+	databaseService database.IDatabaseService
 }
 
 func NewCodeModel(module *CodeModule) *CodeModel {
 	service := &CodeModel{
 		Model:           core.NewModel[*Code]("CodeModel"),
-		databaseService: module.Get("DatabaseService").(*database.DatabaseService),
+		databaseService: module.Get("DatabaseService").(database.IDatabaseService),
 	}
 
 	module.On("db:migrate", service.Migrate)

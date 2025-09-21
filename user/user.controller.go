@@ -26,23 +26,23 @@ type IUserController interface {
 
 type UserController struct {
 	*core.Provider
-	userService     *UserService
-	userMiddleware  *UserMiddleware
-	queryService    *query.QueryService
-	mediaMiddleware *media.MediaMiddleware
-	logService      *log.LogService
-	ginService      *ginM.GinService
+	userService     IUserService
+	userMiddleware  IUserMiddleware
+	queryService    query.IQueryService
+	mediaMiddleware media.IMediaMiddleware
+	logService      log.ILogService
+	ginService      ginM.IGinService
 }
 
 func NewUserController(module *UserModule) *UserController {
 	return &UserController{
 		Provider:        core.NewProvider("UserController"),
-		userService:     module.Get("UserService").(*UserService),
-		userMiddleware:  module.Get("UserMiddleware").(*UserMiddleware),
-		queryService:    module.Get("QueryService").(*query.QueryService),
-		mediaMiddleware: module.Get("MediaMiddleware").(*media.MediaMiddleware),
-		logService:      module.Get("LogService").(*log.LogService),
-		ginService:      module.Get("GinService").(*ginM.GinService),
+		userService:     module.Get("UserService").(IUserService),
+		userMiddleware:  module.Get("UserMiddleware").(IUserMiddleware),
+		queryService:    module.Get("QueryService").(query.IQueryService),
+		mediaMiddleware: module.Get("MediaMiddleware").(media.IMediaMiddleware),
+		logService:      module.Get("LogService").(log.ILogService),
+		ginService:      module.Get("GinService").(ginM.IGinService),
 	}
 }
 
@@ -53,7 +53,7 @@ func (uc *UserController) OnInit() error {
 
 func (uc *UserController) RegisterRoutes() {
 	fmt.Println("Registering User routes")
-	users := uc.ginService.Group.Group("/users")
+	users := uc.ginService.GetGroup().Group("/users")
 	users.GET("/",
 		uc.userMiddleware.IsLoggedIn(true),
 		uc.queryService.QueryFilter(),

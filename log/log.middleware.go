@@ -14,13 +14,13 @@ type ILogMiddleware interface {
 
 type LogMiddleware struct {
 	*core.Provider
-	logService *LogService
+	logService ILogService
 }
 
 func NewLogMiddleware(module *LogModule) *LogMiddleware {
 	return &LogMiddleware{
 		Provider:   core.NewProvider("LogMiddleware"),
-		logService: module.Get("LogService").(*LogService),
+		logService: module.Get("LogService").(ILogService),
 	}
 }
 
