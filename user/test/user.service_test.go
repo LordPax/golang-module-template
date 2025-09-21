@@ -25,9 +25,9 @@ func TestSetupUserModule(t *testing.T) {
 	userService := module.Get("UserService").(*user.UserService)
 	userModel := module.Get("UserModel").(*UserModelMock)
 
-	assert.NotNil(t, module)
-	assert.NotNil(t, userService)
-	assert.NotNil(t, userModel)
+	assert.NotNil(t, module, "User module should be created")
+	assert.NotNil(t, userService, "UserService should be created")
+	assert.NotNil(t, userModel, "UserModel should be created")
 }
 
 func TestUserService_FindAll(t *testing.T) {
@@ -38,13 +38,20 @@ func TestUserService_FindAll(t *testing.T) {
 	module := NewUserModuleTest()
 	userService := module.Get("UserService").(*user.UserService)
 	userModel := module.Get("UserModel").(*UserModelMock)
-	userModel.SetStubUsers(expectedUsers)
+	userModel.SetItems(expectedUsers)
 
 	newUsers, _ := userService.FindAll(q)
 
-	assert.Len(t, newUsers, nbUsers)
-	for i, user := range newUsers {
-		assert.Equal(t, expectedUsers[i].ID, user.ID)
+	called := userModel.IsMethodCalled("QueryFindAll")
+	if !assert.Equal(t, called, true, "QueryFindAll method should be called") {
+		return
+	}
+
+	if !assert.Len(t, newUsers, nbUsers, "Number of users should be equal to expected") {
+		return
+	}
+	for i := 0; i < nbUsers; i++ {
+		assert.Equal(t, expectedUsers[i].ID, newUsers[i].ID)
 	}
 
 }
@@ -55,9 +62,23 @@ func TestUserService_FindByID(t *testing.T) {
 	module := NewUserModuleTest()
 	userService := module.Get("UserService").(*user.UserService)
 	userModel := module.Get("UserModel").(*UserModelMock)
-	userModel.SetStubUser(expectedUser)
+	userModel.AddItem(expectedUser)
 
 	newUser, _ := userService.FindByID(expectedUser.ID)
 
+	called := userModel.IsMethodCalled("FindByID")
+	if !assert.Equal(t, called, true, "FindByID method should be called") {
+		return
+	}
+	params := userModel.IsParamsEqual("FindByID", expectedUser.ID)
+	if !assert.Equal(t, params, true, "FindByID parameter should be the user ID") {
+		return
+	}
+
 	assert.Equal(t, expectedUser.ID, newUser.ID)
+	assert.Equal(t, expectedUser.Email, newUser.Email)
+	assert.Equal(t, expectedUser.Firstname, newUser.Firstname)
+	assert.Equal(t, expectedUser.Lastname, newUser.Lastname)
+	assert.Equal(t, expectedUser.Username, newUser.Username)
+	assert.Equal(t, expectedUser.Password, newUser.Password)
 }

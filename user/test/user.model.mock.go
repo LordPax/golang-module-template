@@ -8,35 +8,32 @@ import (
 
 type UserModelMock struct {
 	*core.Model[*user.User]
-	users []*user.User
+	*core.Mockable[*user.User]
 }
 
 func NewUserModelMock(module *user.UserModule) *UserModelMock {
 	return &UserModelMock{
-		Model: core.NewModel[*user.User]("UserModel"),
+		Model:    core.NewModel[*user.User]("UserModel"),
+		Mockable: core.NewMockable[*user.User](),
 	}
 }
 
-func (um *UserModelMock) SetStubUsers(users []*user.User) {
-	um.users = users
-}
-
-func (um *UserModelMock) SetStubUser(users *user.User) {
-	um.users = []*user.User{users}
-}
-
 func (um *UserModelMock) CountAll() (int64, error) {
-	return int64(len(um.users)), nil
+	um.MethodCalled("CountAll")
+	return int64(len(um.GetItems())), nil
 }
 
 func (um *UserModelMock) QueryFindAll(q query.QueryFilter) ([]*user.User, error) {
-	return um.users, nil
+	um.MethodCalled("QueryFindAll", q)
+	return um.GetItems(), nil
 }
 
 func (um *UserModelMock) DeleteByID(id string) error {
+	um.MethodCalled("DeleteByID", id)
 	return nil
 }
 
 func (um *UserModelMock) FindByID(id string) (*user.User, error) {
-	return um.users[0], nil
+	um.MethodCalled("FindByID", id)
+	return um.GetItems()[0], nil
 }
