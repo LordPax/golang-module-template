@@ -1,53 +1,58 @@
 package core
 
-type MockMethod struct {
+type MockFunc func(...any) any
+
+type MockedMethod struct {
 	Method string
 	Params []any
+	Called bool
+	Func   MockFunc
 }
 
-type IMockable[T any] interface {
-	SetItems(items []T)
-	SetItem(item T)
-	GetItems() []T
-	MockMethod(method string)
+type IMockable interface {
+	MockMethod(method string, mockFunc MockFunc)
 	MethodCalled(method string, params ...any)
 	IsMethodCalled(method string) bool
 	GetMethodParams(method string) []any
+	IsParamsEqual(method string, params ...any) bool
+	CallFunc(method string) any
 }
 
-type Mockable[T any] struct {
-	stubedItems  []T
-	mockedMethod map[string]*MockMethod
+type Mockable struct {
+	mockedMethod map[string]*MockedMethod
 }
 
-func NewMockable[T any]() *Mockable[T] {
-	return &Mockable[T]{
-		mockedMethod: make(map[string]*MockMethod),
+func NewMockable() *Mockable {
+	return &Mockable{
+		mockedMethod: make(map[string]*MockedMethod),
 	}
 }
 
-func (m *Mockable[T]) SetItems(items []T) {
-	m.stubedItems = items
+func (m *Mockable) MockMethod(method string, mockFunc MockFunc) {
+	m.mockedMethod[method] = &MockedMethod{method, nil, false, mockFunc}
 }
 
-func (m *Mockable[T]) AddItem(items T) {
-	m.stubedItems = append(m.stubedItems, items)
+func (m *Mockable) MethodCalled(method string, params ...any) {
+	mock, ok := m.mockedMethod[method]
+	if !ok {
+		return
+	}
+
+	mock.Params = params
+	mock.Called = true
+
+	return
 }
 
-func (m *Mockable[T]) GetItems() []T {
-	return m.stubedItems
+func (m *Mockable) IsMethodCalled(method string) bool {
+	called, ok := m.mockedMethod[method]
+	if !ok {
+		return false
+	}
+	return called.Called
 }
 
-func (m *Mockable[T]) MethodCalled(method string, params ...any) {
-	m.mockedMethod[method] = &MockMethod{method, params}
-}
-
-func (m *Mockable[T]) IsMethodCalled(method string) bool {
-	_, ok := m.mockedMethod[method]
-	return ok
-}
-
-func (m *Mockable[T]) GetMethodParams(method string) []any {
+func (m *Mockable) GetMethodParams(method string) []any {
 	called, ok := m.mockedMethod[method]
 	if !ok {
 		return nil
@@ -55,7 +60,7 @@ func (m *Mockable[T]) GetMethodParams(method string) []any {
 	return called.Params
 }
 
-func (m *Mockable[T]) IsParamsEqual(method string, params ...any) bool {
+func (m *Mockable) IsParamsEqual(method string, params ...any) bool {
 	called, ok := m.mockedMethod[method]
 	if !ok {
 		return false
@@ -69,4 +74,15 @@ func (m *Mockable[T]) IsParamsEqual(method string, params ...any) bool {
 		}
 	}
 	return true
+}
+
+func (m *Mockable) CallFunc(method string) any {
+	called, ok := m.mockedMethod[method]
+	if !ok {
+		return nil
+	}
+	if called.Func != nil {
+		return called.Func(called.Params...)
+	}
+	return nil
 }
