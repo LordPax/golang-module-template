@@ -15,7 +15,8 @@ type UserServiceMock struct {
 
 func NewUserService(module *user.UserModule) *UserServiceMock {
 	return &UserServiceMock{
-		Provider: core.NewProvider("UserServiceMock"),
+		Provider: core.NewProvider("UserService"),
+		Mockable: core.NewMockable(),
 	}
 }
 

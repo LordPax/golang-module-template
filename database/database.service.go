@@ -14,7 +14,7 @@ type IDatabaseService interface {
 	Connect() error
 	GetDB() *gorm.DB
 	Close() error
-	Migrate(models ...interface{}) error
+	Migrate(models ...any) error
 	Table(name string) *gorm.DB
 }
 
@@ -68,7 +68,7 @@ func (ds *DatabaseService) Close() error {
 	return sqlDB.Close()
 }
 
-func (ds *DatabaseService) Migrate(models ...interface{}) error {
+func (ds *DatabaseService) Migrate(models ...any) error {
 	return ds.DB.AutoMigrate(models...)
 }
 
