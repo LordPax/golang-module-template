@@ -4,4 +4,7 @@
 
 ### Added
 
-- Add golang api
+- Add core functionality of module, provider, and mock
+- Add module, service, model, controller for `auth`, `user`, `code`, `database`, `dotenv`, `email`, `gin`, `log`, `query`, `token`, `websocket`
+- Add unit test for `user`, `auth`
+- Add github action workflow for ci and deploy
