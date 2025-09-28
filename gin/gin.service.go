@@ -74,14 +74,13 @@ func (gs *GinService) Swagger() {
 
 func (gs *GinService) InitEngine() {
 	fmt.Println("Create gin engine")
-	gs.r = gin.Default()
-
 	ginMode := gs.dotenvService.Get("GIN_MODE")
 	if ginMode == "" {
 		ginMode = gin.ReleaseMode
 	}
 	gin.SetMode(ginMode)
 
+	gs.r = gin.Default()
 	gs.r.Use(gin.Logger())
 	gs.r.Use(gin.Recovery())
 	gs.r.Use(gs.Cors())
