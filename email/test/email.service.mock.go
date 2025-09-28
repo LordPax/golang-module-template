@@ -2,7 +2,6 @@ package email_test
 
 import (
 	"golang-api/core"
-	"golang-api/email"
 )
 
 type EmailServiceMock struct {
@@ -10,7 +9,7 @@ type EmailServiceMock struct {
 	*core.Mockable
 }
 
-func NewEmailServiceMock(module *email.EmailModule) *EmailServiceMock {
+func NewEmailServiceMock(module core.IModule) *EmailServiceMock {
 	return &EmailServiceMock{
 		Provider: core.NewProvider("EmailService"),
 		Mockable: core.NewMockable(),

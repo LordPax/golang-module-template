@@ -25,7 +25,7 @@ type UserMiddleware struct {
 	logService   log.ILogService
 }
 
-func NewUserMiddleware(module *UserModule) *UserMiddleware {
+func NewUserMiddleware(module core.IModule) *UserMiddleware {
 	return &UserMiddleware{
 		Provider:     core.NewProvider("UserMiddleware"),
 		userService:  module.Get("UserService").(IUserService),

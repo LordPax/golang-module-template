@@ -40,21 +40,20 @@ func TestSetupUserModule(t *testing.T) {
 }
 
 func TestUserService_FindAll(t *testing.T) {
+	module := NewUserModuleTest()
+	userService := module.Get("UserService").(*user.UserService)
+	userModel := module.Get("UserModel").(*UserModelMock)
+
 	q := query.QueryFilter{}
 	nbUsers := 3
 	expectedUsers := CreateManyUsers(nbUsers)
 
-	module := NewUserModuleTest()
-	userService := module.Get("UserService").(*user.UserService)
-	userModel := module.Get("UserModel").(*UserModelMock)
-	userModel.MockMethod("QueryFindAll", func(params ...any) any {
-		return expectedUsers
-	})
+	userModel.MockMethod("QueryFindAll", func(params ...any) any { return expectedUsers })
 
 	newUsers, _ := userService.FindAll(q)
 
 	called := userModel.IsMethodCalled("QueryFindAll")
-	if !assert.Equal(t, called, true, "QueryFindAll method should be called") {
+	if !assert.Equal(t, true, called, "QueryFindAll method should be called") {
 		return
 	}
 
@@ -67,11 +66,12 @@ func TestUserService_FindAll(t *testing.T) {
 }
 
 func TestUserService_FindByID(t *testing.T) {
-	expectedUser := CreateUser()
-
 	module := NewUserModuleTest()
 	userService := module.Get("UserService").(*user.UserService)
 	userModel := module.Get("UserModel").(*UserModelMock)
+
+	expectedUser := CreateUser()
+
 	userModel.MockMethod("FindByID", func(params ...any) any {
 		return expectedUser
 	})
@@ -79,11 +79,11 @@ func TestUserService_FindByID(t *testing.T) {
 	newUser, _ := userService.FindByID(expectedUser.ID)
 
 	called := userModel.IsMethodCalled("FindByID")
-	if !assert.Equal(t, called, true, "FindByID method should be called") {
+	if !assert.Equal(t, true, called, "FindByID method should be called") {
 		return
 	}
 	params := userModel.IsParamsEqual("FindByID", expectedUser.ID)
-	if !assert.Equal(t, params, true, "FindByID parameter should be the user ID") {
+	if !assert.Equal(t, true, params, "FindByID parameter should be the user ID") {
 		return
 	}
 
@@ -91,11 +91,12 @@ func TestUserService_FindByID(t *testing.T) {
 }
 
 func TestUserService_FindOneBy(t *testing.T) {
-	expectedUser := CreateUser()
-
 	module := NewUserModuleTest()
 	userService := module.Get("UserService").(*user.UserService)
 	userModel := module.Get("UserModel").(*UserModelMock)
+
+	expectedUser := CreateUser()
+
 	userModel.MockMethod("FindOneBy", func(params ...any) any {
 		return expectedUser
 	})
@@ -103,11 +104,11 @@ func TestUserService_FindOneBy(t *testing.T) {
 	newUser, _ := userService.FindOneBy("email", expectedUser.Email)
 
 	called := userModel.IsMethodCalled("FindOneBy")
-	if !assert.Equal(t, called, true, "FindOneBy method should be called") {
+	if !assert.Equal(t, true, called, "FindOneBy method should be called") {
 		return
 	}
 	params := userModel.IsParamsEqual("FindOneBy", "email", expectedUser.Email)
-	if !assert.Equal(t, params, true, "FindOneBy parameters should be the field and value") {
+	if !assert.Equal(t, true, params, "FindOneBy parameters should be the field and value") {
 		return
 	}
 
@@ -115,12 +116,13 @@ func TestUserService_FindOneBy(t *testing.T) {
 }
 
 func TestUserService_Create(t *testing.T) {
-	expectedUser := CreateUser()
-	var createdUser *user.User
-
 	module := NewUserModuleTest()
 	userService := module.Get("UserService").(*user.UserService)
 	userModel := module.Get("UserModel").(*UserModelMock)
+
+	expectedUser := CreateUser()
+	var createdUser *user.User
+
 	userModel.MockMethod("Create", func(params ...any) any {
 		createdUser = params[0].(*user.User)
 		return nil
@@ -132,7 +134,7 @@ func TestUserService_Create(t *testing.T) {
 	}
 
 	called := userModel.IsMethodCalled("Create")
-	if !assert.Equal(t, called, true, "Create method should be called") {
+	if !assert.Equal(t, true, called, "Create method should be called") {
 		return
 	}
 	params := userModel.GetMethodParams("Create")
@@ -140,7 +142,7 @@ func TestUserService_Create(t *testing.T) {
 		return
 	}
 	paramUser, ok := params[0].(*user.User)
-	if !assert.Equal(t, ok, true, "Create parameter should be a user") {
+	if !assert.Equal(t, true, ok, "Create parameter should be a user") {
 		return
 	}
 
@@ -149,12 +151,13 @@ func TestUserService_Create(t *testing.T) {
 }
 
 func TestUserService_Update(t *testing.T) {
-	expectedUser := CreateUser()
-	var updatedUser *user.User
-
 	module := NewUserModuleTest()
 	userService := module.Get("UserService").(*user.UserService)
 	userModel := module.Get("UserModel").(*UserModelMock)
+
+	expectedUser := CreateUser()
+	var updatedUser *user.User
+
 	userModel.MockMethod("UpdateByID", func(params ...any) any {
 		updatedUser = params[1].(*user.User)
 		return nil
@@ -166,7 +169,7 @@ func TestUserService_Update(t *testing.T) {
 	}
 
 	called := userModel.IsMethodCalled("UpdateByID")
-	if !assert.Equal(t, called, true, "UpdateByID method should be called") {
+	if !assert.Equal(t, true, called, "UpdateByID method should be called") {
 		return
 	}
 	params := userModel.GetMethodParams("UpdateByID")
@@ -175,7 +178,7 @@ func TestUserService_Update(t *testing.T) {
 	}
 	assert.Equal(t, params[0], expectedUser.ID, "First parameter should be the user ID")
 	paramUser, ok := params[1].(*user.User)
-	if !assert.Equal(t, ok, true, "Second parameter should be a user") {
+	if !assert.Equal(t, true, ok, "Second parameter should be a user") {
 		return
 	}
 
@@ -184,11 +187,12 @@ func TestUserService_Update(t *testing.T) {
 }
 
 func TestUserService_Delete(t *testing.T) {
-	expectedUser := CreateUser()
-
 	module := NewUserModuleTest()
 	userService := module.Get("UserService").(*user.UserService)
 	userModel := module.Get("UserModel").(*UserModelMock)
+
+	expectedUser := CreateUser()
+
 	userModel.MockMethod("DeleteByID", nil)
 
 	err := userService.Delete(expectedUser.ID)
@@ -197,11 +201,11 @@ func TestUserService_Delete(t *testing.T) {
 	}
 
 	called := userModel.IsMethodCalled("DeleteByID")
-	if !assert.Equal(t, called, true, "DeleteByID method should be called") {
+	if !assert.Equal(t, true, called, "DeleteByID method should be called") {
 		return
 	}
 	params := userModel.IsParamsEqual("DeleteByID", expectedUser.ID)
-	if !assert.Equal(t, params, true, "DeleteByID parameter should be the user ID") {
+	if !assert.Equal(t, true, params, "DeleteByID parameter should be the user ID") {
 		return
 	}
 }

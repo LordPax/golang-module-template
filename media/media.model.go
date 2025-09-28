@@ -16,7 +16,7 @@ type MediaModel struct {
 	databaseService database.IDatabaseService
 }
 
-func NewMediaModel(module *MediaModule) *MediaModel {
+func NewMediaModel(module core.IModule) *MediaModel {
 	service := &MediaModel{
 		Model:           core.NewModel[*Media]("MediaModel"),
 		databaseService: module.Get("DatabaseService").(database.IDatabaseService),

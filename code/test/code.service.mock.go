@@ -11,7 +11,7 @@ type CodeServiceMock struct {
 	*core.Mockable
 }
 
-func NewCodeServiceMock(module *code.CodeModule) *CodeServiceMock {
+func NewCodeServiceMock(module core.IModule) *CodeServiceMock {
 	return &CodeServiceMock{
 		Provider: core.NewProvider("CodeService"),
 		Mockable: core.NewMockable(),

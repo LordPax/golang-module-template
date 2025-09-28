@@ -24,7 +24,7 @@ type WebsocketService struct {
 	userService user.IUserService
 }
 
-func NewWebsocketService(module *WebsocketModule) *WebsocketService {
+func NewWebsocketService(module core.IModule) *WebsocketService {
 	return &WebsocketService{
 		Provider:    core.NewProvider("WebsocketService"),
 		Ws:          sockevent.GetWebsocket(),

@@ -11,7 +11,7 @@ type LogServiceMock struct {
 	*core.Mockable
 }
 
-func NewLogServiceMock(module *log.LogModule) *LogServiceMock {
+func NewLogServiceMock(module core.IModule) *LogServiceMock {
 	return &LogServiceMock{
 		Provider: core.NewProvider("LogService"),
 		Mockable: core.NewMockable(),

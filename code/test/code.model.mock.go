@@ -10,7 +10,7 @@ type CodeModelMock struct {
 	*core.ModelMock[*code.Code]
 }
 
-func NewCodeModelMock(module *code.CodeModule) *CodeModelMock {
+func NewCodeModelMock(module core.IModule) *CodeModelMock {
 	return &CodeModelMock{
 		ModelMock: core.NewModelMock[*code.Code]("CodeModel"),
 	}

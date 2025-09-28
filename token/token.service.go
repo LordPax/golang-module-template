@@ -25,7 +25,7 @@ type TokenService struct {
 	dotenvService dotenv.IDotenvService
 }
 
-func NewTokenService(module *TokenModule) *TokenService {
+func NewTokenService(module core.IModule) *TokenService {
 	return &TokenService{
 		Provider:      core.NewProvider("TokenService"),
 		tokenModel:    module.Get("TokenModel").(ITokenModel),

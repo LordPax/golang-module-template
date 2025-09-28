@@ -16,7 +16,7 @@ type LogModel struct {
 	databaseService database.IDatabaseService
 }
 
-func NewLogModel(module *LogModule) *LogModel {
+func NewLogModel(module core.IModule) *LogModel {
 	service := &LogModel{
 		Model:           core.NewModel[*Log]("LogModel"),
 		databaseService: module.Get("DatabaseService").(database.IDatabaseService),

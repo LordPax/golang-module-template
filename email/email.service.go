@@ -31,7 +31,7 @@ type EmailService struct {
 	tags          []string
 }
 
-func NewEmailService(module *EmailModule) *EmailService {
+func NewEmailService(module core.IModule) *EmailService {
 	return &EmailService{
 		Provider:      core.NewProvider("EmailService"),
 		dotenvService: module.Get("DotenvService").(dotenv.IDotenvService),

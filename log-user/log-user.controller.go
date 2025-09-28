@@ -28,7 +28,7 @@ type LogUserController struct {
 	ginService     ginM.IGinService
 }
 
-func NewLogUserController(module *LogUserModule) *LogUserController {
+func NewLogUserController(module core.IModule) *LogUserController {
 	return &LogUserController{
 		Provider:       core.NewProvider("LogUserController"),
 		logService:     module.Get("LogService").(log.ILogService),

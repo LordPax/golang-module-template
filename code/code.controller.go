@@ -29,7 +29,7 @@ type CodeController struct {
 	logService  log.ILogService
 }
 
-func NewCodeController(module *CodeModule) *CodeController {
+func NewCodeController(module core.IModule) *CodeController {
 	return &CodeController{
 		Provider:    core.NewProvider("CodeController"),
 		codeService: module.Get("CodeService").(ICodeService),

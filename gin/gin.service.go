@@ -30,7 +30,7 @@ type GinService struct {
 	Group         *gin.RouterGroup
 }
 
-func NewGinService(module *GinModule) *GinService {
+func NewGinService(module core.IModule) *GinService {
 	return &GinService{
 		Provider:      core.NewProvider("GinService"),
 		dotenvService: module.Get("DotenvService").(dotenv.IDotenvService),

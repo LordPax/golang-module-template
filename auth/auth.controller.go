@@ -34,7 +34,7 @@ type AuthController struct {
 	ginService     ginM.IGinService
 }
 
-func NewAuthController(module *AuthModule) *AuthController {
+func NewAuthController(module core.IModule) *AuthController {
 	return &AuthController{
 		Provider:       core.NewProvider("AuthController"),
 		authService:    module.Get("AuthService").(IAuthService),

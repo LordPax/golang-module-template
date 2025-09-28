@@ -19,7 +19,7 @@ type CodeModel struct {
 	databaseService database.IDatabaseService
 }
 
-func NewCodeModel(module *CodeModule) *CodeModel {
+func NewCodeModel(module core.IModule) *CodeModel {
 	service := &CodeModel{
 		Model:           core.NewModel[*Code]("CodeModel"),
 		databaseService: module.Get("DatabaseService").(database.IDatabaseService),

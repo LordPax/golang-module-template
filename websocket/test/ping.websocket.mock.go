@@ -2,7 +2,6 @@ package websocket_test
 
 import (
 	"golang-api/core"
-	"golang-api/websocket"
 
 	"github.com/LordPax/sockevent"
 )
@@ -12,7 +11,7 @@ type PingWebsocketMock struct {
 	*core.Mockable
 }
 
-func NewPingWebsocketMock(module *websocket.WebsocketModule) *PingWebsocketMock {
+func NewPingWebsocketMock(module core.IModule) *PingWebsocketMock {
 	return &PingWebsocketMock{
 		Provider: core.NewProvider("PingWebsocket"),
 		Mockable: core.NewMockable(),

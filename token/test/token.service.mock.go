@@ -10,7 +10,7 @@ type TokenServiceMock struct {
 	*core.Mockable
 }
 
-func NewTokenServiceMock(module *token.TokenModule) *TokenServiceMock {
+func NewTokenServiceMock(module core.IModule) *TokenServiceMock {
 	return &TokenServiceMock{
 		Provider: core.NewProvider("TokenService"),
 		Mockable: core.NewMockable(),

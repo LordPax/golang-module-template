@@ -19,7 +19,7 @@ type UserFixture struct {
 	userPassword string
 }
 
-func NewUserFixture(module *UserModule) *UserFixture {
+func NewUserFixture(module core.IModule) *UserFixture {
 	service := &UserFixture{
 		Provider:    core.NewProvider("UserFixture"),
 		userService: module.Get("UserService").(IUserService),

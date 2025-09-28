@@ -21,7 +21,7 @@ type UserWebsocket struct {
 	websocketService websocket.IWebsocketService
 }
 
-func NewUserWebsocket(module *UserWebsocketModule) *UserWebsocket {
+func NewUserWebsocket(module core.IModule) *UserWebsocket {
 	return &UserWebsocket{
 		Provider:         core.NewProvider("UserWebsocket"),
 		userService:      module.Get("UserService").(user.IUserService),

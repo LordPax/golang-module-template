@@ -24,7 +24,7 @@ type MediaService struct {
 	openstackService IOpenstackService
 }
 
-func NewMediaService(module *MediaModule) *MediaService {
+func NewMediaService(module core.IModule) *MediaService {
 	return &MediaService{
 		Provider:         core.NewProvider("MediaService"),
 		mediaModel:       module.Get("MediaModel").(IMediaModel),

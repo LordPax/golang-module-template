@@ -2,7 +2,6 @@ package gin_test
 
 import (
 	"golang-api/core"
-	ginM "golang-api/gin"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,7 +11,7 @@ type GinServiceMock struct {
 	*core.Mockable
 }
 
-func NewGinServiceMock(module *ginM.GinModule) *GinServiceMock {
+func NewGinServiceMock(module core.IModule) *GinServiceMock {
 	return &GinServiceMock{
 		Provider: core.NewProvider("GinService"),
 		Mockable: core.NewMockable(),

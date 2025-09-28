@@ -27,7 +27,7 @@ type CodeService struct {
 	emailService email.IEmailService
 }
 
-func NewCodeService(module *CodeModule) *CodeService {
+func NewCodeService(module core.IModule) *CodeService {
 	return &CodeService{
 		Provider:     core.NewProvider("CodeService"),
 		codeModel:    module.Get("CodeModel").(ICodeModel),

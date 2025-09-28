@@ -30,7 +30,7 @@ type AuthService struct {
 	codeService   codeM.ICodeService
 }
 
-func NewAuthService(module *AuthModule) *AuthService {
+func NewAuthService(module core.IModule) *AuthService {
 	return &AuthService{
 		Provider:      core.NewProvider("AuthService"),
 		dotenvService: module.Get("DotenvService").(dotenv.IDotenvService),

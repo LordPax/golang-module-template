@@ -1,5 +1,7 @@
 package core
 
+import "fmt"
+
 type MockFunc func(...any) any
 
 type MockedMethod struct {
@@ -69,10 +71,41 @@ func (m *Mockable) IsParamsEqual(method string, params ...any) bool {
 		return false
 	}
 	for i, param := range params {
-		if called.Params[i] != param {
+		if !m.compareParams(called.Params[i], param) {
 			return false
 		}
 	}
+	return true
+}
+
+func (m *Mockable) compareParams(a, b any) bool {
+	switch aTyped := a.(type) {
+	case int, string:
+		if a != b {
+			fmt.Println("Param mismatch:", a, b)
+			return false
+		}
+	case map[string]any:
+		bTyped, ok := b.(map[string]any)
+		for k, v := range aTyped {
+			if !ok || !m.compareParams(v, bTyped[k]) {
+				return false
+			}
+		}
+	case []any:
+		bTyped, ok := b.([]any)
+		if !ok || len(aTyped) != len(bTyped) {
+			return false
+		}
+		for i, v := range aTyped {
+			if !m.compareParams(v, bTyped[i]) {
+				return false
+			}
+		}
+	default:
+		return a == b
+	}
+
 	return true
 }
 

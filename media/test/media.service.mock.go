@@ -12,7 +12,7 @@ type MediaServiceMock struct {
 	*core.Mockable
 }
 
-func NewMediaServiceMock(module *media.MediaModule) *MediaServiceMock {
+func NewMediaServiceMock(module core.IModule) *MediaServiceMock {
 	return &MediaServiceMock{
 		Provider: core.NewProvider("MediaService"),
 		Mockable: core.NewMockable(),

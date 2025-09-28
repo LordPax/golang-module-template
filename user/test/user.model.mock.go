@@ -10,7 +10,7 @@ type UserModelMock struct {
 	*core.ModelMock[*user.User]
 }
 
-func NewUserModelMock(module *user.UserModule) *UserModelMock {
+func NewUserModelMock(module core.IModule) *UserModelMock {
 	return &UserModelMock{
 		ModelMock: core.NewModelMock[*user.User]("UserModel"),
 	}

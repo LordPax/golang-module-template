@@ -10,7 +10,7 @@ type MediaModelMock struct {
 	*core.ModelMock[*media.Media]
 }
 
-func NewMediaModelMock(module *media.MediaModule) *MediaModelMock {
+func NewMediaModelMock(module core.IModule) *MediaModelMock {
 	return &MediaModelMock{
 		ModelMock: core.NewModelMock[*media.Media]("MediaModel"),
 	}

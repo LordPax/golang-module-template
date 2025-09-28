@@ -17,7 +17,7 @@ type TokenModel struct {
 	dotenvService   dotenv.IDotenvService
 }
 
-func NewTokenModel(module *TokenModule) *TokenModel {
+func NewTokenModel(module core.IModule) *TokenModel {
 	service := &TokenModel{
 		Model:           core.NewModel[*Token]("TokenModel"),
 		databaseService: module.Get("DatabaseService").(database.IDatabaseService),

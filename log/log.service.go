@@ -21,7 +21,7 @@ type LogService struct {
 	logModel ILogModel
 }
 
-func NewLogService(module *LogModule) *LogService {
+func NewLogService(module core.IModule) *LogService {
 	return &LogService{
 		Provider: core.NewProvider("LogService"),
 		logModel: module.Get("LogModel").(ILogModel),

@@ -2,7 +2,6 @@ package userWebsocket_test
 
 import (
 	"golang-api/core"
-	userWebsocket "golang-api/user-websocket"
 
 	"github.com/LordPax/sockevent"
 )
@@ -12,7 +11,7 @@ type UserWebsocketMock struct {
 	*core.Mockable
 }
 
-func NewUserWebsocketMock(module *userWebsocket.UserWebsocketModule) *UserWebsocketMock {
+func NewUserWebsocketMock(module core.IModule) *UserWebsocketMock {
 	return &UserWebsocketMock{
 		Provider: core.NewProvider("UserWebsocket"),
 		Mockable: core.NewMockable(),

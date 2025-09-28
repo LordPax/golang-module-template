@@ -10,7 +10,7 @@ type LogModelMock struct {
 	*core.ModelMock[*log.Log]
 }
 
-func NewLogModelMock(module *log.LogModule) *LogModelMock {
+func NewLogModelMock(module core.IModule) *LogModelMock {
 	return &LogModelMock{
 		ModelMock: core.NewModelMock[*log.Log]("LogModel"),
 	}

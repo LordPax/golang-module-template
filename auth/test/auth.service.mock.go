@@ -1,7 +1,6 @@
 package auth_test
 
 import (
-	"golang-api/auth"
 	"golang-api/core"
 	"golang-api/token"
 	"golang-api/user"
@@ -14,7 +13,7 @@ type AuthServiceMock struct {
 	*core.Mockable
 }
 
-func NewAuthService(module *auth.AuthModule) *AuthServiceMock {
+func NewAuthService(module core.IModule) *AuthServiceMock {
 	return &AuthServiceMock{
 		Provider: core.NewProvider("AuthServiceMock"),
 		Mockable: core.NewMockable(),

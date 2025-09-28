@@ -31,7 +31,7 @@ type OpenstackService struct {
 	ctx           context.Context
 }
 
-func NewOpenstackService(module *MediaModule) *OpenstackService {
+func NewOpenstackService(module core.IModule) *OpenstackService {
 	return &OpenstackService{
 		Provider:      core.NewProvider("OpenstackService"),
 		dotenvService: module.Get("DotenvService").(dotenv.IDotenvService),

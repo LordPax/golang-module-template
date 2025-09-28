@@ -16,7 +16,7 @@ type QueryService struct {
 	*core.Provider
 }
 
-func NewQueryService(module *QueryModule) *QueryService {
+func NewQueryService(module core.IModule) *QueryService {
 	return &QueryService{
 		Provider: core.NewProvider("QueryService"),
 	}

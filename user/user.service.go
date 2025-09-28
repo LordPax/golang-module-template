@@ -24,7 +24,7 @@ type UserService struct {
 	userModel IUserModel
 }
 
-func NewUserService(module *UserModule) *UserService {
+func NewUserService(module core.IModule) *UserService {
 	return &UserService{
 		Provider:  core.NewProvider("UserService"),
 		userModel: module.Get("UserModel").(IUserModel),

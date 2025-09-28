@@ -34,7 +34,7 @@ type UserController struct {
 	ginService      ginM.IGinService
 }
 
-func NewUserController(module *UserModule) *UserController {
+func NewUserController(module core.IModule) *UserController {
 	return &UserController{
 		Provider:        core.NewProvider("UserController"),
 		userService:     module.Get("UserService").(IUserService),

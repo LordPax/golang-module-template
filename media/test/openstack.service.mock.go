@@ -2,7 +2,6 @@ package media_test
 
 import (
 	"golang-api/core"
-	"golang-api/media"
 	"io"
 )
 
@@ -11,7 +10,7 @@ type OpenstackServiceMock struct {
 	*core.Mockable
 }
 
-func NewOpenstackServiceMock(module *media.MediaModule) *OpenstackServiceMock {
+func NewOpenstackServiceMock(module core.IModule) *OpenstackServiceMock {
 	return &OpenstackServiceMock{
 		Provider: core.NewProvider("OpenstackService"),
 		Mockable: core.NewMockable(),

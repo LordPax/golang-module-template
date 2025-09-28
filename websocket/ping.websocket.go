@@ -18,7 +18,7 @@ type PingWebsocket struct {
 	websocketService IWebsocketService
 }
 
-func NewPingWebsocket(module *WebsocketModule) *PingWebsocket {
+func NewPingWebsocket(module core.IModule) *PingWebsocket {
 	return &PingWebsocket{
 		Provider:         core.NewProvider("PingWebsocket"),
 		websocketService: module.Get("WebsocketService").(IWebsocketService),

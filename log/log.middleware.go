@@ -17,7 +17,7 @@ type LogMiddleware struct {
 	logService ILogService
 }
 
-func NewLogMiddleware(module *LogModule) *LogMiddleware {
+func NewLogMiddleware(module core.IModule) *LogMiddleware {
 	return &LogMiddleware{
 		Provider:   core.NewProvider("LogMiddleware"),
 		logService: module.Get("LogService").(ILogService),

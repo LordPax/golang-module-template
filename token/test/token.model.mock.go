@@ -9,7 +9,7 @@ type TokenModelMock struct {
 	*core.ModelMock[*token.Token]
 }
 
-func NewTokenModelMock(module *token.TokenModule) *TokenModelMock {
+func NewTokenModelMock(module core.IModule) *TokenModelMock {
 	return &TokenModelMock{
 		ModelMock: core.NewModelMock[*token.Token]("TokenModel"),
 	}

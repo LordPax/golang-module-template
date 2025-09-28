@@ -13,7 +13,7 @@ type UserServiceMock struct {
 	*core.Mockable
 }
 
-func NewUserService(module *user.UserModule) *UserServiceMock {
+func NewUserService(module core.IModule) *UserServiceMock {
 	return &UserServiceMock{
 		Provider: core.NewProvider("UserService"),
 		Mockable: core.NewMockable(),

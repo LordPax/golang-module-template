@@ -26,7 +26,7 @@ type WebsocketController struct {
 	ginService       ginM.IGinService
 }
 
-func NewWebsocketController(module *WebsocketModule) *WebsocketController {
+func NewWebsocketController(module core.IModule) *WebsocketController {
 	return &WebsocketController{
 		Provider:         core.NewProvider("WebsocketController"),
 		websocketService: module.Get("WebsocketService").(IWebsocketService),

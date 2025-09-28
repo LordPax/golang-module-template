@@ -20,7 +20,7 @@ type UserModel struct {
 	databaseService database.IDatabaseService
 }
 
-func NewUserModel(module *UserModule) *UserModel {
+func NewUserModel(module core.IModule) *UserModel {
 	service := &UserModel{
 		Model:           core.NewModel[*User]("UserModel"),
 		databaseService: module.Get("DatabaseService").(database.IDatabaseService),

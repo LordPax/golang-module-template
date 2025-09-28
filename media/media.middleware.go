@@ -23,7 +23,7 @@ type MediaMiddleware struct {
 	logService       log.ILogService
 }
 
-func NewMediaMiddleware(module *MediaModule) *MediaMiddleware {
+func NewMediaMiddleware(module core.IModule) *MediaMiddleware {
 	return &MediaMiddleware{
 		Provider:         core.NewProvider("MediaMiddleware"),
 		mediaService:     module.Get("MediaService").(IMediaService),

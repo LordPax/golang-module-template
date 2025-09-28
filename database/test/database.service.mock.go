@@ -2,7 +2,6 @@ package database_test
 
 import (
 	"golang-api/core"
-	"golang-api/database"
 
 	"gorm.io/gorm"
 )
@@ -12,7 +11,7 @@ type DatabaseServiceMock struct {
 	*core.Mockable
 }
 
-func NewDatabaseServiceMock(module *database.DatabaseModule) *DatabaseServiceMock {
+func NewDatabaseServiceMock(module core.IModule) *DatabaseServiceMock {
 	return &DatabaseServiceMock{
 		Provider: core.NewProvider("DatabaseService"),
 		Mockable: core.NewMockable(),
