@@ -18,6 +18,10 @@ type Token struct {
 	UpdatedAt    time.Time `json:"updated_at"`
 }
 
+func NewToken(userID string) *Token {
+	return &Token{UserID: userID}
+}
+
 func (t *Token) BeforeCreate(tx *gorm.DB) error {
 	t.ID = uuid.New().String()
 	return nil

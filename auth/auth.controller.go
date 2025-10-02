@@ -110,7 +110,7 @@ func (ac *AuthController) Login(c *gin.Context) {
 		return
 	}
 
-	token := &token.Token{UserID: user.ID}
+	token := token.NewToken(user.ID)
 
 	jwtKey := ac.dotenvService.Get("JWT_SECRET_KEY")
 	if token.GenerateTokens(jwtKey) != nil {

@@ -20,11 +20,11 @@ type DotenvService struct {
 	filepath string
 }
 
-func NewDotenvService(filepath string) *DotenvService {
+func NewDotenvService(module core.IModule) *DotenvService {
 	return &DotenvService{
 		Provider: core.NewProvider("DotenvService"),
 		values:   make(map[string]string),
-		filepath: filepath,
+		filepath: ".env",
 	}
 }
 

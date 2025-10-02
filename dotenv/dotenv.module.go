@@ -15,7 +15,7 @@ func NewDotenvModule() *DotenvModule {
 		Module: core.NewModule("DotenvModule"),
 	}
 
-	module.AddProvider(NewDotenvService(".env"))
+	module.AddProvider(NewDotenvService(module))
 
 	return module
 }

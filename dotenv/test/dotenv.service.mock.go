@@ -9,7 +9,7 @@ type DotenvServiceMock struct {
 	*core.Mockable
 }
 
-func NewDotenvServiceMock(filepath string) *DotenvServiceMock {
+func NewDotenvServiceMock(module core.IModule) *DotenvServiceMock {
 	return &DotenvServiceMock{
 		Provider: core.NewProvider("DotenvService"),
 		Mockable: core.NewMockable(),

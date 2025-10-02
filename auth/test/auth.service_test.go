@@ -25,7 +25,7 @@ func NewAuthModuleTest() *auth.AuthModule {
 		Module: core.NewModule("AuthTestModule"),
 	}
 
-	module.AddProvider(dotenv_test.NewDotenvServiceMock(""))
+	module.AddProvider(dotenv_test.NewDotenvServiceMock(module))
 	module.AddProvider(email_test.NewEmailServiceMock(module))
 	module.AddProvider(log_test.NewLogServiceMock(module))
 	module.AddProvider(code_test.NewCodeServiceMock(module))
