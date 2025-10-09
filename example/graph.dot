@@ -1,0 +1,130 @@
+strict digraph {
+
+	label="Module Dependency Graph";
+
+
+	"UserWebsocketModule" [ color="2", colorscheme="blues3", fillcolor="1", group="0", shape="box", style="filled",  weight=0 ];
+
+	"UserWebsocketModule" -> "MainModule" [  weight=0 ];
+
+	"UserModule" [ color="2", colorscheme="blues3", fillcolor="1", group="0", shape="box", style="filled",  weight=0 ];
+
+	"UserModule" -> "LogUserModule" [  weight=0 ];
+
+	"UserModule" -> "UserWebsocketModule" [  weight=0 ];
+
+	"UserModule" -> "WebsocketModule" [  weight=0 ];
+
+	"UserModule" -> "CodeModule" [  weight=0 ];
+
+	"UserModule" -> "MainModule" [  weight=0 ];
+
+	"UserModule" -> "AuthModule" [  weight=0 ];
+
+	"GinModule" [ color="2", colorscheme="blues3", fillcolor="1", group="0", shape="box", style="filled",  weight=0 ];
+
+	"GinModule" -> "WebsocketModule" [  weight=0 ];
+
+	"GinModule" -> "CodeModule" [  weight=0 ];
+
+	"GinModule" -> "MainModule" [  weight=0 ];
+
+	"GinModule" -> "AuthModule" [  weight=0 ];
+
+	"GinModule" -> "LogUserModule" [  weight=0 ];
+
+	"GinModule" -> "UserModule" [  weight=0 ];
+
+	"DotenvModule" [ color="2", colorscheme="blues3", fillcolor="1", group="0", shape="box", style="filled",  weight=0 ];
+
+	"DotenvModule" -> "GinModule" [  weight=0 ];
+
+	"DotenvModule" -> "DatabaseModule" [  weight=0 ];
+
+	"DotenvModule" -> "TokenModule" [  weight=0 ];
+
+	"DotenvModule" -> "MediaModule" [  weight=0 ];
+
+	"DotenvModule" -> "EmailModule" [  weight=0 ];
+
+	"DotenvModule" -> "AuthModule" [  weight=0 ];
+
+	"MediaModule" [ color="2", colorscheme="blues3", fillcolor="1", group="0", shape="box", style="filled",  weight=0 ];
+
+	"MediaModule" -> "UserModule" [  weight=0 ];
+
+	"DatabaseModule" [ color="2", colorscheme="blues3", fillcolor="1", group="0", shape="box", style="filled",  weight=0 ];
+
+	"DatabaseModule" -> "LogModule" [  weight=0 ];
+
+	"DatabaseModule" -> "TokenModule" [  weight=0 ];
+
+	"DatabaseModule" -> "MediaModule" [  weight=0 ];
+
+	"DatabaseModule" -> "CodeModule" [  weight=0 ];
+
+	"DatabaseModule" -> "MainModule" [  weight=0 ];
+
+	"DatabaseModule" -> "AuthModule" [  weight=0 ];
+
+	"DatabaseModule" -> "UserModule" [  weight=0 ];
+
+	"WebsocketModule" [ color="2", colorscheme="blues3", fillcolor="1", group="0", shape="box", style="filled",  weight=0 ];
+
+	"WebsocketModule" -> "UserWebsocketModule" [  weight=0 ];
+
+	"WebsocketModule" -> "MainModule" [  weight=0 ];
+
+	"EmailModule" [ color="2", colorscheme="blues3", fillcolor="1", group="0", shape="box", style="filled",  weight=0 ];
+
+	"EmailModule" -> "CodeModule" [  weight=0 ];
+
+	"EmailModule" -> "AuthModule" [  weight=0 ];
+
+	"CodeModule" [ color="2", colorscheme="blues3", fillcolor="1", group="0", shape="box", style="filled",  weight=0 ];
+
+	"CodeModule" -> "AuthModule" [  weight=0 ];
+
+	"CodeModule" -> "MainModule" [  weight=0 ];
+
+	"LogModule" [ color="2", colorscheme="blues3", fillcolor="1", group="0", shape="box", style="filled",  weight=0 ];
+
+	"LogModule" -> "CodeModule" [  weight=0 ];
+
+	"LogModule" -> "EmailModule" [  weight=0 ];
+
+	"LogModule" -> "AuthModule" [  weight=0 ];
+
+	"LogModule" -> "LogUserModule" [  weight=0 ];
+
+	"LogModule" -> "UserModule" [  weight=0 ];
+
+	"LogModule" -> "MediaModule" [  weight=0 ];
+
+	"LogModule" -> "WebsocketModule" [  weight=0 ];
+
+	"LogUserModule" [ color="2", colorscheme="blues3", fillcolor="1", group="0", shape="box", style="filled",  weight=0 ];
+
+	"LogUserModule" -> "MainModule" [  weight=0 ];
+
+	"AuthModule" [ color="2", colorscheme="blues3", fillcolor="1", group="0", shape="box", style="filled",  weight=0 ];
+
+	"AuthModule" -> "MainModule" [  weight=0 ];
+
+	"QueryModule" [ color="2", colorscheme="blues3", fillcolor="1", group="0", shape="box", style="filled",  weight=0 ];
+
+	"QueryModule" -> "CodeModule" [  weight=0 ];
+
+	"QueryModule" -> "LogUserModule" [  weight=0 ];
+
+	"QueryModule" -> "UserModule" [  weight=0 ];
+
+	"TokenModule" [ color="2", colorscheme="blues3", fillcolor="1", group="0", shape="box", style="filled",  weight=0 ];
+
+	"TokenModule" -> "UserModule" [  weight=0 ];
+
+	"TokenModule" -> "AuthModule" [  weight=0 ];
+
+	"MainModule" [ color="2", colorscheme="blues3", fillcolor="1", group="0", shape="box", style="filled",  weight=0 ];
+
+}

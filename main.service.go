@@ -6,6 +6,9 @@ import (
 	"golang-api/database"
 	"golang-api/gin"
 	"os"
+
+	"github.com/dominikbraun/graph"
+	"github.com/dominikbraun/graph/draw"
 )
 
 type MainService struct {
@@ -34,6 +37,9 @@ func (ms *MainService) Start() {
 			return
 		case "c", "call":
 			ms.call()
+			return
+		case "graph":
+			ms.graph()
 			return
 		default:
 			fmt.Printf("Unknown command: %s\n", os.Args[1])
@@ -68,4 +74,15 @@ func (ms *MainService) call() {
 	if !core.CalledEvent {
 		fmt.Printf("Event %s not found\n", os.Args[2])
 	}
+}
+
+func (ms *MainService) graph() {
+	fmt.Println("Generating graph.dot file ...")
+	file, _ := os.Create("example/graph.dot")
+	defer file.Close()
+
+	g := ms.GetModule().Graph()
+	graph.TopologicalSort(g)
+
+	draw.DOT(g, file, draw.GraphAttribute("label", "Module Dependency Graph"))
 }

@@ -28,6 +28,14 @@ func NewDotenvService(module core.IModule) *DotenvService {
 	}
 }
 
+func NewDotenvServiceWithPath(module core.IModule, path string) *DotenvService {
+	return &DotenvService{
+		Provider: core.NewProvider("DotenvService"),
+		values:   make(map[string]string),
+		filepath: path,
+	}
+}
+
 func (ds *DotenvService) OnInit() error {
 	return ds.Load()
 }

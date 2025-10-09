@@ -1,11 +1,16 @@
 package core
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/dominikbraun/graph"
+)
 
 var (
 	moduleSeen     []string
 	moduleSeenCall []string
 	CalledEvent    bool
+	g              = graph.New(graph.StringHash, graph.Directed(), graph.PreventCycles())
 )
 
 type FuncCb func() error
@@ -22,6 +27,7 @@ type IModule interface {
 	callEvent(event string) error
 	Call(event string) error
 	List() []string
+	Graph() graph.Graph[string, string]
 }
 
 // Module is a struct that implements the IModule interface, managing providers and dependencies.
@@ -157,4 +163,23 @@ func (m *Module) List() []string {
 	}
 
 	return list
+}
+
+func (m *Module) Graph() graph.Graph[string, string] {
+	g.AddVertex(
+		m.GetName(),
+		graph.VertexAttribute("colorscheme", "blues3"),
+		graph.VertexAttribute("style", "filled"),
+		graph.VertexAttribute("color", "2"),
+		graph.VertexAttribute("fillcolor", "1"),
+		graph.VertexAttribute("shape", "box"),
+		graph.VertexAttribute("group", "0"),
+	)
+
+	for _, d := range m.module {
+		d.Graph()
+		g.AddEdge(d.GetName(), m.GetName())
+	}
+
+	return g
 }

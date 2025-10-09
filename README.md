@@ -2,35 +2,36 @@
 
 ## Description
 
-Ce projet est un template d'API REST en Go.
+This project is a REST API template in Go using module and dependency injection.
 
-## Technologies utilisées
+## Technologies used
 
 - [Go](https://golang.org/)
 - [Swag](https://github.com/swaggo/swag)
-- [docker](https://www.docker.com/)
-- [docker-compose](https://docs.docker.com/compose/)
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- [Graphiz](https://graphviz.org/)
 
-## Initialisation du projet
+## Project initialization
 
-1. Clonez le dépôt :
+1. Clone the repository:
 ```bash
 git clone https://github.com/LordPax/golang-module-template.git
 ```
 
-2. Accédez au répertoire du projet :
+2. Navigate to the project directory:
 ```bash
 cd golang-module-template
 ```
 
-3. Lancer les conteneur docker
+3. Start the Docker containers:
 ```bash
 docker-compose up
 ```
 
-## Installation back
+## Backend installation
 
-1. Créez un fichier `.env` à la racine du répertoire `back` et ajoutez les variables d'environnement suivantes :
+1. Create a `.env` file in the root of the `back` directory and add the following environment variables:
 ```bash
 NAME='Golang Api'
 DOMAIN=localhost:8080
@@ -48,30 +49,52 @@ COOKIE_SECURE=false
 JWT_SECRET_KEY=secret
 
 BREVO_API_KEY=
-BREVO_SENDER=noreply@example.fr
+BREVO_SENDER=noreply@example.com
 
 OS_CLOUD=openstack
 ```
 
-2. Intaller les dépendances :
+2. Install dependencies:
 ```bash
 go mod download
 go mod vendor
 ```
 
-3. Build le projet :
+3. Build the project:
 ```bash
 swag init
 go build
 ```
 
-4. Migrer la base de données :
+4. Migrate the database:
 ```bash
 ./golang-api call db:migrate
-./golang-api call db:fixtures # optionnel
+./golang-api call db:fixtures # optional
 ```
 
-5. Lancer le serveur :
+5. Start the server:
 ```bash
 ./golang-api
 ```
+
+## Module dependencies graph
+
+### Generate graph
+
+1. Install `graphviz`:
+```bash
+sudo apt-get install graphviz
+```
+```bash
+sudo pacman -S graphviz
+```
+
+2. Generate the dependencies graph:
+```bash
+./golang-api graph
+sfdp -Tsvg -o example/graph.svg example/graph.dot
+```
+
+### Graph
+
+![Module dependencies graph](example/graph.svg)

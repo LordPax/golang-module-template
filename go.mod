@@ -4,6 +4,7 @@ go 1.24.6
 
 require (
 	github.com/LordPax/sockevent v0.1.0
+	github.com/dominikbraun/graph v0.23.0
 	github.com/getbrevo/brevo-go v1.1.3
 	github.com/gin-contrib/cors v1.7.6
 	github.com/gin-gonic/gin v1.10.1
