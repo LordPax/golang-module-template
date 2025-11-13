@@ -40,13 +40,34 @@ func (ds *DotenvService) OnInit() error {
 	return ds.Load()
 }
 
-func (ds *DotenvService) Load() error {
-	fmt.Printf("Loading environment variables from %s\n", ds.filepath)
+func (ds *DotenvService) readFromFile() (*os.File, error) {
 	file, err := os.Open(ds.filepath)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	defer file.Close()
+	fmt.Printf("Loading environment variables from %s\n", ds.filepath)
+	return file, nil
+}
+
+func (ds *DotenvService) readFromEnv() {
+	for _, env := range os.Environ() {
+		key, value := parseLine(env)
+		if key == "" {
+			continue
+		}
+		ds.Set(key, value)
+	}
+}
+
+func (ds *DotenvService) Load() error {
+	file, err := ds.readFromFile()
+	if err != nil {
+		fmt.Println("Loading environment variables from OS environment")
+		ds.readFromEnv()
+		return nil
+		// fmt.Println("Loading environment variables from standard input")
+		// file = os.Stdin
+	}
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {

@@ -12,7 +12,8 @@ RUN go install github.com/swaggo/swag/cmd/swag@latest && \
 FROM alpine:latest
 
 WORKDIR /app
-COPY --from=builder /app/ .
+COPY --from=builder /app/golang-api .
+COPY --from=builder /app/clouds.yaml .
 EXPOSE 8080
 
 CMD ["./golang-api"]

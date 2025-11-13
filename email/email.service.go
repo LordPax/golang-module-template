@@ -7,7 +7,6 @@ import (
 	"golang-api/core"
 	"golang-api/dotenv"
 	"golang-api/log"
-	"os"
 	"text/template"
 
 	brevo "github.com/getbrevo/brevo-go/lib"
@@ -18,8 +17,8 @@ type IEmailService interface {
 	Authenticate() error
 	Send(email, subject, content string) error
 	SendHtml(email, subject, htmlContent string) error
-	SendHtmlTemplate(email, path, subject string, params map[string]any) error
-	LoadHtmlTemplate(filePath string, params map[string]interface{}) string
+	SendHtmlTemplate(email, content, subject string, params map[string]any) error
+	LoadHtmlTemplate(content string, params map[string]interface{}) string
 }
 
 type EmailService struct {
@@ -103,20 +102,15 @@ func (es *EmailService) SendHtml(email, subject, htmlContent string) error {
 	return nil
 }
 
-func (es *EmailService) SendHtmlTemplate(email, path, subject string, params map[string]any) error {
-	body := es.LoadHtmlTemplate(path, params)
+func (es *EmailService) SendHtmlTemplate(email, content, subject string, params map[string]any) error {
+	body := es.LoadHtmlTemplate(content, params)
 	return es.SendHtml(email, subject, body)
 }
 
-func (es *EmailService) LoadHtmlTemplate(filePath string, params map[string]interface{}) string {
-	content, err := os.ReadFile(filePath)
-	if err != nil {
-		es.logService.Errorf(es.tags, "Error reading template file: %v", err)
-		return "<p>Error loading template</p>"
-	}
-
+func (es *EmailService) LoadHtmlTemplate(content string, params map[string]interface{}) string {
+	var err error
 	tmpl := template.New("email")
-	tmpl, err = tmpl.Parse(string(content))
+	tmpl, err = tmpl.Parse(content)
 	if err != nil {
 		es.logService.Errorf(es.tags, "Error parsing template: %v", err)
 		return "<p>Error parsing template</p>"

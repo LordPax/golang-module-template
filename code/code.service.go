@@ -1,10 +1,14 @@
 package code
 
 import (
+	"embed"
 	"golang-api/core"
 	"golang-api/email"
 	"golang-api/query"
 )
+
+//go:embed template/*
+var template embed.FS
 
 type ICodeService interface {
 	core.IProvider
@@ -72,15 +76,15 @@ func (cs *CodeService) DeleteExpiredCodes() error {
 }
 
 func (cs *CodeService) SendVerifCodeEmail(receiver, code string) error {
-	path := "code/template/verification.html"
+	content, _ := template.ReadFile("template/verification.html")
 	subject := "Vérifier votre adresse e-mail"
 	params := map[string]any{"code": code}
-	return cs.emailService.SendHtmlTemplate(receiver, path, subject, params)
+	return cs.emailService.SendHtmlTemplate(receiver, string(content), subject, params)
 }
 
 func (cs *CodeService) SendResetCodeEmail(receiver, code string) error {
-	path := "code/template/reset.html"
+	content, _ := template.ReadFile("template/reset.html")
 	subject := "Réinitialiser votre mot de passe"
 	params := map[string]any{"code": code}
-	return cs.emailService.SendHtmlTemplate(receiver, path, subject, params)
+	return cs.emailService.SendHtmlTemplate(receiver, string(content), subject, params)
 }

@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"embed"
 	"fmt"
 	codeM "golang-api/code"
 	"golang-api/core"
@@ -13,6 +14,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+
+//go:embed template/*
+var template embed.FS
 
 type IAuthService interface {
 	core.IProvider
@@ -53,13 +57,13 @@ func (as *AuthService) ClearAuthCookies(c *gin.Context) {
 
 func (as *AuthService) SendWelcomeEmail(receiver, name string) error {
 	company := as.dotenvService.Get("NAME")
-	path := "auth/template/welcome.html"
+	content, _ := template.ReadFile("template/welcome.html")
 	subject := "Bienvenue sur " + company + " !"
 	params := map[string]any{
 		"name":    name,
 		"company": company,
 	}
-	return as.emailService.SendHtmlTemplate(receiver, path, subject, params)
+	return as.emailService.SendHtmlTemplate(receiver, string(content), subject, params)
 }
 
 // SendWelcomeAndVerif sends welcome and verification emails to the user.

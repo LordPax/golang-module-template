@@ -13,6 +13,28 @@ services:
     image: adminer:latest
     ports:
       - 9090:8080
+  api:
+    build: .
+    ports:
+      - 8080:8080
+    depends_on:
+      - database
+    environment:
+      NAME: ${NAME:? "NAME must be set"}
+      DOMAIN: ${DOMAIN:? "DOMAIN must be set"}
+      PORT: ${PORT:? "PORT must be set"}
+      GIN_MODE: ${GIN_MODE:? "GIN_MODE must be set"}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:? "ALLOWED_ORIGINS must be set"}
+      DB_HOST: database
+      DB_PORT: ${DB_PORT:? "DB_PORT must be set"}
+      DB_NAME: ${DB_NAME:? "DB_NAME must be set"}
+      DB_USER: ${DB_USER:? "DB_USER must be set"}
+      DB_PASSWORD: ${DB_PASSWORD:? "DB_PASSWORD must be set"}
+      COOKIE_SECURE: ${COOKIE_SECURE:? "COOKIE_SECURE must be set"}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:? "JWT_SECRET_KEY must be set"}
+      BREVO_API_KEY: ${BREVO_API_KEY:? "BREVO_API_KEY must be set"}
+      BREVO_SENDER: ${BREVO_SENDER:? "BREVO_SENDER must be set"}
+      OS_CLOUD: ${OS_CLOUD:? "OS_CLOUD must be set"}
 
 volumes:
   database_data:
