@@ -82,9 +82,15 @@ go build
 ### Generate graph
 
 1. Install `graphviz`:
+
+- For Debian/Ubuntu:
+
 ```bash
-sudo apt-get install graphviz
+sudo apt install graphviz
 ```
+
+- For Arch Linux:
+
 ```bash
 sudo pacman -S graphviz
 ```

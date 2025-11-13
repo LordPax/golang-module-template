@@ -1,6 +1,9 @@
 package core
 
-import "fmt"
+import (
+	"fmt"
+	"io"
+)
 
 type MockFunc func(...any) any
 
@@ -102,6 +105,9 @@ func (m *Mockable) compareParams(a, b any) bool {
 				return false
 			}
 		}
+	case io.Reader:
+		// Skip comparison for io.Reader types
+		return true
 	default:
 		return a == b
 	}
