@@ -1,10 +1,11 @@
 package media
 
 import (
-	"golang-api/core"
 	"golang-api/database"
 	"golang-api/dotenv"
 	"golang-api/log"
+
+	"github.com/LordPax/godular/core"
 )
 
 var module *MediaModule

@@ -1,10 +1,10 @@
 package user_test
 
 import (
-	"golang-api/core"
 	"golang-api/query"
 	"golang-api/user"
 
+	"github.com/LordPax/godular/core"
 	"github.com/LordPax/sockevent"
 )
 

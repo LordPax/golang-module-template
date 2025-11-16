@@ -1,8 +1,9 @@
 package database
 
 import (
-	"golang-api/core"
 	"golang-api/dotenv"
+
+	"github.com/LordPax/godular/core"
 )
 
 var module *DatabaseModule

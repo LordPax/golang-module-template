@@ -3,11 +3,11 @@ package websocket
 import (
 	"context"
 	"fmt"
-	"golang-api/core"
 	ginM "golang-api/gin"
 	"golang-api/log"
 	"golang-api/user"
 
+	"github.com/LordPax/godular/core"
 	"github.com/LordPax/sockevent"
 	"github.com/gin-gonic/gin"
 )

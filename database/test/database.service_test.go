@@ -1,11 +1,11 @@
 package database_test
 
 import (
-	"golang-api/core"
 	"golang-api/database"
 	dotenv_test "golang-api/dotenv/test"
 	"testing"
 
+	"github.com/LordPax/godular/core"
 	"github.com/stretchr/testify/assert"
 )
 

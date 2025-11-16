@@ -1,9 +1,10 @@
 package token
 
 import (
-	"golang-api/core"
 	"golang-api/database"
 	"golang-api/dotenv"
+
+	"github.com/LordPax/godular/core"
 )
 
 var module *TokenModule

@@ -3,13 +3,14 @@ package main
 import (
 	"golang-api/auth"
 	"golang-api/code"
-	"golang-api/core"
 	"golang-api/database"
 	"golang-api/gin"
 	logUser "golang-api/log-user"
 	"golang-api/user"
 	userWebsocket "golang-api/user-websocket"
 	"golang-api/websocket"
+
+	"github.com/LordPax/godular/core"
 )
 
 var module *MainModule

@@ -1,13 +1,14 @@
 package user
 
 import (
-	"golang-api/core"
 	"golang-api/database"
 	"golang-api/gin"
 	"golang-api/log"
 	"golang-api/media"
 	"golang-api/query"
 	"golang-api/token"
+
+	"github.com/LordPax/godular/core"
 )
 
 var module *UserModule

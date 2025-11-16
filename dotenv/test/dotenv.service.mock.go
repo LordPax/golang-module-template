@@ -1,7 +1,7 @@
 package dotenv_test
 
 import (
-	"golang-api/core"
+	"github.com/LordPax/godular/core"
 )
 
 type DotenvServiceMock struct {

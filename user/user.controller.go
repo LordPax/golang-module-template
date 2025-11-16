@@ -2,7 +2,6 @@ package user
 
 import (
 	"fmt"
-	"golang-api/core"
 	ginM "golang-api/gin"
 	"golang-api/log"
 	"golang-api/media"
@@ -10,6 +9,7 @@ import (
 	"golang-api/query"
 	"net/http"
 
+	"github.com/LordPax/godular/core"
 	"github.com/gin-gonic/gin"
 )
 

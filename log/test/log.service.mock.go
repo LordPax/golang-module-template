@@ -1,9 +1,10 @@
 package log_test
 
 import (
-	"golang-api/core"
 	"golang-api/log"
 	"golang-api/query"
+
+	"github.com/LordPax/godular/core"
 )
 
 type LogServiceMock struct {

@@ -1,11 +1,11 @@
 package media_test
 
 import (
-	"golang-api/core"
 	"golang-api/media"
 	"golang-api/query"
 	"testing"
 
+	"github.com/LordPax/godular/core"
 	"github.com/stretchr/testify/assert"
 )
 

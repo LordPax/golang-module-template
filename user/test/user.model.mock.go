@@ -1,18 +1,20 @@
 package user_test
 
 import (
-	"golang-api/core"
 	"golang-api/query"
 	"golang-api/user"
+
+	"github.com/LordPax/godular/common"
+	"github.com/LordPax/godular/core"
 )
 
 type UserModelMock struct {
-	*core.ModelMock[*user.User]
+	*common.ModelMock[*user.User]
 }
 
 func NewUserModelMock(module core.IModule) *UserModelMock {
 	return &UserModelMock{
-		ModelMock: core.NewModelMock[*user.User]("UserModel"),
+		ModelMock: common.NewModelMock[*user.User]("UserModel"),
 	}
 }
 

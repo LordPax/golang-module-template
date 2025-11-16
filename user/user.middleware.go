@@ -1,12 +1,12 @@
 package user
 
 import (
-	"golang-api/core"
 	"golang-api/log"
 	"golang-api/token"
 	"net/http"
 	"strings"
 
+	"github.com/LordPax/godular/core"
 	"github.com/gin-gonic/gin"
 )
 

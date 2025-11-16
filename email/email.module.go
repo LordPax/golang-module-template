@@ -1,9 +1,10 @@
 package email
 
 import (
-	"golang-api/core"
 	"golang-api/dotenv"
 	"golang-api/log"
+
+	"github.com/LordPax/godular/core"
 )
 
 var module *EmailModule

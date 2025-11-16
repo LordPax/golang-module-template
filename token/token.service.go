@@ -2,9 +2,9 @@ package token
 
 import (
 	"fmt"
-	"golang-api/core"
 	"golang-api/dotenv"
 
+	"github.com/LordPax/godular/core"
 	jwt "github.com/golang-jwt/jwt/v5"
 )
 

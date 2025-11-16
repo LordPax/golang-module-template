@@ -4,13 +4,13 @@ import (
 	"golang-api/auth"
 	"golang-api/code"
 	code_test "golang-api/code/test"
-	"golang-api/core"
 	dotenv_test "golang-api/dotenv/test"
 	email_test "golang-api/email/test"
 	log_test "golang-api/log/test"
 	user_test "golang-api/user/test"
 	"testing"
 
+	"github.com/LordPax/godular/core"
 	"github.com/stretchr/testify/assert"
 )
 

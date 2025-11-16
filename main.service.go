@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	"golang-api/core"
 	"golang-api/database"
 	"golang-api/gin"
 	"os"
 
+	"github.com/LordPax/godular/core"
 	"github.com/dominikbraun/graph"
 	"github.com/dominikbraun/graph/draw"
 )

@@ -1,10 +1,11 @@
 package media_test
 
 import (
-	"golang-api/core"
 	"golang-api/media"
 	"golang-api/query"
 	"io"
+
+	"github.com/LordPax/godular/core"
 )
 
 type MediaServiceMock struct {

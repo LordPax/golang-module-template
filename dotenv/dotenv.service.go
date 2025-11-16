@@ -3,8 +3,9 @@ package dotenv
 import (
 	"bufio"
 	"fmt"
-	"golang-api/core"
 	"os"
+
+	"github.com/LordPax/godular/core"
 )
 
 type IDotenvService interface {

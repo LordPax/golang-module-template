@@ -2,7 +2,6 @@ package auth
 
 import (
 	"golang-api/code"
-	"golang-api/core"
 	"golang-api/database"
 	"golang-api/dotenv"
 	"golang-api/email"
@@ -10,6 +9,8 @@ import (
 	"golang-api/log"
 	"golang-api/token"
 	"golang-api/user"
+
+	"github.com/LordPax/godular/core"
 )
 
 var module *AuthModule

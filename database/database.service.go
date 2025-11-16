@@ -2,9 +2,9 @@ package database
 
 import (
 	"fmt"
-	"golang-api/core"
 	"golang-api/dotenv"
 
+	"github.com/LordPax/godular/core"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

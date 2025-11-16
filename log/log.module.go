@@ -1,8 +1,9 @@
 package log
 
 import (
-	"golang-api/core"
 	"golang-api/database"
+
+	"github.com/LordPax/godular/core"
 )
 
 var module *LogModule

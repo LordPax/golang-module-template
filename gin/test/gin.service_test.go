@@ -1,11 +1,11 @@
 package gin_test
 
 import (
-	"golang-api/core"
 	dotenv_test "golang-api/dotenv/test"
 	"golang-api/gin"
 	"testing"
 
+	"github.com/LordPax/godular/core"
 	"github.com/stretchr/testify/assert"
 )
 

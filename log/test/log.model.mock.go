@@ -1,18 +1,20 @@
 package log_test
 
 import (
-	"golang-api/core"
 	"golang-api/log"
 	"golang-api/query"
+
+	"github.com/LordPax/godular/common"
+	"github.com/LordPax/godular/core"
 )
 
 type LogModelMock struct {
-	*core.ModelMock[*log.Log]
+	*common.ModelMock[*log.Log]
 }
 
 func NewLogModelMock(module core.IModule) *LogModelMock {
 	return &LogModelMock{
-		ModelMock: core.NewModelMock[*log.Log]("LogModel"),
+		ModelMock: common.NewModelMock[*log.Log]("LogModel"),
 	}
 }
 

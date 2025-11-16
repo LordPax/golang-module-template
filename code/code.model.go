@@ -1,27 +1,29 @@
 package code
 
 import (
-	"golang-api/core"
 	"golang-api/database"
 	"golang-api/query"
 	"time"
+
+	"github.com/LordPax/godular/common"
+	"github.com/LordPax/godular/core"
 )
 
 type ICodeModel interface {
-	core.IModel[*Code]
+	common.IModel[*Code]
 	QueryFindAll(q query.QueryFilter) ([]*Code, error)
 	FindOneByCodeAndEmail(code, email string) (*Code, error)
 	DeleteExpiredCodes() error
 }
 
 type CodeModel struct {
-	*core.Model[*Code]
+	*common.Model[*Code]
 	databaseService database.IDatabaseService
 }
 
 func NewCodeModel(module core.IModule) *CodeModel {
 	service := &CodeModel{
-		Model:           core.NewModel[*Code]("CodeModel"),
+		Model:           common.NewModel[*Code]("CodeModel"),
 		databaseService: module.Get("DatabaseService").(database.IDatabaseService),
 	}
 

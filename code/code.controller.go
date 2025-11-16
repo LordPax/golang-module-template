@@ -2,13 +2,13 @@ package code
 
 import (
 	"fmt"
-	"golang-api/core"
 	ginM "golang-api/gin"
 	"golang-api/log"
 	"golang-api/middleware"
 	"golang-api/user"
 	"net/http"
 
+	"github.com/LordPax/godular/core"
 	"github.com/gin-gonic/gin"
 )
 

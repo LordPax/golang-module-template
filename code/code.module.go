@@ -1,13 +1,14 @@
 package code
 
 import (
-	"golang-api/core"
 	"golang-api/database"
 	"golang-api/email"
 	"golang-api/gin"
 	"golang-api/log"
 	"golang-api/query"
 	"golang-api/user"
+
+	"github.com/LordPax/godular/core"
 )
 
 var module *CodeModule

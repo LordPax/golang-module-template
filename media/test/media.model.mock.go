@@ -1,18 +1,20 @@
 package media_test
 
 import (
-	"golang-api/core"
 	"golang-api/media"
 	"golang-api/query"
+
+	"github.com/LordPax/godular/common"
+	"github.com/LordPax/godular/core"
 )
 
 type MediaModelMock struct {
-	*core.ModelMock[*media.Media]
+	*common.ModelMock[*media.Media]
 }
 
 func NewMediaModelMock(module core.IModule) *MediaModelMock {
 	return &MediaModelMock{
-		ModelMock: core.NewModelMock[*media.Media]("MediaModel"),
+		ModelMock: common.NewModelMock[*media.Media]("MediaModel"),
 	}
 }
 

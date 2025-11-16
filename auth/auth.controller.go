@@ -2,7 +2,6 @@ package auth
 
 import (
 	"fmt"
-	"golang-api/core"
 	"golang-api/dotenv"
 	ginM "golang-api/gin"
 	"golang-api/log"
@@ -11,6 +10,7 @@ import (
 	"golang-api/user"
 	"net/http"
 
+	"github.com/LordPax/godular/core"
 	"github.com/gin-gonic/gin"
 )
 

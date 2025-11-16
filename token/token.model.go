@@ -1,25 +1,27 @@
 package token
 
 import (
-	"golang-api/core"
 	"golang-api/database"
 	"golang-api/dotenv"
+
+	"github.com/LordPax/godular/common"
+	"github.com/LordPax/godular/core"
 )
 
 type ITokenModel interface {
-	core.IModel[*Token]
+	common.IModel[*Token]
 	DeleteByUserID(userID string) error
 }
 
 type TokenModel struct {
-	*core.Model[*Token]
+	*common.Model[*Token]
 	databaseService database.IDatabaseService
 	dotenvService   dotenv.IDotenvService
 }
 
 func NewTokenModel(module core.IModule) *TokenModel {
 	service := &TokenModel{
-		Model:           core.NewModel[*Token]("TokenModel"),
+		Model:           common.NewModel[*Token]("TokenModel"),
 		databaseService: module.Get("DatabaseService").(database.IDatabaseService),
 		dotenvService:   module.Get("DotenvService").(dotenv.IDotenvService),
 	}

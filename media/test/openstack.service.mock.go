@@ -1,8 +1,9 @@
 package media_test
 
 import (
-	"golang-api/core"
 	"io"
+
+	"github.com/LordPax/godular/core"
 )
 
 type OpenstackServiceMock struct {

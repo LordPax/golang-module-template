@@ -1,9 +1,9 @@
 package log
 
 import (
-	"golang-api/core"
 	"net/http"
 
+	"github.com/LordPax/godular/core"
 	"github.com/gin-gonic/gin"
 )
 

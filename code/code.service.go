@@ -2,9 +2,10 @@ package code
 
 import (
 	"embed"
-	"golang-api/core"
 	"golang-api/email"
 	"golang-api/query"
+
+	"github.com/LordPax/godular/core"
 )
 
 //go:embed template/*

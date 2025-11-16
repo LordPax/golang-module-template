@@ -2,12 +2,12 @@ package media
 
 import (
 	"fmt"
-	"golang-api/core"
 	"golang-api/log"
 	"io"
 	"mime/multipart"
 	"net/http"
 
+	"github.com/LordPax/godular/core"
 	"github.com/gin-gonic/gin"
 )
 

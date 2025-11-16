@@ -4,7 +4,6 @@ import (
 	"embed"
 	"fmt"
 	codeM "golang-api/code"
-	"golang-api/core"
 	"golang-api/dotenv"
 	"golang-api/email"
 	"golang-api/log"
@@ -12,6 +11,7 @@ import (
 	"golang-api/user"
 	"strconv"
 
+	"github.com/LordPax/godular/core"
 	"github.com/gin-gonic/gin"
 )
 

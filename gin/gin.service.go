@@ -2,12 +2,12 @@ package gin
 
 import (
 	"fmt"
-	"golang-api/core"
 	"golang-api/docs"
 	"golang-api/dotenv"
 	"os"
 	"strings"
 
+	"github.com/LordPax/godular/core"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"

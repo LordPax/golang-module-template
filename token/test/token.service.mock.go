@@ -1,8 +1,9 @@
 package token_test
 
 import (
-	"golang-api/core"
 	"golang-api/token"
+
+	"github.com/LordPax/godular/core"
 )
 
 type TokenServiceMock struct {

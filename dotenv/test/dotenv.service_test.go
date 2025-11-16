@@ -1,10 +1,10 @@
 package dotenv_test
 
 import (
-	"golang-api/core"
 	"golang-api/dotenv"
 	"testing"
 
+	"github.com/LordPax/godular/core"
 	"github.com/stretchr/testify/assert"
 )
 

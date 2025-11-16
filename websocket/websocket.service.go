@@ -2,10 +2,10 @@ package websocket
 
 import (
 	"fmt"
-	"golang-api/core"
 	"golang-api/user"
 	"net/http"
 
+	"github.com/LordPax/godular/core"
 	"github.com/LordPax/sockevent"
 )
 

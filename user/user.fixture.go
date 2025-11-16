@@ -2,9 +2,9 @@ package user
 
 import (
 	"fmt"
-	"golang-api/core"
 	"math/rand"
 
+	"github.com/LordPax/godular/core"
 	"github.com/jaswdr/faker/v2"
 )
 

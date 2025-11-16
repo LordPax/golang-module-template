@@ -1,7 +1,7 @@
 package query
 
 import (
-	"golang-api/core"
+	"github.com/LordPax/godular/core"
 )
 
 var module *QueryModule

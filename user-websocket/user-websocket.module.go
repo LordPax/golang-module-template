@@ -1,9 +1,10 @@
 package userWebsocket
 
 import (
-	"golang-api/core"
 	"golang-api/user"
 	"golang-api/websocket"
+
+	"github.com/LordPax/godular/core"
 )
 
 var module *UserWebsocketModule

@@ -1,8 +1,9 @@
 module golang-api
 
-go 1.24.6
+go 1.25.4
 
 require (
+	github.com/LordPax/godular v0.1.2
 	github.com/LordPax/sockevent v0.1.0
 	github.com/dominikbraun/graph v0.23.0
 	github.com/getbrevo/brevo-go v1.1.3
@@ -20,7 +21,7 @@ require (
 	github.com/swaggo/swag v1.16.6
 	golang.org/x/crypto v0.42.0
 	gorm.io/driver/postgres v1.6.0
-	gorm.io/gorm v1.31.0
+	gorm.io/gorm v1.31.1
 )
 
 require (

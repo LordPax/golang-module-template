@@ -1,11 +1,11 @@
 package user_test
 
 import (
-	"golang-api/core"
 	"golang-api/query"
 	"golang-api/user"
 	"testing"
 
+	"github.com/LordPax/godular/core"
 	"github.com/stretchr/testify/assert"
 )
 

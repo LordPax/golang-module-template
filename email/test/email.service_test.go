@@ -1,12 +1,12 @@
 package email_test
 
 import (
-	"golang-api/core"
 	dotenv_test "golang-api/dotenv/test"
 	"golang-api/email"
 	log_test "golang-api/log/test"
 	"testing"
 
+	"github.com/LordPax/godular/core"
 	"github.com/stretchr/testify/assert"
 )
 

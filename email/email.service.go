@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"golang-api/core"
 	"golang-api/dotenv"
 	"golang-api/log"
 	"text/template"
 
+	"github.com/LordPax/godular/core"
 	brevo "github.com/getbrevo/brevo-go/lib"
 )
 

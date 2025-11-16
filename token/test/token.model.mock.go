@@ -1,17 +1,19 @@
 package token_test
 
 import (
-	"golang-api/core"
 	"golang-api/token"
+
+	"github.com/LordPax/godular/common"
+	"github.com/LordPax/godular/core"
 )
 
 type TokenModelMock struct {
-	*core.ModelMock[*token.Token]
+	*common.ModelMock[*token.Token]
 }
 
 func NewTokenModelMock(module core.IModule) *TokenModelMock {
 	return &TokenModelMock{
-		ModelMock: core.NewModelMock[*token.Token]("TokenModel"),
+		ModelMock: common.NewModelMock[*token.Token]("TokenModel"),
 	}
 }
 

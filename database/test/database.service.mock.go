@@ -1,8 +1,7 @@
 package database_test
 
 import (
-	"golang-api/core"
-
+	"github.com/LordPax/godular/core"
 	"gorm.io/gorm"
 )
 

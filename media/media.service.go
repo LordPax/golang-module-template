@@ -1,11 +1,11 @@
 package media
 
 import (
-	"golang-api/core"
 	"golang-api/query"
 	"io"
 	"path/filepath"
 
+	"github.com/LordPax/godular/core"
 	"github.com/google/uuid"
 )
 

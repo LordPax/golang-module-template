@@ -1,24 +1,26 @@
 package media
 
 import (
-	"golang-api/core"
 	"golang-api/database"
 	"golang-api/query"
+
+	"github.com/LordPax/godular/common"
+	"github.com/LordPax/godular/core"
 )
 
 type IMediaModel interface {
-	core.IModel[*Media]
+	common.IModel[*Media]
 	QueryFindAll(q query.QueryFilter) ([]*Media, error)
 }
 
 type MediaModel struct {
-	*core.Model[*Media]
+	*common.Model[*Media]
 	databaseService database.IDatabaseService
 }
 
 func NewMediaModel(module core.IModule) *MediaModel {
 	service := &MediaModel{
-		Model:           core.NewModel[*Media]("MediaModel"),
+		Model:           common.NewModel[*Media]("MediaModel"),
 		databaseService: module.Get("DatabaseService").(database.IDatabaseService),
 	}
 

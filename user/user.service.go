@@ -1,9 +1,9 @@
 package user
 
 import (
-	"golang-api/core"
 	"golang-api/query"
 
+	"github.com/LordPax/godular/core"
 	"github.com/LordPax/sockevent"
 )
 

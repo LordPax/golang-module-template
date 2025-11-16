@@ -1,10 +1,10 @@
 package auth_test
 
 import (
-	"golang-api/core"
 	"golang-api/token"
 	"golang-api/user"
 
+	"github.com/LordPax/godular/core"
 	"github.com/gin-gonic/gin"
 )
 

@@ -2,8 +2,9 @@ package log
 
 import (
 	"fmt"
-	"golang-api/core"
 	"golang-api/query"
+
+	"github.com/LordPax/godular/core"
 )
 
 type ILogService interface {

@@ -2,13 +2,13 @@ package logUser
 
 import (
 	"fmt"
-	"golang-api/core"
 	ginM "golang-api/gin"
 	"golang-api/log"
 	"golang-api/query"
 	"golang-api/user"
 	"net/http"
 
+	"github.com/LordPax/godular/core"
 	"github.com/gin-gonic/gin"
 )
 

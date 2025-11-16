@@ -1,7 +1,7 @@
 package email_test
 
 import (
-	"golang-api/core"
+	"github.com/LordPax/godular/core"
 )
 
 type EmailServiceMock struct {

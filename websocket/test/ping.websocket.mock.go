@@ -1,8 +1,7 @@
 package websocket_test
 
 import (
-	"golang-api/core"
-
+	"github.com/LordPax/godular/core"
 	"github.com/LordPax/sockevent"
 )
 

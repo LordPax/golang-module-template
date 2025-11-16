@@ -1,24 +1,26 @@
 package log
 
 import (
-	"golang-api/core"
 	"golang-api/database"
 	"golang-api/query"
+
+	"github.com/LordPax/godular/common"
+	"github.com/LordPax/godular/core"
 )
 
 type ILogModel interface {
-	core.IModel[*Log]
+	common.IModel[*Log]
 	QueryFindAll(q query.QueryFilter) ([]*Log, error)
 }
 
 type LogModel struct {
-	*core.Model[*Log]
+	*common.Model[*Log]
 	databaseService database.IDatabaseService
 }
 
 func NewLogModel(module core.IModule) *LogModel {
 	service := &LogModel{
-		Model:           core.NewModel[*Log]("LogModel"),
+		Model:           common.NewModel[*Log]("LogModel"),
 		databaseService: module.Get("DatabaseService").(database.IDatabaseService),
 	}
 

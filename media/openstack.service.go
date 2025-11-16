@@ -3,12 +3,12 @@ package media
 import (
 	"context"
 	"fmt"
-	"golang-api/core"
 	"golang-api/dotenv"
 	"io"
 	"os"
 	"strings"
 
+	"github.com/LordPax/godular/core"
 	"github.com/gophercloud/gophercloud/v2"
 	"github.com/gophercloud/gophercloud/v2/openstack"
 	"github.com/gophercloud/gophercloud/v2/openstack/config"
