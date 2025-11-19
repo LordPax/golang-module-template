@@ -2,17 +2,19 @@ package code_test
 
 import (
 	"golang-api/code"
-	"golang-api/core"
 	"golang-api/query"
+
+	"github.com/LordPax/godular/common"
+	"github.com/LordPax/godular/core"
 )
 
 type CodeModelMock struct {
-	*core.ModelMock[*code.Code]
+	*common.ModelMock[*code.Code]
 }
 
 func NewCodeModelMock(module core.IModule) *CodeModelMock {
 	return &CodeModelMock{
-		ModelMock: core.NewModelMock[*code.Code]("CodeModel"),
+		ModelMock: common.NewModelMock[*code.Code]("CodeModel"),
 	}
 }
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"golang-api/dotenv"
 	ginM "golang-api/gin"
+	"golang-api/lang"
 	"golang-api/log"
 	"golang-api/middleware"
 	"golang-api/token"
@@ -32,6 +33,7 @@ type AuthController struct {
 	userMiddleware user.IUserMiddleware
 	logService     log.ILogService
 	ginService     ginM.IGinService
+	langMiddleware lang.ILangMiddleware
 }
 
 func NewAuthController(module core.IModule) *AuthController {
@@ -44,6 +46,7 @@ func NewAuthController(module core.IModule) *AuthController {
 		userMiddleware: module.Get("UserMiddleware").(user.IUserMiddleware),
 		logService:     module.Get("LogService").(log.ILogService),
 		ginService:     module.Get("GinService").(ginM.IGinService),
+		langMiddleware: module.Get("LangMiddleware").(lang.ILangMiddleware),
 	}
 }
 
@@ -55,6 +58,7 @@ func (ac *AuthController) OnInit() error {
 func (ac *AuthController) RegisterRoutes() {
 	fmt.Println("Registering Auth routes")
 	auth := ac.ginService.GetGroup().Group("/auth")
+	auth.Use(ac.langMiddleware.Lang("Accept-Language"))
 	auth.POST("/login",
 		middleware.Validate[user.LoginDto](),
 		ac.Login,
@@ -82,13 +86,14 @@ func (ac *AuthController) RegisterRoutes() {
 //	@Failure		400		{object}	utils.HttpError
 //	@Router			/api/auth/login [post]
 func (ac *AuthController) Login(c *gin.Context) {
-	body, _ := c.MustGet("body").(user.LoginDto)
 	tags := []string{"AuthController", "Login"}
+	body, _ := c.MustGet("body").(user.LoginDto)
+	lang := c.MustGet("locale").(lang.ILocale)
 
 	user, err := ac.userService.FindOneBy("email", body.Email)
 	if err != nil {
 		ac.logService.Errorf(tags, "Invalid credentials: %v", err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": lang.Get("invalid-credentials")})
 		return
 	}
 

@@ -16,6 +16,7 @@ func NewLangModule() *LangModule {
 	}
 
 	module.AddProvider(NewLangService(module))
+	module.AddProvider(NewLangMiddleware(module))
 
 	return module
 }

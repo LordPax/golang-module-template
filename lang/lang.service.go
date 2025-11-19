@@ -6,8 +6,8 @@ import (
 
 type ILangService interface {
 	core.IProvider
-	AddStrings(strings LangString, lang ...string)
-	GetLocale(lang string) ILocale
+	AddStrings(strings LangString, langs ...string)
+	GetLocale(l string) ILocale
 }
 
 type LangService struct {
@@ -22,20 +22,20 @@ func NewLangService(module core.IModule) *LangService {
 	}
 }
 
-func (l *LangService) AddStrings(strings LangString, lang ...string) {
-	for _, la := range lang {
-		if _, ok := l.locale[la]; !ok {
-			l.locale[la] = NewLocalize(la, strings)
+func (ls *LangService) AddStrings(strings LangString, langs ...string) {
+	for _, lang := range langs {
+		if _, ok := ls.locale[lang]; !ok {
+			ls.locale[lang] = NewLocalize(lang, strings)
 			continue
 		}
-		l.locale[la].Append(strings)
+		ls.locale[lang].Append(strings)
 	}
 }
 
-func (l *LangService) GetLocale(lang string) ILocale {
-	locale, ok := l.locale[lang]
+func (ls *LangService) GetLocale(l string) ILocale {
+	locale, ok := ls.locale[l]
 	if !ok {
-		return l.locale["en"]
+		return ls.locale["en_US"]
 	}
 
 	return locale

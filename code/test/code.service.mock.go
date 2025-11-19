@@ -2,8 +2,9 @@ package code_test
 
 import (
 	"golang-api/code"
-	"golang-api/core"
 	"golang-api/query"
+
+	"github.com/LordPax/godular/core"
 )
 
 type CodeServiceMock struct {
