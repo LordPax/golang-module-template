@@ -1,6 +1,7 @@
 package auth_test
 
 import (
+	"embed"
 	"golang-api/auth"
 	"golang-api/code"
 	code_test "golang-api/code/test"
@@ -13,6 +14,9 @@ import (
 	"github.com/LordPax/godular/core"
 	"github.com/stretchr/testify/assert"
 )
+
+//go:embed template/*
+var template embed.FS
 
 func testCode(t *testing.T, expected *code.Code, actual *code.Code) {
 	assert.Equal(t, expected.UserID, actual.UserID)
@@ -59,7 +63,8 @@ func TestAuthService_SendWelcomeEmail(t *testing.T) {
 	receiver := "test@example.com"
 	name := "User"
 	companyName := "TestCompany"
-	path := "auth/template/welcome.html"
+	// path := "auth/template/welcome.html"
+	content, _ := template.ReadFile("template/welcome.html")
 	subject := "Bienvenue sur " + companyName + " !"
 	params := map[string]any{
 		"name":    name,
@@ -83,7 +88,7 @@ func TestAuthService_SendWelcomeEmail(t *testing.T) {
 	if !assert.Equal(t, true, called, "SendHtmlTemplate method should be called") {
 		return
 	}
-	paramsMatch := emailService.IsParamsEqual("SendHtmlTemplate", receiver, path, subject, params)
+	paramsMatch := emailService.IsParamsEqual("SendHtmlTemplate", receiver, string(content), subject, params)
 	if !assert.Equal(t, true, paramsMatch, "SendHtmlTemplate method should be called with correct parameters") {
 		return
 	}

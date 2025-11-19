@@ -1,15 +1,19 @@
 package code_test
 
 import (
+	"embed"
 	"golang-api/code"
-	"golang-api/core"
 	email_test "golang-api/email/test"
 	"golang-api/query"
 	user_test "golang-api/user/test"
 	"testing"
 
+	"github.com/LordPax/godular/core"
 	"github.com/stretchr/testify/assert"
 )
+
+//go:embed template/*
+var template embed.FS
 
 func testCode(t *testing.T, expected *code.Code, actual *code.Code) {
 	assert.Equal(t, expected.ID, actual.ID)
@@ -295,7 +299,7 @@ func TestCodeService_SendVerifCodeEmail(t *testing.T) {
 
 	receiver := "test@example.com"
 	testCode := "123456"
-	path := "code/template/verification.html"
+	content, _ := template.ReadFile("template/verification.html")
 	subject := "Vérifier votre adresse e-mail"
 
 	emailService.MockMethod("SendHtmlTemplate", nil)
@@ -316,7 +320,7 @@ func TestCodeService_SendVerifCodeEmail(t *testing.T) {
 	}
 
 	assert.Equal(t, receiver, params[0], "First parameter should be the receiver email")
-	assert.Equal(t, path, params[1], "Second parameter should be the template path")
+	assert.Equal(t, string(content), params[1], "Second parameter should be the template path")
 	assert.Equal(t, subject, params[2], "Third parameter should be the email subject")
 	assert.Equal(t, map[string]any{"code": testCode}, params[3], "Fourth parameter should be the template params")
 }
@@ -328,7 +332,7 @@ func TestCodeService_SendResetCodeEmail(t *testing.T) {
 
 	receiver := "test@example.com"
 	testCode := "123456"
-	path := "code/template/reset.html"
+	content, _ := template.ReadFile("template/reset.html")
 	subject := "Réinitialiser votre mot de passe"
 
 	emailService.MockMethod("SendHtmlTemplate", nil)
@@ -349,7 +353,7 @@ func TestCodeService_SendResetCodeEmail(t *testing.T) {
 	}
 
 	assert.Equal(t, receiver, params[0], "First parameter should be the receiver email")
-	assert.Equal(t, path, params[1], "Second parameter should be the template path")
+	assert.Equal(t, string(content), params[1], "Second parameter should be the template path")
 	assert.Equal(t, subject, params[2], "Third parameter should be the email subject")
 	assert.Equal(t, map[string]any{"code": testCode}, params[3], "Fourth parameter should be the template params")
 }
