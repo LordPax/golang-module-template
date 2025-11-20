@@ -57,6 +57,7 @@ func (ac *AuthController) OnInit() error {
 
 func (ac *AuthController) RegisterRoutes() {
 	fmt.Println("Registering Auth routes")
+
 	auth := ac.ginService.GetGroup().Group("/auth")
 	auth.Use(ac.langMiddleware.Lang("Accept-Language"))
 	auth.POST("/login",
@@ -99,19 +100,19 @@ func (ac *AuthController) Login(c *gin.Context) {
 
 	if !user.Verified {
 		ac.logService.Errorf(tags, "Account not verified for user ID: %s", user.ID)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Account not verified"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": lang.Get("user-not-verified")})
 		return
 	}
 
 	if !user.ComparePassword(body.Password) {
 		ac.logService.Errorf(tags, "Invalid credentials for user ID: %s", user.ID)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": lang.Get("invalid-credentials")})
 		return
 	}
 
 	if ac.tokenService.DeleteByUserID(user.ID) != nil {
 		ac.logService.Errorf(tags, "Failed to delete existing tokens for user ID: %s", user.ID)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete tokens"})
+		c.Status(http.StatusInternalServerError)
 		return
 	}
 
@@ -120,13 +121,13 @@ func (ac *AuthController) Login(c *gin.Context) {
 	jwtKey := ac.dotenvService.Get("JWT_SECRET_KEY")
 	if token.GenerateTokens(jwtKey) != nil {
 		ac.logService.Errorf(tags, "Failed to generate tokens for user ID: %s", user.ID)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate tokens"})
+		c.Status(http.StatusInternalServerError)
 		return
 	}
 
 	if err := ac.tokenService.Create(token); err != nil {
 		ac.logService.Errorf(tags, "Failed to create token for user ID: %s, error: %v", user.ID, err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create token"})
+		c.Status(http.StatusInternalServerError)
 		return
 	}
 
@@ -149,10 +150,11 @@ func (ac *AuthController) Login(c *gin.Context) {
 func (ac *AuthController) Register(c *gin.Context) {
 	body, _ := c.MustGet("body").(user.CreateUserDto)
 	tags := []string{"AuthController", "Register"}
+	lang := c.MustGet("locale").(lang.ILocale)
 
 	if ac.userService.IsUserExists(body.Email, body.Username) {
 		ac.logService.Errorf(tags, "Email or Username already exists: %s, %s", body.Email, body.Username)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Email or Username already exists"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": lang.Get("email-or-username-exists")})
 		return
 	}
 
@@ -167,19 +169,19 @@ func (ac *AuthController) Register(c *gin.Context) {
 
 	if err := user.HashPassword(body.Password); err != nil {
 		ac.logService.Errorf(tags, "Failed to hash password for user %s: %v", user.ID, err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to hash password"})
+		c.Status(http.StatusInternalServerError)
 		return
 	}
 
 	if err := ac.userService.Create(user); err != nil {
 		ac.logService.Errorf(tags, "Failed to create user %s: %v", user.ID, err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create user"})
+		c.Status(http.StatusInternalServerError)
 		return
 	}
 
 	ac.authService.SendWelcomeAndVerif(user)
 	ac.logService.Printf(tags, "User %s registered successfully", user.ID)
-	c.JSON(http.StatusCreated, gin.H{"message": "User created successfully"})
+	c.JSON(http.StatusCreated, gin.H{"message": lang.Get("user-registered")})
 }
 
 // Logout godoc
@@ -194,9 +196,10 @@ func (ac *AuthController) Register(c *gin.Context) {
 //	@Router			/api/auth/logout [post]
 func (ac *AuthController) Logout(c *gin.Context) {
 	token := c.MustGet("token").(*token.Token)
+	lang := c.MustGet("locale").(lang.ILocale)
 	ac.tokenService.Delete(token.ID)
 	ac.authService.ClearAuthCookies(c)
-	c.JSON(http.StatusOK, gin.H{"message": "Logged out successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": lang.Get("logged-out")})
 }
 
 // Refresh godoc
@@ -211,31 +214,32 @@ func (ac *AuthController) Logout(c *gin.Context) {
 //	@Router			/api/auth/refresh [post]
 func (ac *AuthController) Refresh(c *gin.Context) {
 	tags := []string{"AuthController", "Refresh"}
+	lang := c.MustGet("locale").(lang.ILocale)
 
 	refreshTokenString, err := c.Cookie("refresh_token")
 	if err != nil {
 		ac.logService.Errorf(tags, "Refresh token not found in cookie: %v", err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Refresh token not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": lang.Get("refresh-token-not-found")})
 		return
 	}
 
 	token, err := ac.tokenService.FindOneBy("refresh_token", refreshTokenString)
 	if err != nil || token == nil {
 		ac.logService.Errorf(tags, "Refresh token not found: %v", err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid refresh token"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": lang.Get("invalid-refresh-token")})
 		return
 	}
 
 	jwtKey := ac.dotenvService.Get("JWT_SECRET_KEY")
 	if err := token.GenerateAccessToken(jwtKey); err != nil {
 		ac.logService.Errorf(tags, "Failed to generate access token for user ID %s: %v", token.UserID, err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate access token"})
+		c.Status(http.StatusInternalServerError)
 		return
 	}
 
 	if err := ac.tokenService.Update(token); err != nil {
 		ac.logService.Errorf(tags, "Failed to update token for user ID %s: %v", token.UserID, err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update token"})
+		c.Status(http.StatusInternalServerError)
 		return
 	}
 
